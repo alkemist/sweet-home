@@ -1,0 +1,18 @@
+@import "../assets/styles/variables";
+
+.app {
+  background: var(--surface-ground);
+  color: var(--text-color);
+
+  &__content {
+    height: calc(100% - #{$header-desktop-height});
+
+    @media screen and (max-width: $mobile-breakpoint-width) {
+      height: calc(100% - #{$header-mobile-height});
+    }
+  }
+
+  .hideHeader + &__content {
+    height: 100%;
+  }
+}

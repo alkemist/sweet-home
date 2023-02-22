@@ -1,0 +1,146 @@
+/* You can add global styles to this file, and also import other style files */
+@import "assets/styles/reset";
+@import 'primeng/resources/primeng.min.css';
+@import 'primeng/resources/themes/lara-dark-blue/theme.css';
+@import 'primeicons/primeicons.css';
+@import 'primeflex/primeflex.min.css';
+@import "assets/styles/variables";
+
+.page-container {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  &__content {
+    overflow: auto;
+    max-height: 100%;
+    width: 100%;
+    padding: 20px;
+
+    @media screen and (max-width: $mobile-portrait-breakpoint-width) {
+      padding: 10px;
+    }
+
+    &__center {
+      margin: auto;
+      max-width: $page-width;
+    }
+  }
+}
+
+.shadow {
+  box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%),
+  0 1px 1px 0 rgb(0 0 0 / 14%),
+  0 1px 3px 0 rgb(0 0 0 / 12%);
+}
+
+
+form {
+  .p-card {
+    .p-card-content {
+      padding-top: 1rem !important;
+      padding-bottom: 0 !important;
+
+      h5 {
+        margin: 2rem 0 1rem;
+        font-weight: bold;
+      }
+
+      .field {
+        div.p-error {
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+      }
+    }
+  }
+}
+
+p-inputNumber, p-autoComplete {
+  & > span, & > span > input {
+    width: 100%;
+  }
+}
+
+.p-inputtext.ng-touched.p-invalid,
+p-autoComplete.ng-touched.ng-invalid input,
+p-inputnumber.ng-touched.p-invalid input,
+p-dropdown.ng-touched.p-invalid > div {
+  border-color: #e97984;
+}
+
+.p-accordion-header-link {
+  &:hover, &:active, &:focus {
+    text-decoration: none;
+  }
+}
+
+.p-dropdown, .p-multiselect {
+  width: 100%;
+}
+
+.p-datatable {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100%;
+
+  .p-datatable-wrapper {
+    height: 100%;
+
+    .p-datatable-thead > tr > th {
+      padding: 0.7rem 1rem;
+    }
+
+    .p-datatable-tbody > tr > td {
+      padding: 0.9rem 1rem;
+      vertical-align: middle;
+    }
+  }
+
+  .p-paginator-bottom {
+    border-top: 1px solid #0b213f;
+  }
+}
+
+.loader {
+  padding: 20px;
+  text-align: center;
+
+  i {
+    font-size: 4rem;
+  }
+}
+
+.mobile-showed {
+  display: initial;
+  @media screen and (max-width: $mobile-tablet-width) {
+    display: block;
+  }
+}
+
+.mobile-hidden {
+  display: initial;
+  @media screen and (max-width: $mobile-tablet-width) {
+    display: none !important;
+  }
+}
+
+.hide-label-mobile {
+  @media screen and (max-width: $mobile-tablet-width) {
+    .p-button-label {
+      display: none;
+    }
+  }
+}
+
+.p-dialog-content .p-card {
+  margin-bottom: 0;
+  margin-top: 10px;
+
+  .p-card-body {
+    padding: 0;
+  }
+}

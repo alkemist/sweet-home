@@ -1,0 +1,12 @@
+/* TEAM */
+Jérémy Achain
+Site: https://jeremy-achain.dev
+Location: Villeurbanne, France
+
+/* SITE */
+Last update:  2020/01/01
+Standards: HTML5, CSS3
+Components: Webkit
+Languages: Typescript, Javascript
+Frameworks: Angular
+Softwares: PhpStorm

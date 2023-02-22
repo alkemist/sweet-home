@@ -1,0 +1,17 @@
+{
+  "name": "Sweet Home",
+  "short_name": "Sweet Home",
+  "theme_color": "#040d19",
+  "background_color": "#040d19",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
+  "icons": [
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ]
+}

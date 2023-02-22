@@ -1,0 +1,17 @@
+@import "/src/assets/styles/variables";
+
+.page-container__content__center {
+  max-width: 300px;
+}
+
+.field {
+  margin-bottom: 2rem;
+}
+
+#login ::ng-deep .p-card .p-card-footer {
+  padding: 0;
+}
+
+@media screen and (max-width: $mobile-breakpoint-width) {
+
+}
