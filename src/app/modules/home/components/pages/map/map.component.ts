@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { JeedomService } from '@app/services/jeedom.service';
 
 @Component({
   selector: 'app-map',
@@ -9,6 +10,11 @@ import { Component, OnInit } from '@angular/core';
   }
 })
 export class MapComponent implements OnInit {
+  constructor(private jeedomService: JeedomService) {
+    this.jeedomService.request("version").then((response) => {
+      console.log(response);
+    });
+  }
 
   ngOnInit(): void {
 

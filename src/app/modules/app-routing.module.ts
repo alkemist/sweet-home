@@ -1,19 +1,39 @@
-import { Injectable, NgModule } from '@angular/core';
-import { RouterModule, RouterStateSnapshot, Routes, TitleStrategy } from '@angular/router';
+import { inject, Injectable, NgModule } from '@angular/core';
+import {
+  CanActivateFn,
+  Router,
+  RouterModule,
+  RouterStateSnapshot,
+  Routes,
+  TitleStrategy,
+  UrlTree
+} from '@angular/router';
 import { LoginComponent } from '@components';
-import { LoggedGuard, LoginGuard } from '@guards';
 import { Title } from '@angular/platform-browser';
+import { UserService } from '@services';
+import { map, Observable } from 'rxjs';
+
+const logginInGuard: CanActivateFn = (): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree => {
+  const userService = inject(UserService);
+  const router = inject(Router);
+  return userService.isLoggedIn().pipe(map(isLogged => isLogged ? router.parseUrl('/home') : true));
+};
+const loggedInGuard: CanActivateFn = (): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree => {
+  const userService = inject(UserService);
+  const router = inject(Router);
+  return userService.isLoggedIn().pipe(map(isLogged => isLogged ?? router.parseUrl('/')));
+};
 
 const routes: Routes = [
   {
     path: '',
-    canActivate: [ LoginGuard ],
+    canActivate: [ logginInGuard ],
     component: LoginComponent,
     title: 'Login'
   },
   {
     path: 'home',
-    canActivate: [ LoggedGuard ],
+    canActivate: [ loggedInGuard ],
     loadChildren: () => import('./home')
       .then(mod => mod.HomeModule)
   },

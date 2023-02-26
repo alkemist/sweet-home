@@ -25,6 +25,13 @@ export class LoginComponent implements OnInit {
         Validators.required,
       ]),
     });
+
+    if (process.env['APP_AUTO_LOGIN'] && process.env['APP_AUTO_PASSWORD']) {
+      this.form.setValue({
+        email: process.env['APP_AUTO_LOGIN'],
+        password: process.env['APP_AUTO_PASSWORD']
+      })
+    }
   }
 
   get email(): FormControl<string> {

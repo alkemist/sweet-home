@@ -33,9 +33,6 @@
       "@errors": [
         "src/app/errors"
       ],
-      "@guards": [
-        "src/app/guards"
-      ],
       "@models": [
         "src/app/models"
       ],
@@ -47,6 +44,12 @@
       ],
       "@tools": [
         "src/app/tools"
+      ],
+      "@mocks": [
+        "src/app/mocks"
+      ],
+      "@converters": [
+        "src/app/converters"
       ]
     }
   },
