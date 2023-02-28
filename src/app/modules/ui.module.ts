@@ -7,6 +7,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { RippleModule } from 'primeng/ripple';
+import { TieredMenuModule } from 'primeng/tieredmenu';
+import { TableModule } from 'primeng/table';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 const modules = [
   ToolbarModule,
@@ -15,7 +18,10 @@ const modules = [
   InputTextModule,
   ButtonModule,
   ToastModule,
-  RippleModule
+  RippleModule,
+  TieredMenuModule,
+  TableModule,
+  MultiSelectModule
 ];
 
 @NgModule({

@@ -49,6 +49,8 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
     const title = this.buildTitle(routerState);
     if (title !== undefined) {
       this.title.setTitle(`${ process.env['APP_NAME'] } - ${ title }`);
+    } else {
+      this.title.setTitle(`${ process.env['APP_NAME'] }`);
     }
   }
 }

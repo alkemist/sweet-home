@@ -43,7 +43,8 @@
             "scripts": [],
             "allowedCommonJsDependencies": [
               "process",
-              "stackdriver-errors-js"
+              "stackdriver-errors-js",
+              "json-rpc-2.0"
             ]
           },
           "configurations": {

@@ -1,23 +1,19 @@
 import { UserInterface } from '@app/models/user.interface';
+import { DataObjectModel } from '@app/models/data-object.model';
 
-export class UserModel {
-  protected _id: string;
-  protected _name: string;
-  protected _slug: string;
+export class UserModel extends DataObjectModel {
   protected _email: string;
   protected _token: string;
 
   constructor(user: UserInterface) {
-    this._id = user.id ?? '';
-    this._name = user.name ?? '';
-    this._slug = user.slug ?? '';
+    super(user);
     this._email = user.email;
     this._token = user.token;
   }
 
-  toFirestore(): UserInterface {
+  override toFirestore(): UserInterface {
     return {
-      name: this._name,
+      ...super.toFirestore(),
       email: this._email,
       token: this._token,
     }

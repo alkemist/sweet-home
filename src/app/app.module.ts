@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
-import { AppRoutingModule, SharingModule, UiModule } from '@modules';
+import { AppRoutingModule, SharingModule } from '@modules';
 import { HeaderComponent, LoginComponent } from '@components';
 
 import './app.database';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -17,11 +17,10 @@ import './app.database';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
-    ReactiveFormsModule,
     SharingModule,
     CommonModule,
-    UiModule,
   ],
   providers: [],
   bootstrap: [ AppComponent ]

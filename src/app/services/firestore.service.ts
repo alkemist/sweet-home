@@ -11,23 +11,24 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  orderBy,
   query,
   QueryConstraint,
   setDoc,
   where,
 } from 'firebase/firestore';
+import { DataObjectModel } from '@app/models/data-object.model';
 
 
-export abstract class FirestoreService<T extends DataObjectInterface> {
-  private readonly collectionName: string;
-  private readonly converter: FirestoreDataConverter<T>;
+export abstract class FirestoreService<T extends DataObjectInterface, U extends DataObjectModel> {
   private readonly ref: CollectionReference;
-  private readonly loggerService: LoggerService;
 
-  protected constructor(logger: LoggerService, collectionName: string, converter: FirestoreDataConverter<T>) {
-    this.loggerService = logger;
-    this.collectionName = collectionName;
-    this.converter = converter;
+  protected constructor(
+    private loggerService: LoggerService,
+    private collectionName: string,
+    private converter: FirestoreDataConverter<T>,
+    private type: (new (data: T) => U)
+  ) {
     this.ref = collection(getFirestore(), collectionName);
   }
 
@@ -49,7 +50,7 @@ export abstract class FirestoreService<T extends DataObjectInterface> {
     return !!dataObjectDocument;
   }
 
-  protected async findOneById(id: string): Promise<T> {
+  public async findOneById(id: string): Promise<T> {
     let docSnapshot;
     try {
       const ref = doc(this.ref, id).withConverter(this.converter);
@@ -72,7 +73,7 @@ export abstract class FirestoreService<T extends DataObjectInterface> {
     return document;
   }
 
-  protected async findOneBy(property: string, value: string): Promise<T> {
+  public async findOneBy(property: string, value: string): Promise<T> {
     let list: T[] = [];
 
     try {
@@ -87,11 +88,11 @@ export abstract class FirestoreService<T extends DataObjectInterface> {
     return list[0];
   }
 
-  protected async findOneBySlug(slug: string): Promise<T> {
+  public async findOneBySlug(slug: string): Promise<T> {
     return this.findOneBy('slug', slug);
   }
 
-  protected async addOne(document: T): Promise<T> {
+  public async addOne(document: T): Promise<T> {
     const id = generatePushID();
     this.updateSlug(document);
 
@@ -104,7 +105,7 @@ export abstract class FirestoreService<T extends DataObjectInterface> {
     return await this.findOneById(id);
   }
 
-  protected async updateOne(document: T): Promise<T> {
+  public async updateOne(document: T): Promise<T> {
     if (!document.id) {
       throw new DocumentNotFoundError<T>(this.collectionName, document);
     }
@@ -119,7 +120,7 @@ export abstract class FirestoreService<T extends DataObjectInterface> {
     return await this.findOneById(document.id);
   }
 
-  protected async removeOne(document: T): Promise<void> {
+  public async removeOne(document: T): Promise<void> {
     if (!document.id) {
       throw new DocumentNotFoundError<T>(this.collectionName, document);
     }
@@ -130,6 +131,11 @@ export abstract class FirestoreService<T extends DataObjectInterface> {
     } catch (error) {
       this.loggerService.error(new DatabaseError((error as Error).message, document));
     }
+  }
+
+  async getAll(orderByColumn = 'name'): Promise<U[]> {
+    const documents = await this.queryList(orderBy(orderByColumn));
+    return documents.map((document: T) => new this.type(document));
   }
 
   /**

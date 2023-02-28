@@ -1,0 +1,58 @@
+<div class="page-container__content h-full">
+  <p-table #dt [loading]="loading" [pageLinks]="2" [paginator]="true" [rows]="10"
+           [value]="devices" breakpoint="400px" dataKey="id"
+           responsiveLayout="scroll" scrollHeight="flex"
+           styleClass="p-datatable-m">
+    <ng-template pTemplate="header">
+      <tr>
+        <th i18n>Name</th>
+        <th i18n>Category</th>
+        <th></th>
+      </tr>
+      <tr>
+        <th>
+          <p-columnFilter field="name" matchMode="contains">
+            <ng-template let-filter="filterCallback" let-value pTemplate="filter">
+              <input (ngModelChange)="filter($event)" [ngModel]="value" pInputText/>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
+          <p-columnFilter [showMatchModes]="false" [showMenu]="false" [showOperator]="false" display="row"
+                          field="type" matchMode="in">
+            <ng-template let-filter="filterCallback" let-value pTemplate="filter">
+              <p-multiSelect (onChange)="filter($event.value)"
+                             [ngModel]="value" [options]="deviceCategories"
+                             [selectionLimit]="3" [showHeader]="false"
+                             optionValue="key">
+              </p-multiSelect>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template let-device pTemplate="body">
+      <tr>
+        <td>
+          {{device.name}}
+        </td>
+        <td>
+          {{device.category}}
+        </td>
+        <td class="align-right">
+          <a [routerLink]="[device.slug]"
+             class="p-button-rounded p-button-success p-button-text"
+             icon="pi pi-pencil"
+             pButton
+             pRipple></a>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="3" i18n>No devices found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

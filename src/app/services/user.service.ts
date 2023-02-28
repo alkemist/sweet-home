@@ -12,14 +12,14 @@ import { UserModel } from '@models';
 @Injectable({
   providedIn: 'root'
 })
-export class UserService extends FirestoreService<UserInterface> {
+export class UserService extends FirestoreService<UserInterface, UserModel> {
   private _auth = getAuth();
   private _isLoggedIn: BehaviorSubject<boolean | null>;
   private _user: UserModel | null = null;
   private _token: string = '';
 
   constructor(private logger: LoggerService) {
-    super(logger, 'user', userConverter);
+    super(logger, 'user', userConverter, UserModel);
     this._isLoggedIn = new BehaviorSubject<boolean | null>(null);
 
     onAuthStateChanged(this._auth, (userFirebase) => {
