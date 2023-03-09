@@ -1,8 +1,8 @@
 import { FirestoreDataConverter } from '@firebase/firestore';
-import { DataObjectInterface } from '@models';
+import { DocumentInterface } from '@models';
 
-export const dummyConverter: FirestoreDataConverter<DataObjectInterface> = {
-  toFirestore: (object: any): DataObjectInterface => {
+export const dummyConverter: FirestoreDataConverter<DocumentInterface> = {
+  toFirestore: (object: any): DocumentInterface => {
     return object;
   },
   fromFirestore: () => {

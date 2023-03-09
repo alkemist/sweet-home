@@ -1,7 +1,7 @@
 import { UserInterface } from '@app/models/user.interface';
-import { DataObjectModel } from '@app/models/data-object.model';
+import { DocumentModel } from '@app/models/document.model';
 
-export class UserModel extends DataObjectModel {
+export class UserModel extends DocumentModel {
   protected _email: string;
   protected _token: string;
 

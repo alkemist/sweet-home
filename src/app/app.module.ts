@@ -8,6 +8,7 @@ import { HeaderComponent, LoginComponent } from '@components';
 
 import './app.database';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { StoringModule } from '@app/modules/storing.module';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserAnimationsModule,
     AppRoutingModule,
     SharingModule,
+    StoringModule,
     CommonModule,
   ],
   providers: [],

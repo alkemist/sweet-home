@@ -1,4 +1,4 @@
-import { DataObjectInterface } from '@app/models/data-object.interface';
+import { DocumentInterface } from '@app/models/document.interface';
 
 export interface Coordinate {
   x: number,
@@ -17,7 +17,7 @@ export enum DeviceTypeEnum {
   PlugLidle = 'plug-lidle'
 }
 
-export interface DeviceInterface extends DataObjectInterface {
+export interface DeviceInterface extends DocumentInterface {
   position: Coordinate,
   category: DeviceCategoryEnum,
   type: DeviceTypeEnum,

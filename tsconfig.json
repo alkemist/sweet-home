@@ -50,6 +50,9 @@
       ],
       "@converters": [
         "src/app/converters"
+      ],
+      "@stores": [
+        "src/app/stores"
       ]
     }
   },

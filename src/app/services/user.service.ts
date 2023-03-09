@@ -3,7 +3,6 @@ import { BehaviorSubject, filter, map, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { FirestoreService } from '@app/services/firestore.service';
-import { userConverter } from '@converters';
 import { LoggerService } from '@app/services/logger.service';
 import { InvalidEmailError, OfflineError, TooManyRequestError, WrongApiKeyError, WrongPasswordError } from '@errors';
 import { UserModel } from '@models';
@@ -19,7 +18,7 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
   private _token: string = '';
 
   constructor(private logger: LoggerService) {
-    super(logger, 'user', userConverter, UserModel);
+    super(logger, 'user', UserModel);
     this._isLoggedIn = new BehaviorSubject<boolean | null>(null);
 
     onAuthStateChanged(this._auth, (userFirebase) => {

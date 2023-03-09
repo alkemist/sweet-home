@@ -23,7 +23,7 @@ export class DevicesComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.deviceService.getAll().then(devices => {
+    this.deviceService.getListOrRefresh().then(devices => {
       this.devices = devices;
       this.loading = false;
     });

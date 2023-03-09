@@ -1,7 +1,7 @@
-import { DataObjectModel } from '@app/models/data-object.model';
+import { DocumentModel } from '@app/models/document.model';
 import { Coordinate, DeviceCategoryEnum, DeviceInterface, DeviceTypeEnum } from '@app/models/device.interface';
 
-export class DeviceModel extends DataObjectModel {
+export class DeviceModel extends DocumentModel {
   protected _position: Coordinate;
   protected _category: DeviceCategoryEnum;
   protected _type: DeviceTypeEnum;

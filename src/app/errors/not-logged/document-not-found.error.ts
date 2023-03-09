@@ -1,6 +1,6 @@
-import { DataObjectInterface } from '@models';
+import { DocumentInterface } from '@models';
 
-export class DocumentNotFoundError<T extends DataObjectInterface> extends Error {
+export class DocumentNotFoundError<T extends DocumentInterface> extends Error {
   private readonly collectionName: string;
 
   constructor(collectionName: string, document?: T) {

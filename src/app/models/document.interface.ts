@@ -1,4 +1,4 @@
-export interface DataObjectInterface {
+export interface DocumentInterface {
   id?: string;
   name?: string;
   slug?: string;

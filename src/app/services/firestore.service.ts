@@ -1,6 +1,6 @@
 import { DatabaseError, DocumentNotFoundError, EmptyDocumentError, QuotaExceededError } from '@errors';
 import { FirestoreDataConverter } from '@firebase/firestore';
-import { DataObjectInterface } from '@models';
+import { DocumentInterface } from '@models';
 import { LoggerService } from '@services';
 import { generatePushID, slugify } from '@tools';
 import {
@@ -17,17 +17,18 @@ import {
   setDoc,
   where,
 } from 'firebase/firestore';
-import { DataObjectModel } from '@app/models/data-object.model';
+import { DocumentModel } from '@app/models/document.model';
+import { objectConverter } from '@app/converters/object.converter';
 
 
-export abstract class FirestoreService<T extends DataObjectInterface, U extends DataObjectModel> {
+export abstract class FirestoreService<T extends DocumentInterface, U extends DocumentModel> {
   private readonly ref: CollectionReference;
 
   protected constructor(
     private loggerService: LoggerService,
     private collectionName: string,
-    private converter: FirestoreDataConverter<T>,
-    private type: (new (data: T) => U)
+    protected type: (new (data: T) => U),
+    private converter: FirestoreDataConverter<T> = objectConverter<T>(),
   ) {
     this.ref = collection(getFirestore(), collectionName);
   }
