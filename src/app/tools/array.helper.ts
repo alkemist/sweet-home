@@ -10,14 +10,6 @@ export abstract class ArrayHelper {
     });
   }
 
-  static keysValuesToMap<T, U>(keys: T[], values: U[]): Map<T, U> {
-    const map = new Map<T, U>();
-    keys.forEach((key, index) => {
-      map.set(key as T, values[index] as U);
-    });
-    return map;
-  }
-
   static recordToList<T extends string, U>(record: Record<T, U>): KeyValue<string, U>[] {
     return Object.entries<U>(record).map(([ t, u ]: [ string, U ]) => ({
       key: t,

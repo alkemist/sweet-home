@@ -22,8 +22,9 @@
                           field="category" matchMode="in">
             <ng-template let-filter="filterCallback" let-value pTemplate="filter">
               <p-multiSelect (onChange)="filter($event.value)"
-                             [ngModel]="value" [options]="deviceCategoriesArray"
-                             [selectionLimit]="3" [showHeader]="false"
+                             [ngModel]="value" [options]="deviceCategoriesIterable" [selectionLimit]="3"
+                             [showHeader]="false"
+                             optionLabel="value"
                              optionValue="key">
               </p-multiSelect>
             </ng-template>

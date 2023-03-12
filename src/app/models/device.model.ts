@@ -3,7 +3,8 @@ import { CoordinateInterface } from './coordinate.interface';
 import { DeviceTypeEnum } from './device-type.enum';
 import { DeviceCategoryEnum } from './device-category.enum';
 import { DeviceBackInterface, DeviceFrontInterface, DeviceStoredInterface } from './device.interface';
-import { ArrayHelper, slugify } from '@tools';
+import { slugify } from '@tools';
+import { SmartArrayModel } from '@app/models/smart-array.model';
 
 export class DeviceModel extends DocumentModel {
   protected _position: CoordinateInterface;
@@ -47,13 +48,7 @@ export class DeviceModel extends DocumentModel {
       category: formData.category,
       type: formData.type,
       position: formData.position,
-      commands: formData.commands.reduce(
-        (acc, item) => {
-          acc[item.key] = item.value
-          return acc;
-        }
-        , {} as Record<string, number>
-      )
+      commands: new SmartArrayModel(formData.commands).toRecord()
     }
 
     return new DeviceModel(deviceData)
@@ -70,12 +65,15 @@ export class DeviceModel extends DocumentModel {
   }
 
   override toForm(): DeviceFrontInterface {
+    const iterable = new SmartArrayModel<string, number>();
+    iterable.fromRecord(this._commands);
+
     return {
       ...super.toForm(),
       position: this._position,
       category: this._category,
       type: this._type,
-      commands: ArrayHelper.recordToList(this._commands),
+      commands: iterable,
     };
   }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EnumHelper, slugify } from '@tools';
+import { slugify } from '@tools';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DeviceService } from '@services';
 import {
@@ -16,6 +16,7 @@ import {
 } from '@models';
 import { AppService } from '@app/services/app.service';
 import { HasIdWithInterface } from '@app/models/id.interface';
+import { SmartArrayModel } from '@app/models/smart-array.model';
 
 @Component({
   selector: 'app-device',
@@ -27,8 +28,8 @@ import { HasIdWithInterface } from '@app/models/id.interface';
 })
 export class DeviceComponent implements OnInit {
   device: DeviceModel | null = null;
-  deviceCategories = EnumHelper.enumToArray(DeviceCategoryEnum);
-  deviceTypes = EnumHelper.enumToArray(DeviceTypeEnum);
+  deviceCategoriesIterable = new SmartArrayModel<string, string>(DeviceCategoryEnum, true);
+  deviceTypesIterable = new SmartArrayModel<string, string>(DeviceTypeEnum, true);
 
   form: FormGroup<DeviceFormInterface> = new FormGroup<DeviceFormInterface>({
     id: new FormControl<string | null | undefined>(''),
@@ -52,7 +53,6 @@ export class DeviceComponent implements OnInit {
     private messageService: MessageService,
     private appService: AppService
   ) {
-
   }
 
   get name() {
@@ -64,8 +64,6 @@ export class DeviceComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    //this.ingredientTypes = await this.translatorService.translateLabels(this.ingredientTypes);
-    console.log(this.deviceCategories);
     this.loadData();
   }
 

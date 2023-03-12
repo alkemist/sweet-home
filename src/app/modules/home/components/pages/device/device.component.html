@@ -35,10 +35,11 @@
         <div class="flex-column flex-1">
           <div class="p-float-label flex">
             <p-dropdown [autoDisplayFirst]="false"
-                        [options]="deviceTypes" appendTo="body" class="flex-1"
+                        [options]="deviceTypesIterable" appendTo="body" class="flex-1"
                         formControlName="type"
                         i18n-placeholder
-                        inputId="type" optionValue="key" placeholder="Select a type"
+                        inputId="type"
+                        optionLabel="value" optionValue="key" placeholder="Select a type"
                         styleClass=""></p-dropdown>
             <label for="name" i18n>Type</label>
           </div>
@@ -51,10 +52,10 @@
         <div class="flex-column flex-1">
           <div class="p-float-label flex">
             <p-dropdown [autoDisplayFirst]="false"
-                        [options]="deviceCategories" appendTo="body" class="flex-1"
+                        [options]="deviceCategoriesIterable" appendTo="body" class="flex-1"
                         formControlName="category"
-                        i18n-placeholder
-                        inputId="category" optionValue="key" placeholder="Select a category"
+                        i18n-placeholder inputId="category"
+                        optionLabel="value" optionValue="key" placeholder="Select a category"
                         styleClass=""></p-dropdown>
             <label for="name" i18n>Category</label>
           </div>

@@ -2,8 +2,8 @@ import { DocumentBackInterface, DocumentFrontInterface } from '@app/models/docum
 import { CoordinateInterface } from '@app/models/coordinate.interface';
 import { DeviceTypeEnum } from '@app/models/device-type.enum';
 import { DeviceCategoryEnum } from '@app/models/device-category.enum';
-import { KeyValue } from '@angular/common';
 import { HasIdWithInterface } from '@app/models/id.interface';
+import { KeyValue } from '@angular/common';
 
 
 export interface DeviceBackInterface extends DocumentBackInterface {
