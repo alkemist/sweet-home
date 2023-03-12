@@ -25,6 +25,7 @@
     "dotenv": "^16.0.3",
     "firebase": "^9.17.1",
     "json-rpc-2.0": "^1.5.1",
+    "ngx-valdemort": "^9.0.0",
     "primeflex": "^3.3.0",
     "primeicons": "^6.0.1",
     "primeng": "^15.2.0",

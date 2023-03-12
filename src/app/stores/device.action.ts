@@ -1,34 +1,48 @@
-import { DeviceInterface } from '@models';
-import { AddDocument, FillDocuments, RemoveDocument, UpdateDocument } from '@app/stores/document.action';
+import { DeviceStoredInterface } from '@models';
+import {
+  AddDocument,
+  FillDocuments,
+  InvalideDocuments,
+  RemoveDocument,
+  UpdateDocument
+} from '@app/stores/document.action';
 
-export class AddDevice extends AddDocument<DeviceInterface> {
+export class AddDevice extends AddDocument<DeviceStoredInterface> {
   static override readonly type: string = '[Device] Add';
 
-  constructor(payload: DeviceInterface) {
+  constructor(payload: DeviceStoredInterface) {
     super(payload);
   }
 }
 
-export class UpdateDevice extends UpdateDocument<DeviceInterface> {
+export class UpdateDevice extends UpdateDocument<DeviceStoredInterface> {
   static override readonly type: string = '[Device] Update';
 
-  constructor(payload: DeviceInterface) {
+  constructor(payload: DeviceStoredInterface) {
     super(payload);
   }
 }
 
-export class RemoveDevice extends RemoveDocument<DeviceInterface> {
+export class RemoveDevice extends RemoveDocument<DeviceStoredInterface> {
   static override readonly type: string = '[Device] Remove';
 
-  constructor(payload: DeviceInterface) {
+  constructor(payload: DeviceStoredInterface) {
     super(payload);
   }
 }
 
-export class FillDevices extends FillDocuments<DeviceInterface> {
+export class FillDevices extends FillDocuments<DeviceStoredInterface> {
   static override readonly type: string = '[Device] Fill';
 
-  constructor(payload: DeviceInterface[]) {
+  constructor(payload: DeviceStoredInterface[]) {
     super(payload);
+  }
+}
+
+export class InvalideDevices extends InvalideDocuments<DeviceStoredInterface> {
+  static override readonly type: string = '[Device] Invalide';
+
+  constructor() {
+    super();
   }
 }

@@ -1,11 +1,11 @@
 <div class="page-container__content" id="login">
-  <form (submit)="handleSubmit()" [formGroup]="form" class="page-container__content__center">
+  <form (submit)="handleSubmit()" [formGroup]="form" class="page-container__content__center flex-1">
     <p-card>
       <ng-template pTemplate="title">
         <h5 class="text-center" i18n>Login</h5>
       </ng-template>
 
-      <div class="field">
+      <div class="field-row">
         <div class="p-float-label">
           <input [ngClass]="{'p-invalid':email.invalid && (email.dirty || email.touched)}" class="w-full"
                  formControlName="email"
@@ -14,17 +14,17 @@
                  for="email"
                  i18n>Email</label>
         </div>
-        <div *ngIf="email.invalid && (email.dirty || email.touched)" class="p-error">
-          <small *ngIf="email.errors?.['required']" i18n>
-            Email is required.
-          </small>
-          <small *ngIf="email.errors?.['email']" i18n>
-            Email is malformed.
-          </small>
-        </div>
+        <val-errors class="p-error" controlName="email">
+          <ng-template valError="required">
+            <ng-container i18n>Email is required.</ng-container>
+          </ng-template>
+          <ng-template valError="email">
+            <ng-container i18n>Email is malformed.</ng-container>
+          </ng-template>
+        </val-errors>
       </div>
 
-      <div class="field">
+      <div class="field-row">
         <div class="p-float-label">
           <input [ngClass]="{'p-invalid':password.invalid && (password.dirty || password.touched)}"
                  class="w-full"
@@ -35,13 +35,12 @@
                  for="password"
                  i18n>Password</label>
         </div>
-        <div *ngIf="password.invalid && (password.dirty || password.touched)" class="p-error">
-          <small *ngIf="password.errors?.['required']"
-                 i18n>
-            Password is required.
-          </small>
-        </div>
-        <small *ngIf="error" class="p-error">{{ error }}</small>
+        <val-errors class="p-error" controlName="password">
+          <ng-template valError="required">
+            <ng-container i18n>Password is required.</ng-container>
+          </ng-template>
+        </val-errors>
+        <div *ngIf="error" class="p-error">{{ error }}</div>
       </div>
 
       <ng-template pTemplate="footer">

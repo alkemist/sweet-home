@@ -9,27 +9,38 @@ import {
   UrlTree
 } from '@angular/router';
 import { LoginComponent } from '@components';
-import { Title } from '@angular/platform-browser';
 import { UserService } from '@services';
 import { map, Observable } from 'rxjs';
+import { AppService } from '@app/services/app.service';
 
 const logginInGuard: CanActivateFn = (): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree => {
   const userService = inject(UserService);
   const router = inject(Router);
-  return userService.isLoggedIn().pipe(map(isLogged => isLogged ? router.parseUrl('/home') : true));
+  return userService.isLoggedIn().pipe(map(isLogged => {
+    if (isLogged) {
+      router.navigate([ '/home' ]);
+    }
+    return !isLogged;
+  }));
 };
 const loggedInGuard: CanActivateFn = (): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree => {
   const userService = inject(UserService);
   const router = inject(Router);
-  return userService.isLoggedIn().pipe(map(isLogged => isLogged ?? router.parseUrl('/')));
+  return userService.isLoggedIn().pipe(map(isLogged => {
+    if (!isLogged) {
+      router.navigate([ '/login' ]);
+    }
+    return isLogged;
+  }));
 };
 
 const routes: Routes = [
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
-    path: '',
+    path: 'login',
     canActivate: [ logginInGuard ],
     component: LoginComponent,
-    title: 'Login'
+    title: 'Login',
   },
   {
     path: 'home',
@@ -41,17 +52,13 @@ const routes: Routes = [
 
 @Injectable()
 export class TemplatePageTitleStrategy extends TitleStrategy {
-  constructor(private readonly title: Title) {
+  constructor(private readonly appService: AppService) {
     super();
   }
 
   override updateTitle(routerState: RouterStateSnapshot) {
     const title = this.buildTitle(routerState);
-    if (title !== undefined) {
-      this.title.setTitle(`${ process.env['APP_NAME'] } - ${ title }`);
-    } else {
-      this.title.setTitle(`${ process.env['APP_NAME'] }`);
-    }
+    this.appService.setTitle(title);
   }
 }
 

@@ -39,19 +39,34 @@
 
 form {
   .p-card {
-    .p-card-content {
-      padding-top: 1rem !important;
-      padding-bottom: 0 !important;
+    .p-card-body {
 
-      h5 {
-        margin: 2rem 0 1rem;
-        font-weight: bold;
-      }
+      .p-card-content {
+        padding-top: 1rem !important;
+        padding-bottom: 0 !important;
 
-      .field {
-        div.p-error {
-          padding-left: 1rem;
-          padding-right: 1rem;
+        h5 {
+          margin: 2rem 0 1rem;
+          font-weight: bold;
+        }
+
+        .field-row {
+          .inline-label {
+            display: block;
+
+            padding: 0.75rem;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+          }
+
+          .p-error {
+            padding: 0.5rem 1rem;
+            font-size: smaller;
+          }
+        }
+
+        .field-row + .field-row.field-float {
+          margin-top: 2rem;
         }
       }
     }

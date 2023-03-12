@@ -10181,6 +10181,13 @@ netlify@^11.0.1:
     p-wait-for "^4.0.0"
     qs "^6.9.6"
 
+ngx-valdemort@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-valdemort/-/ngx-valdemort-9.0.0.tgz#406eaf425dadec6bd1175afac9ff17871e41691e"
+  integrity sha512-LMVgdyv4yPDJ1FHTQqPX4riUXdrHfNgn1pgteV1gFsP4mbO5pyHv2a+EKl9gTKa76ZmIz3LvWtHIK7Gar3m7Eg==
+  dependencies:
+    tslib "2.4.1"
+
 nice-napi@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/nice-napi/-/nice-napi-1.0.2.tgz#dc0ab5a1eac20ce548802fc5686eaa6bc654927b"
@@ -13217,6 +13224,11 @@ tsconfig-paths@^4.1.0:
     json5 "^2.2.2"
     minimist "^1.2.6"
     strip-bom "^3.0.0"
+
+tslib@2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.1.tgz#0d0bfbaac2880b91e22df0768e55be9753a5b17e"
+  integrity sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==
 
 tslib@2.5.0, tslib@^2.1.0, tslib@^2.3.0:
   version "2.5.0"

@@ -1,6 +1,5 @@
-import { DatabaseError, DocumentNotFoundError, EmptyDocumentError, QuotaExceededError } from '@errors';
+import { DatabaseError, DocumentNotFoundError, QuotaExceededError } from '@errors';
 import { FirestoreDataConverter } from '@firebase/firestore';
-import { DocumentInterface } from '@models';
 import { LoggerService } from '@services';
 import { generatePushID, slugify } from '@tools';
 import {
@@ -19,16 +18,22 @@ import {
 } from 'firebase/firestore';
 import { DocumentModel } from '@app/models/document.model';
 import { objectConverter } from '@app/converters/object.converter';
+import { DocumentBackInterface } from '@models';
+import { EmptyDocumentIdError } from '@app/errors/empty-document-id.error';
+import { HasIdInterface, HasIdWithInterface } from '@app/models/id.interface';
 
 
-export abstract class FirestoreService<T extends DocumentInterface, U extends DocumentModel> {
+export abstract class FirestoreService<
+  B extends DocumentBackInterface,
+  M extends DocumentModel
+> {
   private readonly ref: CollectionReference;
 
   protected constructor(
     private loggerService: LoggerService,
     private collectionName: string,
-    protected type: (new (data: T) => U),
-    private converter: FirestoreDataConverter<T> = objectConverter<T>(),
+    protected type: (new (data: HasIdWithInterface<B>) => M),
+    private converter: FirestoreDataConverter<B> = objectConverter<B>(),
   ) {
     this.ref = collection(getFirestore(), collectionName);
   }
@@ -43,100 +48,120 @@ export abstract class FirestoreService<T extends DocumentInterface, U extends Do
     let dataObjectDocument = null;
     try {
       dataObjectDocument = await this.findOneBySlug(slug);
-    } catch (e) {
-      if (e instanceof DocumentNotFoundError) {
+    } catch (error) {
+      if (error instanceof DocumentNotFoundError) {
         return false;
       }
     }
     return !!dataObjectDocument;
   }
 
-  public async findOneById(id: string): Promise<T> {
+  public async findOneById(id: string): Promise<HasIdWithInterface<B>> {
     let docSnapshot;
     try {
       const ref = doc(this.ref, id).withConverter(this.converter);
       docSnapshot = await getDoc(ref);
     } catch (error) {
-      this.loggerService.error(new DatabaseError((error as Error).message, { id }));
+      this.loggerService.error(new DatabaseError(
+        this.collectionName,
+        (error as Error).message,
+        { id }
+      ));
     }
 
     if (!docSnapshot) {
-      throw new DocumentNotFoundError<T>(this.collectionName);
+      throw new DocumentNotFoundError(this.collectionName);
     }
 
     const document = docSnapshot.data();
 
     if (!document) {
-      throw new DocumentNotFoundError<T>(this.collectionName);
+      throw new DocumentNotFoundError(this.collectionName);
     }
-    document.id = docSnapshot.id;
 
-    return document;
+    return {
+      id: docSnapshot.id,
+      ...document
+    };
   }
 
-  public async findOneBy(property: string, value: string): Promise<T> {
-    let list: T[] = [];
+  public async findOneBy(property: string, value: string): Promise<HasIdWithInterface<B>> {
+    let list: HasIdWithInterface<B>[] = [];
 
     try {
       list = await this.queryList(where(property, '==', value));
-    } catch (e) {
-      this.loggerService.error(new DatabaseError((e as Error).message, { [property]: value }));
+    } catch (error) {
+      this.loggerService.error(new DatabaseError(
+        this.collectionName,
+        (error as Error).message,
+        { [property]: value }
+      ));
     }
 
     if (list.length === 0) {
-      throw new DocumentNotFoundError<T>(this.collectionName);
+      throw new DocumentNotFoundError(this.collectionName);
     }
     return list[0];
   }
 
-  public async findOneBySlug(slug: string): Promise<T> {
+  public async findOneBySlug(slug: string): Promise<HasIdWithInterface<B>> {
     return this.findOneBy('slug', slug);
   }
 
-  public async addOne(document: T): Promise<T> {
+  public async addOne(document: M): Promise<HasIdWithInterface<B>> {
     const id = generatePushID();
-    this.updateSlug(document);
 
     try {
       const ref = doc(this.ref, id).withConverter(this.converter);
-      await setDoc(ref, document);
+      await setDoc(ref, document.toFirestore());
     } catch (error) {
-      this.loggerService.error(new DatabaseError((error as Error).message, document));
+      this.loggerService.error(new DatabaseError(
+        this.collectionName,
+        (error as Error).message,
+        document
+      ));
     }
     return await this.findOneById(id);
   }
 
-  public async updateOne(document: T): Promise<T> {
+  public async updateOne(document: M): Promise<HasIdWithInterface<B>> {
     if (!document.id) {
-      throw new DocumentNotFoundError<T>(this.collectionName, document);
+      throw new EmptyDocumentIdError(this.collectionName, document);
     }
-    this.updateSlug(document);
 
     try {
       const ref = doc(this.ref, document.id).withConverter(this.converter);
-      await setDoc(ref, document);
+      await setDoc(ref, document.toFirestore());
     } catch (error) {
-      this.loggerService.error(new DatabaseError((error as Error).message, document));
+      this.loggerService.error(new DatabaseError(
+        this.collectionName,
+        (error as Error).message,
+        document
+      ));
     }
     return await this.findOneById(document.id);
   }
 
-  public async removeOne(document: T): Promise<void> {
+  public async removeOne(document: HasIdInterface): Promise<void> {
     if (!document.id) {
-      throw new DocumentNotFoundError<T>(this.collectionName, document);
+      throw new EmptyDocumentIdError(this.collectionName, document);
     }
 
     try {
       const ref = doc(this.ref, document.id).withConverter(this.converter);
       await deleteDoc(ref);
     } catch (error) {
-      this.loggerService.error(new DatabaseError((error as Error).message, document));
+      this.loggerService.error(new DatabaseError(
+        this.collectionName,
+        (error as Error).message,
+        document
+      ));
     }
   }
 
-  async getAll(orderByColumn = 'name'): Promise<U[]> {
+  async getAll(orderByColumn = 'name'): Promise<M[]> {
     const documents = await this.queryList(orderBy(orderByColumn));
-    return documents.map((document: T) => new this.type(document));
+    return documents.map((document: HasIdWithInterface<B>) => new this.type(document));
   }
 
   /**
@@ -144,23 +169,24 @@ export abstract class FirestoreService<T extends DocumentInterface, U extends Do
    * @param queryConstraints
    * @private
    */
-  protected async queryList(...queryConstraints: QueryConstraint[]): Promise<T[]> {
+  protected async queryList(...queryConstraints: QueryConstraint[]): Promise<HasIdWithInterface<B>[]> {
     const q = query(this.ref, ...queryConstraints).withConverter(this.converter);
-    const documents: T[] = [];
+    const documents: HasIdWithInterface<B>[] = [];
 
     try {
       const querySnapshot = await getDocs(q);
 
-      querySnapshot.forEach((doc) => {
-        const document = doc.data();
-        document.id = doc.id;
-        documents.push(document);
+      querySnapshot.forEach((docSnapshot) => {
+        documents.push({
+          id: docSnapshot.id,
+          ...docSnapshot.data()
+        });
       });
 
     } catch (e) {
-      const er = e as Error;
+      const error = e as Error;
 
-      if (er.message === 'Quota exceeded.') {
+      if (error.message === 'Quota exceeded.') {
         this.loggerService.error(new QuotaExceededError());
       } else {
         throw e;
@@ -170,11 +196,5 @@ export abstract class FirestoreService<T extends DocumentInterface, U extends Do
     return documents;
   }
 
-  private updateSlug(document: T) {
-    if (!document.name) {
-      throw new EmptyDocumentError(this.collectionName);
-    }
 
-    document.slug = slugify(document.name);
-  }
 }

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { DeviceInterface, DocumentInterface } from '@models';
+import { DeviceStoredInterface } from '@models';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { AddDevice, FillDevices, RemoveDevice, UpdateDevice } from '@app/stores/device.action';
+import { AddDevice, FillDevices, InvalideDevices, RemoveDevice, UpdateDevice } from '@app/stores/device.action';
 import { append, patch, removeItem, updateItem } from '@ngxs/store/operators';
 
 export interface DeviceStateInterface {
-  all: DeviceInterface[];
+  all: DeviceStoredInterface[];
   lastUpdated: Date | null;
 }
 
@@ -24,7 +24,7 @@ export class DeviceState {
   }
 
   @Selector()
-  static all(state: DeviceStateInterface): DeviceInterface[] {
+  static all(state: DeviceStateInterface): DeviceStoredInterface[] {
     return state.all;
   }
 
@@ -36,6 +36,16 @@ export class DeviceState {
     patchState({
       all: payload,
       lastUpdated: new Date()
+    });
+  }
+
+  @Action(InvalideDevices)
+  invalidate({
+               patchState
+             }: StateContext<DeviceStateInterface>, {}: FillDevices) {
+    patchState({
+      all: [],
+      lastUpdated: null
     });
   }
 
@@ -52,7 +62,7 @@ export class DeviceState {
   remove({ setState }: StateContext<DeviceStateInterface>, { payload }: RemoveDevice) {
     setState(
       patch({
-        all: removeItem<DocumentInterface>((item?: DocumentInterface) => item?.id === payload.id)
+        all: removeItem<DeviceStoredInterface>((item?: DeviceStoredInterface) => item?.id === payload.id)
       })
     );
   }
@@ -65,7 +75,7 @@ export class DeviceState {
          }: StateContext<DeviceStateInterface>, { payload }: UpdateDevice) {
     setState(
       patch({
-        all: updateItem<DocumentInterface>((item?: DocumentInterface) => item?.id === payload.id, payload)
+        all: updateItem<DeviceStoredInterface>((item?: DeviceStoredInterface) => item?.id === payload.id, payload)
       })
     );
   }

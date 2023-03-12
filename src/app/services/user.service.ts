@@ -1,7 +1,7 @@
 import { UserInterface } from '@app/models/user.interface';
 import { BehaviorSubject, filter, map, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
 import { FirestoreService } from '@app/services/firestore.service';
 import { LoggerService } from '@app/services/logger.service';
 import { InvalidEmailError, OfflineError, TooManyRequestError, WrongApiKeyError, WrongPasswordError } from '@errors';
@@ -12,7 +12,7 @@ import { UserModel } from '@models';
   providedIn: 'root'
 })
 export class UserService extends FirestoreService<UserInterface, UserModel> {
-  private _auth = getAuth();
+  private auth = getAuth();
   private _isLoggedIn: BehaviorSubject<boolean | null>;
   private _user: UserModel | null = null;
   private _token: string = '';
@@ -21,21 +21,11 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
     super(logger, 'user', UserModel);
     this._isLoggedIn = new BehaviorSubject<boolean | null>(null);
 
-    onAuthStateChanged(this._auth, (userFirebase) => {
+    onAuthStateChanged(this.auth, (userFirebase) => {
       if (!userFirebase) {
         this._isLoggedIn.next(false);
       } else {
-        this.findOneById(userFirebase.uid).then((dataUser) => {
-          if (!dataUser) {
-            this._isLoggedIn.next(false);
-            // @TODO Create custom error
-            throw new Error();
-          }
-
-          this._user = new UserModel(dataUser);
-          this._token = dataUser.token;
-          this._isLoggedIn.next(true);
-        });
+        this.getUser(userFirebase);
       }
     });
   }
@@ -61,28 +51,44 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
   }
 
   login(email: string, password: string): Promise<void> {
-    return signInWithEmailAndPassword(this._auth, email, password)
-      .then(() => {
-        return;
+    return signInWithEmailAndPassword(this.auth, email, password)
+      .then((userCredential) => {
+        return this.getUser(userCredential.user);
       })
       .catch((error) => {
-        if (error.code === '_auth/invalid-email') {
+        if (error.code === 'auth/invalid-email') {
           throw new InvalidEmailError();
-        } else if (error.code === '_auth/wrong-password' || error.code === '_auth/_user-not-found') {
+        } else if (error.code === 'auth/wrong-password' || error.code === 'auth/_user-not-found') {
           throw new WrongPasswordError();
-        } else if (error.code === '_auth/too-many-requests') {
+        } else if (error.code === 'auth/too-many-requests') {
           throw new TooManyRequestError();
-        } else if (error.code === '_auth/api-key-not-valid.-please-pass-a-valid-api-key.') {
+        } else if (error.code === 'auth/api-key-not-valid.-please-pass-a-valid-api-key.') {
           throw new WrongApiKeyError();
-        } else if (error.code === '_auth/network-request-failed') {
+        } else if (error.code === 'auth/network-request-failed') {
           throw new OfflineError();
         } else {
-          console.error('Unknown error code', error.code);
+          console.error($localize`Unknown error code`, `"${ error.code }"`);
         }
       });
   }
 
   async logout(): Promise<void> {
-    return signOut(this._auth);
+    this._user = null;
+    this._isLoggedIn.next(false);
+    return signOut(this.auth);
+  }
+
+  private getUser(userFirebase: User) {
+    return this.findOneById(userFirebase.uid).then((dataUser) => {
+      if (!dataUser) {
+        this._isLoggedIn.next(false);
+        // @TODO Create custom error
+        throw new Error();
+      }
+
+      this._user = new UserModel(dataUser);
+      this._token = dataUser.token;
+      this._isLoggedIn.next(true);
+    });
   }
 }

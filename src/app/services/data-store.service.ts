@@ -1,32 +1,44 @@
 import { FirestoreService } from '@app/services/firestore.service';
-import { DocumentInterface, DocumentModel } from '@models';
+import { DocumentModel, DocumentStoredInterface } from '@models';
 import { LoggerService } from '@services';
 import { first, Observable } from 'rxjs';
 import { ArrayHelper, TimeHelper } from '@tools';
 import { orderBy } from 'firebase/firestore';
 import { Store } from '@ngxs/store';
 import { DocumentNotFoundError } from '@errors';
-import { AddDocument, FillDocuments, RemoveDocument, UpdateDocument } from '@app/stores/document.action';
+import {
+  AddDocument,
+  FillDocuments,
+  InvalideDocuments,
+  RemoveDocument,
+  UpdateDocument
+} from '@app/stores/document.action';
+import { HasIdWithInterface } from '@app/models/id.interface';
 
-export abstract class DataStoreService<T extends DocumentInterface, U extends DocumentModel> extends FirestoreService<T, U> {
+export abstract class DataStoreService<
+  S extends DocumentStoredInterface,
+  M extends DocumentModel
+> extends FirestoreService<S, M> {
+
   // Heritage du selecteur du store
   protected lastUpdated$?: Observable<Date>;
   // Heritage du selecteur du store
-  protected all$?: Observable<T[]>;
+  protected all$?: Observable<S[]>;
   // Données du service
-  protected all: U[] = [];
+  protected all: M[] = [];
   protected lastUpdated?: Date;
   protected maxHourOutdated = 24;
   protected loaded: boolean = false;
 
   protected constructor(loggerService: LoggerService,
                         collectionName: string,
-                        type: (new (data: T) => U),
+                        type: (new (data: S) => M),
                         protected store: Store,
-                        protected addAction: (new (payload: T) => AddDocument<T>),
-                        protected updateAction: (new (payload: T) => UpdateDocument<T>),
-                        protected removeAction: (new (payload: T) => RemoveDocument<T>),
-                        protected fillAction: (new (payload: T[]) => FillDocuments<T>),
+                        protected addAction: (new (payload: S) => AddDocument<S>),
+                        protected updateAction: (new (payload: S) => UpdateDocument<S>),
+                        protected removeAction: (new (payload: HasIdWithInterface<S>) => RemoveDocument<S>),
+                        protected fillAction: (new (payload: S[]) => FillDocuments<S>),
+                        protected invalideAction: (new () => InvalideDocuments<S>),
   ) {
     super(loggerService, collectionName, type);
     this.initLastUpdated();
@@ -38,7 +50,7 @@ export abstract class DataStoreService<T extends DocumentInterface, U extends Do
     });
   }
 
-  getAll$(): Observable<T[]> | undefined {
+  getAll$(): Observable<S[]> | undefined {
     return this.all$;
   }
 
@@ -54,8 +66,8 @@ export abstract class DataStoreService<T extends DocumentInterface, U extends Do
     return nbHours >= this.maxHourOutdated;
   }
 
-  async getListOrRefresh(): Promise<U[]> {
-    return new Promise<U[]>(async resolve => {
+  async getListOrRefresh(): Promise<M[]> {
+    return new Promise<M[]>(async resolve => {
       // Si les données ont déjà été chargé dans le service
       if (this.loaded) {
         resolve(this.all);
@@ -80,40 +92,43 @@ export abstract class DataStoreService<T extends DocumentInterface, U extends Do
     });
   }
 
-  refreshList(documents: T[]): U[] {
+  refreshList(documents: S[]): M[] {
     this.all = [];
     for (const document of documents) {
       this.all.push(new this.type(document));
     }
-    this.all = ArrayHelper.sortBy<U>(this.all, 'slug');
+    this.all = ArrayHelper.sortBy<M>(this.all, 'slug');
     return this.all;
   }
 
-  async search(query: string): Promise<U[]> {
+  async search(query: string): Promise<M[]> {
     const documents = await this.getListOrRefresh();
-    return documents.filter((document: U) => {
+    return documents.filter((document: M) => {
       return document.nameContain(query);
     });
   }
 
-  async add(document: T): Promise<T | undefined> {
+  async add(document: M): Promise<S> {
     const documentStored = await super.addOne(document);
+    this.invalidLocalData();
     return await this.addToStore(documentStored);
   }
 
-  async addToStore(documentStored: T): Promise<T> {
+  async addToStore(documentStored: S): Promise<S> {
     this.store.dispatch(new this.addAction(documentStored));
     return documentStored;
   }
 
-  async update(document: T): Promise<T | undefined> {
+  async update(document: M): Promise<S> {
     const documentStored = await super.updateOne(document);
+    this.invalidLocalData();
     this.store.dispatch(new this.updateAction(documentStored));
     return documentStored;
   }
 
-  async remove(document: T): Promise<void> {
+  async remove(document: HasIdWithInterface<S>): Promise<void> {
     await super.removeOne(document);
+    this.invalidLocalData();
     this.store.dispatch(new this.removeAction(document));
   }
 
@@ -125,18 +140,22 @@ export abstract class DataStoreService<T extends DocumentInterface, U extends Do
     return this.getBy('slug', slug, forceRefresh)
   }
 
+  async invalidStoredData() {
+    this.store.dispatch(new this.invalideAction());
+  }
+
   /** La variable "all" n'est plus à jour et doit être rechargé */
   protected invalidLocalData() {
     this.loaded = false;
   }
 
-  private async getBy(property: 'id' | 'slug', value: string, forceRefresh = false): Promise<U | undefined> {
+  private async getBy(property: 'id' | 'slug', value: string, forceRefresh = false): Promise<M | undefined> {
     if (!value) {
       return undefined;
     }
 
     const documents = await this.getListOrRefresh();
-    const document = documents.find((document: U) => {
+    const document = documents.find((document: M) => {
       return document[property] === value;
     })!;
 

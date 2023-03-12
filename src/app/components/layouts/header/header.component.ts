@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { Title } from '@angular/platform-browser';
-import { UserService } from '@services';
+import { DeviceService, UserService } from '@services';
 import { MenuItem } from 'primeng/api';
-import { LogoutMenuItem, MenuItems } from './menuItems.data';
+import { DataModelMenuItems, LogoutMenuItem, MenuItems } from './menuItems.data';
 
 @Component({
   selector: 'app-header',
@@ -13,28 +13,64 @@ import { LogoutMenuItem, MenuItems } from './menuItems.data';
 })
 export class HeaderComponent implements OnInit {
   loading = true;
+  logged = false;
   title$: Observable<string>;
   menuItems: MenuItem[] = MenuItems;
+  services: Record<string, any> = {}
 
   constructor(
     titleService: Title,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private deviceService: DeviceService,
   ) {
+    this.services['device'] = this.deviceService;
+
     this.title$ = router.events.pipe(
-      map(() => titleService.getTitle().replace('-', '/'))
+      map(() => titleService.getTitle().replaceAll('-', '/'))
     );
+
+    DataModelMenuItems.forEach((menuItem) => {
+      this.menuItems.push({
+        ...menuItem, items: [
+          {
+            label: $localize`List`,
+            icon: 'pi pi-list',
+            routerLink: menuItem.listRouterLink,
+          },
+          {
+            label: $localize`Add`,
+            icon: 'pi pi-plus',
+            routerLink: menuItem.addRouterLink,
+          },
+          {
+            label: $localize`Invalid store`,
+            icon: 'pi pi-refresh',
+            command: () => {
+              this.services[menuItem.service].invalidStoredData();
+              window.location.reload();
+            }
+          }
+        ],
+      });
+    })
+
+    this.menuItems.push({
+      separator: true
+    });
 
     this.menuItems.push({
       ...LogoutMenuItem, command: () => {
-        this.userService.logout().then(() => {
-          void this.router.navigate([ '/' ]);
+        this.userService.logout().then(async () => {
+          await this.userService.logout();
+          void this.router.navigate([ '../login' ]);
         });
       }
     });
 
     this.userService.isLoggedIn().subscribe((logged) => {
-      this.loading = !logged;
+      this.logged = logged;
+      this.loading = false;
     });
   }
 

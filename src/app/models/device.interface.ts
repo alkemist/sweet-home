@@ -1,24 +1,23 @@
-import { DocumentInterface } from '@app/models/document.interface';
+import { DocumentBackInterface, DocumentFrontInterface } from '@app/models/document.interface';
+import { CoordinateInterface } from '@app/models/coordinate.interface';
+import { DeviceTypeEnum } from '@app/models/device-type.enum';
+import { DeviceCategoryEnum } from '@app/models/device-category.enum';
+import { KeyValue } from '@angular/common';
+import { HasIdWithInterface } from '@app/models/id.interface';
 
-export interface Coordinate {
-  x: number,
-  y: number
+
+export interface DeviceBackInterface extends DocumentBackInterface {
+  position?: CoordinateInterface,
+  category?: DeviceCategoryEnum | null,
+  type?: DeviceTypeEnum | null,
+  commands?: Record<string, number>
 }
 
-export enum DeviceCategoryEnum {
-  Thermostat = 'thermostat',
-  Thermometer = 'thermometer',
-  OnOff = 'on-off'
+export interface DeviceFrontInterface extends DocumentFrontInterface {
+  position: CoordinateInterface,
+  category: DeviceCategoryEnum | null,
+  type: DeviceTypeEnum | null,
+  commands: KeyValue<string, number>[]
 }
 
-export enum DeviceTypeEnum {
-  ThermostatAqara = 'thermostat-aqara',
-  ThermostatMoes = 'thermostat-moes',
-  PlugLidle = 'plug-lidle'
-}
-
-export interface DeviceInterface extends DocumentInterface {
-  position: Coordinate,
-  category: DeviceCategoryEnum,
-  type: DeviceTypeEnum,
-}
+export type DeviceStoredInterface = HasIdWithInterface<DeviceBackInterface>;

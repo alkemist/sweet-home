@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule, SharingModule } from '@modules';
@@ -22,7 +21,6 @@ import { StoringModule } from '@app/modules/storing.module';
     AppRoutingModule,
     SharingModule,
     StoringModule,
-    CommonModule,
   ],
   providers: [],
   bootstrap: [ AppComponent ]

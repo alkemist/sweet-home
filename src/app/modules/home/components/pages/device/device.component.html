@@ -1,0 +1,130 @@
+<div class="page-container__content" id="device">
+  <form (submit)="handleSubmit()" [formGroup]="form" class="page-container__content__center">
+    <p-card>
+      <ng-template pTemplate="title">
+        <div class="flex flex-row align-items-center">
+          <a [routerLink]="['../']" class="p-button-rounded p-button-text"
+             icon="pi pi-angle-left" pButton
+             pRipple
+             type="button"></a>
+          <h5 *ngIf="this.device" class="text-center flex-grow-1">{{this.device.name}}</h5>
+          <h5 *ngIf="!this.device" class="text-center flex-grow-1" i18n>New device</h5>
+          <button class="p-button-rounded p-button-text"
+                  icon="" pButton
+                  pRipple
+                  type="button"></button>
+        </div>
+      </ng-template>
+
+      <div class="field-row field-float flex-column">
+        <div class="p-float-label flex">
+          <input class="flex-1" formControlName="name" id="name" pInputText type="text">
+          <label for="name" i18n>Name</label>
+        </div>
+        <val-errors class="p-error" controlName="name">
+          <ng-template valError="required">
+            <ng-container i18n>Name is required.</ng-container>
+          </ng-template>
+          <ng-template valError="exist">
+            <ng-container i18n>Device already exist.</ng-container>
+          </ng-template>
+        </val-errors>
+      </div>
+
+      <div class="field-row field-float flex flex-row gap-2">
+        <div class="flex-column flex-1">
+          <div class="p-float-label flex">
+            <p-dropdown [autoDisplayFirst]="false"
+                        [options]="deviceTypes" appendTo="body" class="flex-1"
+                        formControlName="type"
+                        i18n-placeholder
+                        inputId="type" optionValue="key" placeholder="Select a type"
+                        styleClass=""></p-dropdown>
+            <label for="name" i18n>Type</label>
+          </div>
+          <val-errors class="p-error" controlName="type">
+            <ng-template valError="required">
+              <ng-container i18n>Type is required.</ng-container>
+            </ng-template>
+          </val-errors>
+        </div>
+        <div class="flex-column flex-1">
+          <div class="p-float-label flex">
+            <p-dropdown [autoDisplayFirst]="false"
+                        [options]="deviceCategories" appendTo="body" class="flex-1"
+                        formControlName="category"
+                        i18n-placeholder
+                        inputId="category" optionValue="key" placeholder="Select a category"
+                        styleClass=""></p-dropdown>
+            <label for="name" i18n>Category</label>
+          </div>
+          <val-errors class="p-error" controlName="category">
+            <ng-template valError="required">
+              <ng-container i18n>Category is required.</ng-container>
+            </ng-template>
+          </val-errors>
+        </div>
+      </div>
+
+      <div [formGroup]="position" class="field-row flex flex-row gap-2">
+        <div class="flex-column flex-1">
+          <div class="flex flex-column">
+            <label class="inline-label" for="name" i18n>Position x</label>
+            <p-inputNumber [min]="0" [showButtons]="true" [step]="1" buttonLayout="horizontal"
+                           class="flex-1" decrementButtonClass="p-button-danger"
+                           decrementButtonIcon="pi pi-minus" formControlName="x"
+                           incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus"
+                           inputId="horizontal" suffix="px">
+            </p-inputNumber>
+          </div>
+          <val-errors class="p-error" controlName="x">
+            <ng-template valError="required">
+              <ng-container i18n>X position is required.</ng-container>
+            </ng-template>
+          </val-errors>
+        </div>
+        <div class="flex-column flex-1">
+          <div class="flex flex-column">
+            <label class="inline-label" for="name" i18n>Position y</label>
+            <p-inputNumber [min]="0" [showButtons]="true" [step]="1" buttonLayout="horizontal"
+                           class="flex-1" decrementButtonClass="p-button-danger"
+                           decrementButtonIcon="pi pi-minus" formControlName="y"
+                           incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus"
+                           inputId="horizontal" suffix="px">
+            </p-inputNumber>
+          </div>
+          <val-errors class="p-error" controlName="y">
+            <ng-template valError="required">
+              <ng-container i18n>Y position is required.</ng-container>
+            </ng-template>
+          </val-errors>
+        </div>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <div class="flex flex-row">
+          <button (click)="remove()" *ngIf="device" [disabled]="loading" class="p-button-danger hide-label-mobile"
+                  i18n-label
+                  icon="pi pi-trash"
+                  label="Delete" pButton pRipple
+                  type="button"></button>
+          <div class="flex-grow-1"></div>
+          <button *ngIf="device" [disabled]="loading" icon="pi pi-check" label="Update" pButton pRipple
+                  type="submit"></button>
+          <button *ngIf="!device" [disabled]="loading" icon="pi pi-check" label="Add" pButton pRipple
+                  type="submit"></button>
+        </div>
+      </ng-template>
+    </p-card>
+  </form>
+  <p-confirmDialog #cd header="Confirmation" i18n-header icon="pi pi-exclamation-triangle" key="device">
+    <p-footer>
+      <button (click)="cd.reject()" i18n-label icon="pi pi-times" label="No" pButton
+              pRipple
+              type="button"></button>
+      <button (click)="cd.accept()" class="p-button-danger" i18n-label icon="pi pi-check" label="Yes" pButton
+              pRipple
+              type="button"></button>
+    </p-footer>
+  </p-confirmDialog>
+</div>

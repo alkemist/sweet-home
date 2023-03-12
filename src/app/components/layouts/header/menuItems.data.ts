@@ -1,21 +1,28 @@
 import { MenuItem } from 'primeng/api';
 
+interface DataModelMenuItem extends MenuItem {
+  service: string,
+  addRouterLink: string[],
+  listRouterLink: string[],
+}
+
 export const MenuItems: MenuItem[] = [
   {
     label: $localize`Home`,
     icon: 'pi pi-home',
-    routerLink: [ '/home' ]
+    routerLink: [ '/home' ],
   },
   {
     separator: true
   },
+]
+
+export const DataModelMenuItems: DataModelMenuItem[] = [
   {
     label: $localize`Devices`,
-    icon: 'pi pi-list',
-    routerLink: [ '/home/devices' ]
-  },
-  {
-    separator: true
+    service: 'device',
+    addRouterLink: [ '/home/devices/add' ],
+    listRouterLink: [ '/home/devices' ],
   },
 ]
 

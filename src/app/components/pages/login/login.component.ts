@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '@services';
+import { UserFormInterface } from '@models';
 
 @Component({
   selector: 'app-login',
@@ -12,20 +13,18 @@ import { UserService } from '@services';
   }
 })
 export class LoginComponent implements OnInit {
-  form: FormGroup;
+  form = new FormGroup<UserFormInterface>({
+    email: new FormControl<string | null>('', [
+      Validators.required,
+      Validators.email,
+    ]),
+    password: new FormControl<string | null>('', [
+      Validators.required,
+    ]),
+  });
   error: string = '';
 
   constructor(private userService: UserService, private router: Router) {
-    this.form = new FormGroup({
-      email: new FormControl<string>('', [
-        Validators.required,
-        Validators.email,
-      ]),
-      password: new FormControl<string>('', [
-        Validators.required,
-      ]),
-    });
-
     if (process.env['APP_AUTO_LOGIN'] && process.env['APP_AUTO_PASSWORD']) {
       this.form.setValue({
         email: process.env['APP_AUTO_LOGIN'],
@@ -49,10 +48,10 @@ export class LoginComponent implements OnInit {
   async handleSubmit(): Promise<void> {
     this.form.markAllAsTouched();
 
-    if (this.form.valid) {
+    if (this.form.valid && this.form.value.email && this.form.value.password) {
       try {
         await this.userService.login(this.form.value.email, this.form.value.password);
-        await this.router.navigate([ '/', 'home' ]);
+        void this.router.navigate([ '../home' ]);
       } catch (error) {
         this.error = (error as Error).message;
       }

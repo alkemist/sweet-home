@@ -10,6 +10,11 @@ import { RippleModule } from 'primeng/ripple';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { TableModule } from 'primeng/table';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { ValdemortModule } from 'ngx-valdemort';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 const modules = [
   ToolbarModule,
@@ -21,7 +26,13 @@ const modules = [
   RippleModule,
   TieredMenuModule,
   TableModule,
-  MultiSelectModule
+  MultiSelectModule,
+  AutoCompleteModule,
+  DropdownModule,
+  InputNumberModule,
+  ConfirmDialogModule,
+
+  ValdemortModule,
 ];
 
 @NgModule({

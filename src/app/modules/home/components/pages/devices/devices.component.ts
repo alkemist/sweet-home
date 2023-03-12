@@ -14,17 +14,23 @@ import { DeviceCategoryEnum } from '@models';
 })
 export class DevicesComponent implements OnInit {
   devices: DeviceModel[] = [];
-  deviceCategories = EnumHelper.enumToObject(DeviceCategoryEnum);
+  deviceCategoriesArray;
+  deviceCategoriesObject;
   loading = true;
 
   constructor(
     private deviceService: DeviceService,
   ) {
+    this.deviceCategoriesArray = EnumHelper.enumToArray(DeviceCategoryEnum);
+    this.deviceCategoriesObject = EnumHelper.arrayToObject(this.deviceCategoriesArray);
   }
 
   async ngOnInit(): Promise<void> {
     this.deviceService.getListOrRefresh().then(devices => {
-      this.devices = devices;
+      this.devices = devices.map((device) => {
+        device.categoryLabel = this.deviceCategoriesObject[device.category];
+        return device;
+      });
       this.loading = false;
     });
   }

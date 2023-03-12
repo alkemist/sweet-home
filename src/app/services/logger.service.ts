@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoggedError } from '@errors';
+import { BaseError } from '@errors';
 import { default as StackdriverErrorReporter } from 'stackdriver-errors-js';
 
 @Injectable({
@@ -17,8 +17,8 @@ export class LoggerService {
     });
   }
 
-  error<T>(error: LoggedError<T>) {
-    if (process.env['APP_DEBUG']) {
+  error<T>(error: BaseError) {
+    if (!process.env['APP_DEBUG']) {
       this.errorHandler.report(error);
     } else {
       console.error(`-- Error [${ error.type }]`, error.message, error.context);
