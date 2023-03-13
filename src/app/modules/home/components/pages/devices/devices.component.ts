@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DeviceModel } from '@app/models/device.model';
 import { DeviceService } from '@app/services/device.service';
-import { DeviceCategoryEnum } from '@models';
+import { DeviceCategoryEnum, DeviceTypeEnum } from '@models';
 import { SmartArrayModel } from '@app/models/smart-array.model';
 
 @Component({
@@ -14,7 +14,8 @@ import { SmartArrayModel } from '@app/models/smart-array.model';
 })
 export class DevicesComponent implements OnInit {
   devices: DeviceModel[] = [];
-  deviceCategoriesIterable = new SmartArrayModel<string, string>(DeviceCategoryEnum, true);
+  deviceCategories = new SmartArrayModel<string, string>(DeviceCategoryEnum, true);
+  deviceTypes = new SmartArrayModel<string, string>(DeviceTypeEnum, true);
   loading = true;
 
   constructor(
@@ -25,7 +26,8 @@ export class DevicesComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.deviceService.getListOrRefresh().then(devices => {
       this.devices = devices.map((device) => {
-        device.categoryLabel = this.deviceCategoriesIterable.get(device.category);
+        device.categoryLabel = this.deviceCategories.get(device.category);
+        device.typeLabel = this.deviceTypes.get(device.type);
         return device;
       });
       this.loading = false;

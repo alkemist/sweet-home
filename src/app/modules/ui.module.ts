@@ -15,6 +15,8 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { BlockUIModule } from 'primeng/blockui';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 const modules = [
   ToolbarModule,
@@ -31,6 +33,8 @@ const modules = [
   DropdownModule,
   InputNumberModule,
   ConfirmDialogModule,
+  BlockUIModule,
+  ProgressSpinnerModule,
 
   ValdemortModule,
 ];

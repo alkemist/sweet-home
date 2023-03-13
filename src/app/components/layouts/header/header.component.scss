@@ -1,1 +1,28 @@
 @import "/src/assets/styles/variables";
+
+
+#topToolbar ::ng-deep .p-toolbar {
+  height: $header-desktop-height;
+
+  @media screen and (max-width: $mobile-breakpoint-width) {
+    height: $header-mobile-height;
+    padding: 0.5rem;
+  }
+
+  border-radius: 0;
+
+  .p-toolbar-group-left {
+    button {
+      margin-right: 10px;
+    }
+  }
+}
+
+.header__logo {
+  color: var(--text-color);
+  font-size: $font-size-m;
+
+  @media screen and (max-width: $mobile-breakpoint-width) {
+    font-size: $font-size-s;
+  }
+}

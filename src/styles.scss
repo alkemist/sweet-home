@@ -65,7 +65,7 @@ form {
           }
         }
 
-        .field-row + .field-row.field-float {
+        .field-float {
           margin-top: 2rem;
         }
       }
@@ -107,6 +107,10 @@ p-dropdown.ng-touched.p-invalid > div {
 
     .p-datatable-thead > tr > th {
       padding: 0.7rem 1rem;
+
+      & > .p-button {
+        display: flex;
+      }
     }
 
     .p-datatable-tbody > tr > td {

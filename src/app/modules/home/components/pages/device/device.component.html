@@ -1,6 +1,6 @@
 <div class="page-container__content" id="device">
   <form (submit)="handleSubmit()" [formGroup]="form" class="page-container__content__center">
-    <p-card>
+    <p-card #pnl>
       <ng-template pTemplate="title">
         <div class="flex flex-row align-items-center">
           <a [routerLink]="['../']" class="p-button-rounded p-button-text"
@@ -67,6 +67,7 @@
         </div>
       </div>
 
+      <h5 i18n>Position</h5>
       <div [formGroup]="position" class="field-row flex flex-row gap-2">
         <div class="flex-column flex-1">
           <div class="flex flex-column">
@@ -102,6 +103,38 @@
         </div>
       </div>
 
+      <h5 i18n>Commands</h5>
+      <div class="field-column field-float flex flex-column gap-2" formArrayName="commands">
+        <div *ngFor="let commandForm of commands.controls; let i = index" [formGroupName]="i"
+             class="flex field-row flex-row">
+          <div class="field flex-1">
+            <div class="p-float-label flex">
+              <input class="flex-1" formControlName="key" pInputText type="text">
+              <label i18n>Command name</label>
+            </div>
+            <val-errors class="p-error" controlName="key">
+              <ng-template valError="required">
+                <ng-container i18n>Command name is required.</ng-container>
+              </ng-template>
+            </val-errors>
+          </div>
+          <div class="flex-column flex-1">
+            <div class="p-float-label flex">
+              <input [min]="0" class="flex-1" formControlName="value" pInputText type="number">
+              <label i18n>Command id</label>
+            </div>
+            <val-errors class="p-error" controlName="value">
+              <ng-template valError="required">
+                <ng-container i18n>Command id is required.</ng-container>
+              </ng-template>
+            </val-errors>
+          </div>
+          <button (click)="removeCommand(i)" class="p-button-rounded p-button-text" icon="pi pi-minus"
+                  pButton pRipple
+                  type="button"></button>
+        </div>
+      </div>
+
       <ng-template pTemplate="footer">
         <div class="flex flex-row">
           <button (click)="remove()" *ngIf="device" [disabled]="loading" class="p-button-danger hide-label-mobile"
@@ -110,10 +143,15 @@
                   label="Delete" pButton pRipple
                   type="button"></button>
           <div class="flex-grow-1"></div>
-          <button *ngIf="device" [disabled]="loading" icon="pi pi-check" label="Update" pButton pRipple
-                  type="submit"></button>
-          <button *ngIf="!device" [disabled]="loading" icon="pi pi-check" label="Add" pButton pRipple
-                  type="submit"></button>
+          <div class="flex flex-row gap-3">
+            <button (click)="addCommand()" class="p-button-rounded p-button-text" icon="pi pi-plus"
+                    pButton pRipple
+                    type="button"></button>
+            <button *ngIf="device" icon="pi pi-check" label="Update" pButton pRipple
+                    type="submit"></button>
+            <button *ngIf="!device" icon="pi pi-check" label="Add" pButton pRipple
+                    type="submit"></button>
+          </div>
         </div>
       </ng-template>
     </p-card>
@@ -128,4 +166,7 @@
               type="button"></button>
     </p-footer>
   </p-confirmDialog>
+  <p-blockUI [blocked]="loading" [target]="pnl">
+    <p-progressSpinner></p-progressSpinner>
+  </p-blockUI>
 </div>

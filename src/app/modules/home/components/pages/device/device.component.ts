@@ -6,7 +6,6 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { DeviceService } from '@services';
 import {
   CoordinateFormInterface,
-  DeviceBackInterface,
   DeviceCategoryEnum,
   DeviceFormInterface,
   DeviceFrontInterface,
@@ -15,7 +14,6 @@ import {
   KeyValueFormInterface
 } from '@models';
 import { AppService } from '@app/services/app.service';
-import { HasIdWithInterface } from '@app/models/id.interface';
 import { SmartArrayModel } from '@app/models/smart-array.model';
 
 @Component({
@@ -63,6 +61,10 @@ export class DeviceComponent implements OnInit {
     return this.form.controls['position'];
   }
 
+  get commands() {
+    return this.form.controls['commands'];
+  }
+
   async ngOnInit(): Promise<void> {
     this.loadData();
   }
@@ -73,12 +75,26 @@ export class DeviceComponent implements OnInit {
         if (data && data['device']) {
           this.device = data['device'] as DeviceModel;
           this.appService.setSubTitle(this.device.name);
+
+          this.device.commands.forEach(() => this.addCommand());
           this.form.setValue(this.device.toForm())
         } else {
           this.appService.setSubTitle();
         }
+
+        if (this.commands.length === 0) {
+          this.addCommand();
+        }
+
         this.loading = false;
       }));
+  }
+
+  addCommand() {
+    this.commands.push(new FormGroup({
+      key: new FormControl<string | null>(null, [ Validators.required ]),
+      value: new FormControl<number | null>(null, [ Validators.required ]),
+    }))
   }
 
   async handleSubmit(): Promise<void> {
@@ -129,24 +145,24 @@ export class DeviceComponent implements OnInit {
   }
 
   async remove(): Promise<void> {
-    if (this.device) {
-      const device = this.device as HasIdWithInterface<DeviceBackInterface>;
-
-      this.confirmationService.confirm({
-        key: 'device',
-        message: $localize`Are you sure you want to delete it ?`,
-        accept: () => {
-          this.loading = true;
-          this.deviceService.remove(device).then(async () => {
-            this.loading = false;
-            this.messageService.add({
-              severity: 'success',
-              detail: $localize`Device deleted`
-            });
-            await this.routerService.navigate([ '../' ], { relativeTo: this.activatedRoute });
+    this.confirmationService.confirm({
+      key: 'device',
+      message: $localize`Are you sure you want to delete it ?`,
+      accept: () => {
+        this.loading = true;
+        this.deviceService.remove(this.device!).then(async () => {
+          this.loading = false;
+          this.messageService.add({
+            severity: 'success',
+            detail: $localize`Device deleted`
           });
-        }
-      });
-    }
+          await this.routerService.navigate([ '../' ], { relativeTo: this.activatedRoute });
+        });
+      }
+    });
+  }
+
+  removeCommand(i: number) {
+    this.commands.removeAt(i);
   }
 }

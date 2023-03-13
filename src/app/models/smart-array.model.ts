@@ -3,13 +3,20 @@ import { KeyValue } from '@angular/common';
 export class SmartArrayModel<K extends string | number, V extends string | number> extends Array<KeyValue<K, V>> {
   record: Map<K, V> = new Map<K, V>();
 
-  constructor(items: KeyValue<K, V>[] | Record<K, V> | Record<V, K> = [], swapKeyValue = true) {
-    super(...(Array.isArray(items) ? items : []));
+  constructor(items: KeyValue<K, V>[] | Record<K, V> | Record<V, K> = [], isEnum = false) {
+    super();
 
-    if (swapKeyValue) {
-      this.fromEnum(items as Record<V, K>);
+    if (Array.isArray(items)) {
+      items.forEach((item) => {
+        this.record.set(item.key, item.value);
+      })
+      this.push(...items);
     } else {
-      this.fromRecord(items as Record<K, V>);
+      if (isEnum) {
+        this.fromEnum(items as Record<V, K>);
+      } else {
+        this.fromRecord(items as Record<K, V>);
+      }
     }
   }
 
@@ -38,7 +45,7 @@ export class SmartArrayModel<K extends string | number, V extends string | numbe
     );
   }
 
-  private fromEnum(enumValue: Record<V, K>) {
+  fromEnum(enumValue: Record<V, K>) {
     const keys = Object.keys(enumValue) as V[];
     this.record = new Map<K, V>();
 

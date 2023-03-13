@@ -6,6 +6,7 @@ import {
   RemoveDocument,
   UpdateDocument
 } from '@app/stores/document.action';
+import { HasIdInterface } from '@app/models/id.interface';
 
 export class AddDevice extends AddDocument<DeviceStoredInterface> {
   static override readonly type: string = '[Device] Add';
@@ -23,10 +24,10 @@ export class UpdateDevice extends UpdateDocument<DeviceStoredInterface> {
   }
 }
 
-export class RemoveDevice extends RemoveDocument<DeviceStoredInterface> {
+export class RemoveDevice extends RemoveDocument<HasIdInterface> {
   static override readonly type: string = '[Device] Remove';
 
-  constructor(payload: DeviceStoredInterface) {
+  constructor(payload: HasIdInterface) {
     super(payload);
   }
 }

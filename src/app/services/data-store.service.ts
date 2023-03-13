@@ -13,7 +13,7 @@ import {
   RemoveDocument,
   UpdateDocument
 } from '@app/stores/document.action';
-import { HasIdWithInterface } from '@app/models/id.interface';
+import { HasIdInterface, HasIdWithInterface } from '@app/models/id.interface';
 
 export abstract class DataStoreService<
   S extends DocumentStoredInterface,
@@ -36,7 +36,7 @@ export abstract class DataStoreService<
                         protected store: Store,
                         protected addAction: (new (payload: S) => AddDocument<S>),
                         protected updateAction: (new (payload: S) => UpdateDocument<S>),
-                        protected removeAction: (new (payload: HasIdWithInterface<S>) => RemoveDocument<S>),
+                        protected removeAction: (new (payload: HasIdInterface) => RemoveDocument<HasIdInterface>),
                         protected fillAction: (new (payload: S[]) => FillDocuments<S>),
                         protected invalideAction: (new () => InvalideDocuments<S>),
   ) {
@@ -126,7 +126,7 @@ export abstract class DataStoreService<
     return documentStored;
   }
 
-  async remove(document: HasIdWithInterface<S>): Promise<void> {
+  async remove(document: HasIdWithInterface<M>): Promise<void> {
     await super.removeOne(document);
     this.invalidLocalData();
     this.store.dispatch(new this.removeAction(document));

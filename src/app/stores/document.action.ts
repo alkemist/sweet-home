@@ -1,4 +1,5 @@
 import { DocumentStoredInterface } from '@models';
+import { HasIdInterface } from '@app/models/id.interface';
 
 export abstract class AddDocument<S extends DocumentStoredInterface> {
   static readonly type: string = `[Document] Add`;
@@ -14,7 +15,7 @@ export abstract class UpdateDocument<S extends DocumentStoredInterface> {
   }
 }
 
-export abstract class RemoveDocument<S extends DocumentStoredInterface> {
+export abstract class RemoveDocument<S extends HasIdInterface> {
   static readonly type: string = `[Document] Remove`;
 
   protected constructor(public payload: S) {
