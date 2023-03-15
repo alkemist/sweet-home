@@ -4,7 +4,6 @@ import { HomeRoutingModule } from '@app/modules/home/home-routing.module';
 import { MapComponent } from '@app/modules/home/components/pages/map/map.component';
 import { DevicesComponent } from '@app/modules/home/components/pages/devices/devices.component';
 import { DeviceComponent } from '@app/modules/home/components/pages/device/device.component';
-import { NgForOf } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -15,7 +14,6 @@ import { NgForOf } from '@angular/common';
   imports: [
     HomeRoutingModule,
     SharingModule,
-    NgForOf,
   ]
 })
 export class HomeModule {

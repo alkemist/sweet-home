@@ -1,7 +1,6 @@
 import { DocumentModel } from './document.model';
 import { CoordinateInterface } from './coordinate.interface';
-import { DeviceTypeEnum } from './device-type.enum';
-import { DeviceCategoryEnum } from './device-category.enum';
+import { DeviceCategoryEnum, DeviceTypeEnum } from './device.enum';
 import { DeviceBackInterface, DeviceFrontInterface, DeviceStoredInterface } from './device.interface';
 import { slugify } from '@tools';
 import { SmartArrayModel } from '@app/models/smart-array.model';
@@ -12,10 +11,17 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
 
   constructor(device: DeviceStoredInterface) {
     super(device);
-    this._position = device.position ?? { x: null, y: null };
+    this._objectId = device.objectId ?? null;
     this._category = device.category ?? null;
     this._type = device.type ?? null;
     this._commands = new SmartArrayModel<string, number>(device.commands);
+    this._position = device.position ?? { x: null, y: null };
+  }
+
+  protected _objectId: number | null;
+
+  get objectId(): number | null {
+    return this._objectId;
   }
 
   protected _commands: SmartArrayModel<string, number>;
@@ -60,6 +66,7 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
     const deviceData: DeviceStoredInterface = {
       id: formData.id,
       name: formData.name,
+      objectId: formData.objectId,
       slug: slugify(formData.name),
       category: formData.category,
       type: formData.type,
@@ -73,6 +80,7 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
   override toFirestore(): DeviceBackInterface {
     return {
       ...super.toFirestore(),
+      objectId: this._objectId,
       position: this._position,
       category: this._category,
       type: this._type,
@@ -83,6 +91,7 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
   override toForm(): DeviceFrontInterface {
     return {
       ...super.toForm(),
+      objectId: this._objectId,
       position: this._position,
       category: this._category,
       type: this._type,

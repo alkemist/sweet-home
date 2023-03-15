@@ -11,10 +11,12 @@ import {
   DeviceFrontInterface,
   DeviceModel,
   DeviceTypeEnum,
-  KeyValueFormInterface
+  KeyValueFormInterface,
+  TypesByCategory
 } from '@models';
 import { AppService } from '@app/services/app.service';
 import { SmartArrayModel } from '@app/models/smart-array.model';
+import { KeyValue } from '@angular/common';
 
 @Component({
   selector: 'app-device',
@@ -28,9 +30,11 @@ export class DeviceComponent implements OnInit {
   device: DeviceModel | null = null;
   deviceCategoriesIterable = new SmartArrayModel<string, string>(DeviceCategoryEnum, true);
   deviceTypesIterable = new SmartArrayModel<string, string>(DeviceTypeEnum, true);
+  deviceTypes: KeyValue<string, string>[] = [];
 
   form: FormGroup<DeviceFormInterface> = new FormGroup<DeviceFormInterface>({
     id: new FormControl<string | null | undefined>(''),
+    objectId: new FormControl<number | null>(null, [ Validators.required ]),
     name: new FormControl<string>('', [ Validators.required ]),
     category: new FormControl<DeviceCategoryEnum | null>(null, [ Validators.required ]),
     type: new FormControl<DeviceTypeEnum | null>(null, [ Validators.required ]),
@@ -51,10 +55,28 @@ export class DeviceComponent implements OnInit {
     private messageService: MessageService,
     private appService: AppService
   ) {
+    this.category.valueChanges.subscribe((category) => {
+      if (category !== null) {
+        this.deviceTypes = TypesByCategory[category].map((key) => {
+          return {
+            key,
+            value: this.deviceTypesIterable.get(key)
+          } as KeyValue<string, string>;
+        })
+      }
+    })
   }
 
   get name() {
     return this.form.controls['name'];
+  }
+
+  get category() {
+    return this.form.controls['category'];
+  }
+
+  get type() {
+    return this.form.controls['type'];
   }
 
   get position() {
@@ -80,10 +102,6 @@ export class DeviceComponent implements OnInit {
           this.form.setValue(this.device.toForm())
         } else {
           this.appService.setSubTitle();
-        }
-
-        if (this.commands.length === 0) {
-          this.addCommand();
         }
 
         this.loading = false;
