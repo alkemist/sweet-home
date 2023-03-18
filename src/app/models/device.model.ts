@@ -3,8 +3,8 @@ import { CoordinateInterface } from './coordinate.interface';
 import { DeviceCategoryEnum, DeviceTypeEnum } from './device.enum';
 import { DeviceBackInterface, DeviceFrontInterface, DeviceStoredInterface } from './device.interface';
 import { slugify } from '@tools';
-import { SmartArrayModel } from '@app/models/smart-array.model';
-import { HasIdInterface } from '@app/models/id.interface';
+import { HasIdInterface } from './id.interface';
+import { SmartArrayModel } from './smart-array.model';
 
 export class DeviceModel extends DocumentModel implements HasIdInterface {
   protected _position: CoordinateInterface;

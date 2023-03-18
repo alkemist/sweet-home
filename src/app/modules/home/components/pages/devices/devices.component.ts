@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { DeviceModel } from '@app/models/device.model';
-import { DeviceService } from '@app/services/device.service';
-import { DeviceCategoryEnum, DeviceTypeEnum } from '@models';
-import { SmartArrayModel } from '@app/models/smart-array.model';
+import { DeviceCategoryEnum, DeviceModel, DeviceTypeEnum, SmartArrayModel } from '@models';
+import { DeviceService } from '@services';
+
 
 @Component({
   selector: 'app-devices',

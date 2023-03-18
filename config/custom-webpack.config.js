@@ -2,6 +2,7 @@ const {EnvironmentPlugin} = require('webpack');
 require('dotenv').config();
 
 module.exports = {
+  cache: false,
   plugins: [
     new EnvironmentPlugin([
       'APP_NAME',

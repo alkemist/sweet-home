@@ -1,26 +1,26 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-
 import { AppComponent } from './app.component';
-import { AppRoutingModule, SharingModule } from '@modules';
 import { HeaderComponent, LoginComponent } from '@components';
 
 import './app.database';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { StoringModule } from '@app/modules/storing.module';
+import { AppRoutingModule } from './modules/app-routing.module';
+import { StoringModule } from './modules/storing.module';
+import { SharingModule } from './modules/sharing.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    HeaderComponent
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    SharingModule,
     StoringModule,
+    SharingModule,
   ],
   providers: [],
   bootstrap: [ AppComponent ]

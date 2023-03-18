@@ -1,9 +1,8 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { MapComponent } from '@app/modules/home/components/pages/map/map.component';
-import { DevicesComponent } from '@app/modules/home/components/pages/devices/devices.component';
 import { deviceResolver } from '@services';
-import { DeviceComponent } from '@app/modules/home/components/pages/device/device.component';
+import { DeviceComponent, DevicesComponent, MapComponent } from './components';
+import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+
 
 const routes: Routes = [
   { path: '', component: MapComponent, title: 'Map' },

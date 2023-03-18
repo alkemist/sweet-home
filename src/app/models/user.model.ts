@@ -1,5 +1,6 @@
-import { UserInterface, UserStoredInterface } from '@app/models/user.interface';
-import { DocumentModel } from '@app/models/document.model';
+import { UserInterface, UserStoredInterface } from './user.interface';
+import { DocumentModel } from './document.model';
+
 
 export class UserModel extends DocumentModel {
   protected _email: string;

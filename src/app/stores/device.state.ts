@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DeviceStoredInterface } from '@models';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { AddDevice, FillDevices, InvalideDevices, RemoveDevice, UpdateDevice } from '@app/stores/device.action';
 import { append, patch, removeItem, updateItem } from '@ngxs/store/operators';
+import { AddDevice, FillDevices, InvalideDevices, RemoveDevice, UpdateDevice } from './device.action';
 
 export interface DeviceStateInterface {
   all: DeviceStoredInterface[];

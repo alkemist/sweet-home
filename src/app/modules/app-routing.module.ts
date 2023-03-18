@@ -9,9 +9,8 @@ import {
   UrlTree
 } from '@angular/router';
 import { LoginComponent } from '@components';
-import { UserService } from '@services';
+import { AppService, UserService } from '@services';
 import { map, Observable } from 'rxjs';
-import { AppService } from '@app/services/app.service';
 
 const logginInGuard: CanActivateFn = (): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree => {
   const userService = inject(UserService);

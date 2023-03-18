@@ -5,7 +5,7 @@
         <h5 class="text-center" i18n>Login</h5>
       </ng-template>
 
-      <div class="field-row">
+      <div class="field-row field-float">
         <div class="p-float-label">
           <input [ngClass]="{'p-invalid':email.invalid && (email.dirty || email.touched)}" class="w-full"
                  formControlName="email"
@@ -24,7 +24,7 @@
         </val-errors>
       </div>
 
-      <div class="field-row">
+      <div class="field-row field-float">
         <div class="p-float-label">
           <input [ngClass]="{'p-invalid':password.invalid && (password.dirty || password.touched)}"
                  class="w-full"

@@ -1,4 +1,4 @@
-import { UserError } from '@app/errors/user.error';
+import { UserError } from './user.error';
 
 export class WrongPasswordError extends UserError {
   override message = 'Wrong password';

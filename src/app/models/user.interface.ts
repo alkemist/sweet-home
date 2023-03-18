@@ -1,5 +1,6 @@
-import { DocumentBackInterface } from '@app/models/document.interface';
-import { HasIdWithInterface } from '@app/models/id.interface';
+import { DocumentBackInterface } from './document.interface';
+import { HasIdWithInterface } from './id.interface';
+
 
 export interface UserInterface extends DocumentBackInterface {
   email: string;

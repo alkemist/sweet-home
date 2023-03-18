@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
-import { UiModule } from '@app/modules/ui.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { UiModule } from './ui.module';
 
 const modules = [
   UiModule,

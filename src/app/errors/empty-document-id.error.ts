@@ -1,4 +1,4 @@
-import { DatabaseError } from '@app/errors/database.error';
+import { DatabaseError } from './database.error';
 
 export class EmptyDocumentIdError extends DatabaseError {
   constructor(collectionName: string, context?: any) {

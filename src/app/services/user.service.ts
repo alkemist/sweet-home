@@ -1,11 +1,10 @@
-import { UserInterface } from '@app/models/user.interface';
-import { BehaviorSubject, filter, map, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
-import { FirestoreService } from '@app/services/firestore.service';
-import { LoggerService } from '@app/services/logger.service';
+import { BehaviorSubject, filter, map, Observable, of } from 'rxjs';
+import { FirestoreService } from './firestore.service';
+import { UserInterface, UserModel } from '@models';
 import { InvalidEmailError, OfflineError, TooManyRequestError, WrongApiKeyError, WrongPasswordError } from '@errors';
-import { UserModel } from '@models';
+import { LoggerService } from './logger.service';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
 
 
 @Injectable({

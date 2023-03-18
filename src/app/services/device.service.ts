@@ -1,13 +1,12 @@
+import { DeviceModel, DeviceStoredInterface } from '@models';
 import { inject, Injectable } from '@angular/core';
-import { LoggerService } from '@app/services/logger.service';
-import { DeviceStoredInterface } from '@app/models/device.interface';
-import { JeedomService } from '@app/services/jeedom.service';
-import { DeviceModel } from '@models';
-import { DataStoreService } from '@app/services/data-store.service';
 import { AddDevice, DeviceState, FillDevices, InvalideDevices, RemoveDevice, UpdateDevice } from '@stores';
+import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
-import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
+import { JeedomService } from './jeedom.service';
+import { LoggerService } from './logger.service';
+import { DataStoreService } from './data-store.service';
 
 
 @Injectable({
@@ -23,6 +22,10 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
               jeedomService: JeedomService) {
     super(logger, 'device', DeviceModel, store,
       AddDevice, UpdateDevice, RemoveDevice, FillDevices, InvalideDevices);
+
+    /*this.jeedomService.request("version").then((response) => {
+      console.log(response);
+    });*/
   }
 }
 

@@ -3,7 +3,7 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { slugify } from '@tools';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DeviceService } from '@services';
+import { AppService, DeviceService } from '@services';
 import {
   CoordinateFormInterface,
   DeviceCategoryEnum,
@@ -12,10 +12,9 @@ import {
   DeviceModel,
   DeviceTypeEnum,
   KeyValueFormInterface,
+  SmartArrayModel,
   TypesByCategory
 } from '@models';
-import { AppService } from '@app/services/app.service';
-import { SmartArrayModel } from '@app/models/smart-array.model';
 import { KeyValue } from '@angular/common';
 
 @Component({

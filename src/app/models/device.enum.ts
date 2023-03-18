@@ -1,5 +1,6 @@
-import { BaseDeviceComponent } from '@app/modules/devices/device.component';
-import { ThermostatAqaraComponent } from '@app/modules/devices/thermostats';
+import { ThermostatAqaraComponent } from '../modules/devices/thermostats';
+import { BaseDeviceComponent } from '../modules/devices/device.component';
+
 
 export enum DeviceCategoryEnum {
   Thermostat = 'thermostat',
@@ -40,7 +41,7 @@ export const CommandsByType: Record<DeviceTypeEnum, string[]> = {
   ]
 }
 
-export const ComponentByType: Record<DeviceTypeEnum, BaseDeviceComponent> = {
+export const ComponentByType: Record<DeviceTypeEnum, (new () => BaseDeviceComponent)> = {
   [DeviceTypeEnum.ThermostatAqara]: ThermostatAqaraComponent,
   [DeviceTypeEnum.ThermostatMoes]: ThermostatAqaraComponent,
   [DeviceTypeEnum.PlugLidle]: ThermostatAqaraComponent,

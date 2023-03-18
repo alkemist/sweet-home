@@ -1,4 +1,4 @@
-import { FirebaseError } from '@app/errors/firebase.error';
+import { FirebaseError } from './firebase.error';
 
 export class QuotaExceededError extends FirebaseError {
   override message = 'Quota exceeded';

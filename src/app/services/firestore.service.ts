@@ -1,4 +1,4 @@
-import { DatabaseError, DocumentNotFoundError, QuotaExceededError } from '@errors';
+import { DatabaseError, DocumentNotFoundError, EmptyDocumentIdError, QuotaExceededError } from '@errors';
 import { FirestoreDataConverter } from '@firebase/firestore';
 import { LoggerService } from '@services';
 import { generatePushID, slugify } from '@tools';
@@ -16,11 +16,9 @@ import {
   setDoc,
   where,
 } from 'firebase/firestore';
-import { DocumentModel } from '@app/models/document.model';
-import { objectConverter } from '@app/converters/object.converter';
-import { DocumentBackInterface } from '@models';
-import { EmptyDocumentIdError } from '@app/errors/empty-document-id.error';
-import { HasIdInterface, HasIdWithInterface } from '@app/models/id.interface';
+import { DocumentBackInterface, DocumentModel } from '@models';
+import { objectConverter } from '../converters/object.converter';
+import { HasIdInterface, HasIdWithInterface } from '../models/id.interface';
 
 
 export abstract class FirestoreService<

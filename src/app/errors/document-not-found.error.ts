@@ -1,4 +1,4 @@
-import { DatabaseError } from '@app/errors/database.error';
+import { DatabaseError } from './database.error';
 
 export class DocumentNotFoundError extends DatabaseError {
   constructor(collectionName: string) {

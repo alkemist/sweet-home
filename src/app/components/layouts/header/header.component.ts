@@ -5,13 +5,14 @@ import { Title } from '@angular/platform-browser';
 import { DeviceService, UserService } from '@services';
 import { MenuItem } from 'primeng/api';
 import { DataModelMenuItems, LogoutMenuItem, MenuItems } from './menuItems.data';
+import { BaseComponent } from '../../base.component';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: [ './header.component.scss' ]
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent extends BaseComponent implements OnInit {
   loading = true;
   logged = false;
   title$: Observable<string>;
@@ -24,6 +25,8 @@ export class HeaderComponent implements OnInit {
     private userService: UserService,
     private deviceService: DeviceService,
   ) {
+    super();
+
     this.services['device'] = this.deviceService;
 
     this.title$ = router.events.pipe(
@@ -72,8 +75,5 @@ export class HeaderComponent implements OnInit {
       this.logged = logged;
       this.loading = false;
     });
-  }
-
-  ngOnInit() {
   }
 }

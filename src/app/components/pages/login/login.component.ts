@@ -12,7 +12,7 @@ import { UserFormInterface } from '@models';
     class: 'page-container'
   }
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent /*extends BaseComponent*/ implements OnInit {
   form = new FormGroup<UserFormInterface>({
     email: new FormControl<string | null>('', [
       Validators.required,
@@ -25,6 +25,8 @@ export class LoginComponent implements OnInit {
   error: string = '';
 
   constructor(private userService: UserService, private router: Router) {
+    //super();
+
     if (process.env['APP_AUTO_LOGIN'] && process.env['APP_AUTO_PASSWORD']) {
       this.form.setValue({
         email: process.env['APP_AUTO_LOGIN'],

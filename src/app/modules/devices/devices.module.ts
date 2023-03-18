@@ -1,14 +1,15 @@
 import { NgModule } from '@angular/core';
-import { SharingModule } from '@modules';
 import { ThermostatAqaraComponent } from './thermostats';
+import { SharingModule } from '../sharing.module';
 
 @NgModule({
   declarations: [
     ThermostatAqaraComponent
   ],
   imports: [
-    SharingModule,
+    SharingModule
   ]
 })
 export class DevicesModule {
+
 }

@@ -1,5 +1,5 @@
 import { Directive } from '@angular/core';
-import { BaseDeviceComponent } from '@app/modules/devices/device.component';
+import { BaseDeviceComponent } from '../device.component';
 
 @Directive()
 export abstract class ThermostatComponent extends BaseDeviceComponent {

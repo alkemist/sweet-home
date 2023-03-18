@@ -1,5 +1,5 @@
 import { DocumentStoredInterface } from '@models';
-import { HasIdInterface } from '@app/models/id.interface';
+import { HasIdInterface } from '../models/id.interface';
 
 export abstract class AddDocument<S extends DocumentStoredInterface> {
   static readonly type: string = `[Document] Add`;

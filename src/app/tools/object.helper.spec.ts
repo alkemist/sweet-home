@@ -1,4 +1,4 @@
-import { ObjectHelper } from '@app/tools/object.helper';
+import { ObjectHelper } from './object.helper';
 
 describe('ObjectHelper', () => {
   it('clone', () => {

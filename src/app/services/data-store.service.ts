@@ -1,4 +1,3 @@
-import { FirestoreService } from '@app/services/firestore.service';
 import { DocumentModel, DocumentStoredInterface } from '@models';
 import { LoggerService } from '@services';
 import { first, Observable } from 'rxjs';
@@ -12,8 +11,9 @@ import {
   InvalideDocuments,
   RemoveDocument,
   UpdateDocument
-} from '@app/stores/document.action';
-import { HasIdInterface, HasIdWithInterface } from '@app/models/id.interface';
+} from '../stores/document.action';
+import { FirestoreService } from './firestore.service';
+import { HasIdInterface, HasIdWithInterface } from '../models/id.interface';
 
 export abstract class DataStoreService<
   S extends DocumentStoredInterface,

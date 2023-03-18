@@ -1,4 +1,4 @@
-import { BaseError } from '@app/errors/base.error';
+import { BaseError } from './base.error';
 
 export class FirebaseError extends BaseError {
   override type = 'Firebase';
