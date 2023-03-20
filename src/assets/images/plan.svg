@@ -1,0 +1,47 @@
+<svg fill="none" height="1082" viewBox="0 0 740 1082" width="740" xmlns="http://www.w3.org/2000/svg">
+  <g clip-path="url(#clip0_101_3)">
+    <path clip-rule="evenodd"
+          d="M489.274 857.806L481.691 857.821L139.933 1052.14L25.8795 843.839L289.696 693.839L288.784 107.689L454 107.369L454 25L644 25L644 107L648.846 106.991L649.875 768L651 768L651 873.209L652 875L651 875.58L651 877.656L647.418 877.656L536.312 942.063L489.274 857.806Z"
+          fill="#415657"
+          fill-rule="evenodd"/>
+    <line stroke="#FF9900" stroke-width="8" x1="485.98" x2="281.98" y1="106.999" y2="109.009"/>
+    <line stroke="#FF9900" stroke-width="8" x1="285.956" x2="288.94" y1="110.953" y2="367.953"/>
+    <line stroke="#FF9900" stroke-width="8" x1="288.941" x2="289" y1="473.999" y2="695.999"/>
+    <line stroke="#FF9900" stroke-width="8" x1="376.875" x2="197.815" y1="651.533" y2="746.533"/>
+    <path d="M50.5 830.5L24.4999 845" stroke="#FF9900" stroke-width="8"/>
+    <line stroke="#FF9900" stroke-width="8" x1="27.5154" x2="141.515" y1="842.092" y2="1052.09"/>
+    <path d="M137.5 1053L486.5 854" stroke="#FF9900" stroke-width="8"/>
+    <line stroke="#FF9900" stroke-width="8" x1="479.546" x2="537.486" y1="841.039" y2="944.039"/>
+    <line stroke="#FF9900" stroke-width="8" x1="579.992" x2="532.992" y1="915.468" y2="942.468"/>
+    <line stroke="#FF9900" stroke-width="8" x1="630.095" x2="654.095" y1="887.483" y2="874.483"/>
+    <path d="M643.94 102.958L652 878" stroke="#FF9900" stroke-width="8"/>
+    <line stroke="#FF9900" stroke-width="8" x1="648" x2="577.94" y1="107" y2="106.999"/>
+    <line stroke="#FF9900" stroke-width="8" x1="373.517" x2="444.517" y1="649.094" y2="780.094"/>
+    <line stroke="#FF9900" stroke-width="8" x1="547.94" x2="548.94" y1="460.937" y2="524.937"/>
+    <line stroke="#FF9900" stroke-width="8" x1="550.034" x2="358.954" y1="521.929" y2="523.07"/>
+    <path d="M548.94 524.999L550 602" stroke="#FF9900" stroke-width="8"/>
+    <line stroke="#FF9900" stroke-width="8" x1="554.069" x2="379.069" y1="656.999" y2="660.017"/>
+    <path d="M309 523L285 523" stroke="#FF9900" stroke-width="8"/>
+    <line stroke="#FF9900" stroke-width="8" x1="440.108" x2="517.048" y1="773.509" y2="730.508"/>
+    <line stroke="#FF9900" stroke-width="8" x1="514.94" x2="515" y1="733.981" y2="720.982"/>
+    <line stroke="#FF9900" stroke-width="8" x1="375" x2="375" y1="519" y2="554"/>
+    <line stroke="#FF9900" stroke-width="8" x1="375" x2="375" y1="636" y2="654"/>
+    <line stroke="#FF9900" stroke-width="8" x1="490.039" x2="287.039" y1="343" y2="345"/>
+    <line stroke="#FF9900" stroke-width="8" x1="644" x2="645" y1="107.952" y2="23.9524"/>
+    <line stroke="#FF9900" stroke-width="8" x1="451" x2="452" y1="107.952" y2="23.9524"/>
+    <line stroke="white" stroke-width="4" x1="375" x2="375" y1="560" y2="630"/>
+    <path d="M289 374L289 421L289 468" stroke="white" stroke-width="4"/>
+    <line stroke="white" stroke-width="4" x1="191.985" x2="55.9854" y1="749.74" y2="826.74"/>
+    <line stroke="#0075FF" stroke-width="4" x1="515" x2="515" y1="716" y2="667"/>
+    <path d="M572 107L492 107" stroke="#0075FF" stroke-width="4"/>
+    <path d="M447.5 786L476 835.5" stroke="#0075FF" stroke-width="4"/>
+    <line stroke="#0075FF" stroke-width="4" x1="354" x2="314" y1="523" y2="523"/>
+    <path d="M550 607L550 648" stroke="#0075FF" stroke-width="4"/>
+    <path d="M626 890.5L585 913.5" stroke="#0075FF" stroke-width="4"/>
+  </g>
+  <defs>
+    <clipPath id="clip0_101_3">
+      <rect fill="white" height="740" transform="translate(740) rotate(90)" width="1082"/>
+    </clipPath>
+  </defs>
+</svg>

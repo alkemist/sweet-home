@@ -7,6 +7,7 @@ import { MenuItem } from 'primeng/api';
 import { DataModelMenuItems, LogoutMenuItem, MenuItems } from './menuItems.data';
 import { BaseComponent } from '../../base.component';
 
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',

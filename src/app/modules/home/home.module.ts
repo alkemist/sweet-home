@@ -1,4 +1,3 @@
-import { NgxPanZoomModule } from 'ngx-panzoom';
 import { NgModule } from '@angular/core';
 import { BlockableDivComponent, DeviceComponent, DevicesComponent, MapComponent } from './components';
 import { HomeRoutingModule } from './home-routing.module';
@@ -14,7 +13,6 @@ import { DevicesModule } from '../devices/devices.module';
   ],
   imports: [
     HomeRoutingModule,
-    NgxPanZoomModule,
     SharingModule,
     DevicesModule,
   ]

@@ -1,1 +1,18 @@
-Map
+<blockable-div #blockableDiv class="page-container__content">
+  <div #page id="page">
+    <div #map id="map">
+      <img (mousedown)="$event.preventDefault()" [height]="mapHeight" [width]="mapWidth" alt="Plan"
+           src="/assets/images/plan.svg"/>
+      <ng-template #container></ng-template>
+    </div>
+  </div>
+  <!--<div class="actions flex align-items-center justify-content-center gap-2">
+    <button (click)="builder.zoomIncrease()" class="p-button-rounded p-button-sm" icon="pi pi-plus" pButton pRipple
+            type="button"></button>
+    <button (click)="builder.zoomDecrease()" class="p-button-rounded p-button-sm" icon="pi pi-minus" pButton pRipple
+            type="button"></button>
+  </div>-->
+</blockable-div>
+<p-blockUI [blocked]="loading" [target]="blockableDiv">
+  <p-progressSpinner></p-progressSpinner>
+</p-blockUI>

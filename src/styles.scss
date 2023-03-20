@@ -6,6 +6,10 @@
 @import 'primeflex/primeflex.min.css';
 @import "assets/styles/variables";
 
+body, .page-conainer {
+  overscroll-behavior: none
+}
+
 .page-container {
   display: flex;
   flex-grow: 1;
