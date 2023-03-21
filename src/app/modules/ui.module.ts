@@ -17,6 +17,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { BlockUIModule } from 'primeng/blockui';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 const modules = [
   ToolbarModule,
@@ -35,6 +36,7 @@ const modules = [
   ConfirmDialogModule,
   BlockUIModule,
   ProgressSpinnerModule,
+  InputSwitchModule,
 
   ValdemortModule,
 ];

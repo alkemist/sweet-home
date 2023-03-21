@@ -170,3 +170,9 @@ p-dropdown.ng-touched.p-invalid > div {
 .align-right {
   text-align: right !important;
 }
+
+.draggable {
+  touch-action: none;
+  cursor: move;
+  position: relative;
+}

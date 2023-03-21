@@ -7,15 +7,23 @@ import { HasIdInterface } from './id.interface';
 import { SmartArrayModel } from './smart-array.model';
 
 export class DeviceModel extends DocumentModel implements HasIdInterface {
-  protected _position: CoordinateInterface;
-
   constructor(device: DeviceStoredInterface) {
     super(device);
     this._objectId = device.objectId ?? null;
     this._category = device.category ?? null;
     this._type = device.type ?? null;
     this._commands = new SmartArrayModel<string, number>(device.commands);
-    this._position = device.position ?? { x: null, y: null };
+    this._position = device.position ?? { x: 0, y: 0 };
+  }
+
+  protected _position: CoordinateInterface;
+
+  get position() {
+    return this._position;
+  }
+
+  set position(position: CoordinateInterface) {
+    this._position = position;
   }
 
   protected _objectId: number | null;
@@ -28,6 +36,22 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
 
   get commands() {
     return this._commands;
+  }
+
+  get x(): number {
+    return this._position.x;
+  }
+
+  set x(x: number) {
+    this._position.x = x;
+  }
+
+  get y(): number {
+    return this._position.y;
+  }
+
+  set y(y: number) {
+    this._position.y = y;
   }
 
   protected _category: DeviceCategoryEnum | null;

@@ -1,8 +1,10 @@
 import { ElementRef, ViewContainerRef } from '@angular/core';
-import { ComponentByType, DeviceModel } from '@models';
+import { ComponentByType, CoordinateInterface, DeviceModel, SizeInterface } from '@models';
 import * as Hammer from 'hammerjs';
 import { BehaviorSubject } from 'rxjs';
 import { DocumentHelper } from './document.helper';
+import { MathHelper } from './math.helper';
+import { DeviceSupervisor } from './device.supervisor';
 
 interface WheelEventCustom extends WheelEvent {
   wheelDelta: number;
@@ -14,35 +16,33 @@ interface MouseEventCustom extends MouseEvent {
 
 export class MapBuilder {
   private _viewContainerRef?: ViewContainerRef;
-  private _containerWidth: number = 0;
-  private _containerHeight: number = 0;
+  private _containerSize: SizeInterface = { w: 0, h: 0 };
+  private _mapSize: SizeInterface = { w: 0, h: 0 };
   private _currentScale: number = 1;
   private _scale: number = 1;
-  private _scaleMin: number = 0.4;
-  private _scaleMax: number = 3;
-  private rangeX: number = 0;
-  private rangeY: number = 0;
-  private rangeMaxX: number = 0;
-  private rangeMinX: number = 0;
-  private rangeMaxY: number = 0;
-  private rangeMinY: number = 0;
-  private mapX: number = 0;
-  private mapY: number = 0;
-  private currentMapX: number = 0;
-  private currentMapY: number = 0;
-  private traversableElements: Element[] = [];
+  private _scaleMin: number = 1;
+  private _scaleMax: number = 1;
+  private _range: CoordinateInterface = { x: 0, y: 0 };
+  private _rangeMax: CoordinateInterface = { x: 0, y: 0 };
+  private _rangeMin: CoordinateInterface = { x: 0, y: 0 };
+  private _currentMapPosition: CoordinateInterface = { x: 0, y: 0 };
+  private _mapPosition: CoordinateInterface = { x: 0, y: 0 };
+  private _traversableElements: Element[] = [];
+  private _supervisors = new Map<string, DeviceSupervisor>();
 
-  constructor(private mapWidth: number, private mapHeight: number) {
-    // @TODO Calculer le scale min/max en fonction de la taille d'écran
-    // @TODO Refactoriser
-    // @TODO Réarranger variables
-    // @TODO Ajouter évenement onResize de la fenètre
+  constructor() {
   }
 
-  private _ready = new BehaviorSubject<boolean>(false);
+  private _editMode$ = new BehaviorSubject<boolean>(false);
 
-  get ready() {
-    return this._ready.asObservable();
+  get editMode$() {
+    return this._editMode$.asObservable();
+  }
+
+  private _ready$ = new BehaviorSubject<boolean>(false);
+
+  get ready$() {
+    return this._ready$.asObservable();
   }
 
   private _hammer?: HammerManager;
@@ -76,72 +76,101 @@ export class MapBuilder {
   build(devices: DeviceModel[]) {
     devices.forEach((device) => {
       if (device.type) {
-        this.viewContainer.createComponent(ComponentByType[device.type])
+        const componentRef = this.viewContainer.createComponent(ComponentByType[device.type]);
+        const supervisor = new DeviceSupervisor(componentRef, device);
+        this._supervisors.set(device.id, supervisor);
       }
     })
 
     this.updateTraversableElements();
   }
 
-  onResize() {
-    this.updateSize();
-    this.updateRange();
+  switchEditMode(editMode: boolean) {
+    this._editMode$.next(editMode);
+    console.log('-- Switch Edit Mode');
 
-    this.currentMapX = this.clamp(this.mapX, this.rangeMinX, this.rangeMaxX);
-    this.currentMapY = this.clamp(this.mapY, this.rangeMinY, this.rangeMaxY);
+    this.hammer.get('pinch').set({ enable: !editMode });
+    this.hammer.get('pan').set({ enable: !editMode, direction: Hammer.DIRECTION_ALL });
 
-    this.updateMap(this.currentMapX, this.currentMapY, this._scale);
+    this._supervisors.forEach((supervisor) => supervisor.switchEditMode(editMode));
+
+
   }
 
-  setElements(pageRef: ElementRef, mapRef: ElementRef) {
+  onResize() {
+    //console.log('-- Resize')
+
+    this.updateSize();
+    this.updateRange();
+    this.updateCurrentPosition(this._mapPosition)
+    this.updateMap(this._currentMapPosition.x, this._currentMapPosition.y, this._scale);
+  }
+
+  updateCurrentPosition(position: CoordinateInterface) {
+    this._currentMapPosition.x = MathHelper.clamp(position.x, this._rangeMin.x, this._rangeMax.x);
+    this._currentMapPosition.y = MathHelper.clamp(position.y, this._rangeMin.y, this._rangeMax.y);
+  }
+
+  setElements(pageRef: ElementRef, mapRef: ElementRef, planRef: ElementRef) {
     //console.log('-- Set Elements');
     this._pageElement = pageRef.nativeElement;
     this._mapElement = mapRef.nativeElement;
 
+    this._mapSize.w = planRef.nativeElement.naturalWidth;
+    this._mapSize.h = planRef.nativeElement.naturalHeight;
+
     this.onResize();
-    this.rangeX = Math.max(0, this.mapWidth - this._containerWidth);
-    this.rangeY = Math.max(0, this.mapHeight - this._containerHeight);
 
     this.pageElement.addEventListener('wheel', (e) => {
+      if (this._editMode$.value) {
+        return;
+      }
+
       const event = e as WheelEventCustom;
       //console.log('-- Wheel', event.wheelDelta);
 
-      this._scale = this._currentScale = this.clamp(this._scale + (event.wheelDelta / 800), this._scaleMin, this._scaleMax);
+      this._currentScale =
+        MathHelper.clamp(this._scale + (event.wheelDelta / 800), this._scaleMin, this._scaleMax);
 
+      this.updateCurrentPosition(this._currentMapPosition);
+      this.updateValues();
       this.updateRange();
 
-      this.mapX = this.currentMapX = this.clamp(this.currentMapX, this.rangeMinX, this.rangeMaxX);
-      this.mapY = this.currentMapY = this.clamp(this.currentMapY, this.rangeMinY, this.rangeMaxY);
-
-      this.updateMap(this.currentMapX, this.currentMapY, this._scale);
+      this.updateMap(this._currentMapPosition.x, this._currentMapPosition.y, this._scale);
     }, false);
 
     this.initHammer();
   }
 
   updateSize() {
-    this._containerWidth = this.pageElement.offsetWidth;
-    this._containerHeight = this.pageElement.offsetHeight;
-    //console.log('-- Size', this._containerWidth, this._containerHeight);
+    this._containerSize.w = this.pageElement.offsetWidth;
+    this._containerSize.h = this.pageElement.offsetHeight;
+
+    const minScale = Math.min(
+      MathHelper.round(this._containerSize.w / this._mapSize.w),
+      MathHelper.round(this._containerSize.h / this._mapSize.h)
+    );
+    this._scale = this._currentScale = this._scaleMin = MathHelper.floor(minScale);
+    this._scaleMax = this._scaleMin + 1;
+
+    //console.log('-- Container size', this._containerSize.w, this._containerSize.h);
+    //console.log('-- Plan size', this._mapSize.w, this._mapSize.h);
+    //console.log('-- Min scale', this._scaleMin);
   }
 
   updateRange() {
-    this.rangeX = Math.max(0, Math.round(this.mapWidth * this._currentScale) - this._containerWidth);
-    this.rangeY = Math.max(0, Math.round(this.mapHeight * this._currentScale) - this._containerHeight);
+    this._range.x = Math.max(0, MathHelper.round(this._mapSize.w * this._currentScale) - this._containerSize.w);
+    this._range.y = Math.max(0, MathHelper.round(this._mapSize.h * this._currentScale) - this._containerSize.h);
 
-    this.rangeMaxX = Math.round(this.rangeX / 2);
-    this.rangeMinX = 0 - this.rangeMaxX;
+    this._rangeMax.x = MathHelper.round(this._range.x / 2);
+    this._rangeMin.x = MathHelper.round(0 - this._rangeMax.x);
 
-    this.rangeMaxY = Math.round(this.rangeY / 2);
-    this.rangeMinY = 0 - this.rangeMaxY;
+    this._rangeMax.y = MathHelper.round(this._range.y / 2);
+    this._rangeMin.y = MathHelper.round(0 - this._rangeMax.y);
 
-    /*console.log('-- Range', this.rangeX, this.rangeY);
-    console.log('-- Range max', this.rangeMaxX, this.rangeMaxY);
-    console.log('-- Range min', this.rangeMinX, this.rangeMinY);*/
-  }
-
-  clamp(value: number, min: number, max: number) {
-    return Math.min(Math.max(min, value), max);
+    /*console.log('-- Range', this._range.x, this._range.y);
+    console.log('-- Range max', this._rangeMax.x, this._rangeMax.y);
+    console.log('-- Range min', this._rangeMin.x, this._rangeMin.y);*/
   }
 
   updateMap(x: number, y: number, scale: number) {
@@ -159,46 +188,58 @@ export class MapBuilder {
     this.hammer.on('pan', (event) => {
       //console.log('-- Hammer pan')
 
-      this.currentMapX = this.clamp(this.mapX + event.deltaX, this.rangeMinX, this.rangeMaxX);
-      this.currentMapY = this.clamp(this.mapY + event.deltaY, this.rangeMinY, this.rangeMaxY);
+      this.updateCurrentPosition({
+        x: MathHelper.round(this._mapPosition.x + event.deltaX),
+        y: MathHelper.round(this._mapPosition.y + event.deltaY)
+      });
 
-      this.updateMap(this.currentMapX, this.currentMapY, this._scale);
+      this.updateMap(this._currentMapPosition.x, this._currentMapPosition.y, this._scale);
     });
 
     this.hammer.on('pinch pinchmove', (event) => {
       //console.log('-- Hammer pinch')
 
-      this._currentScale = this.clamp(this._scale * event.scale, this._scaleMin, this._scaleMax)
+      this._currentScale = MathHelper.clamp(
+        MathHelper.round(this._scale * event.scale),
+        this._scaleMin, this._scaleMax
+      );
+
+      this.updateCurrentPosition({
+        x: MathHelper.round(this._mapPosition.x + event.deltaX),
+        y: MathHelper.round(this._mapPosition.y + event.deltaY)
+      });
+
       this.updateRange();
-      this.currentMapX = this.clamp(this.mapX + event.deltaX, this.rangeMinX, this.rangeMaxX);
-      this.currentMapY = this.clamp(this.mapY + event.deltaY, this.rangeMinY, this.rangeMaxY);
-      this.updateMap(this.currentMapX, this.currentMapY, this._currentScale);
+      this.updateMap(this._currentMapPosition.x, this._currentMapPosition.y, this._currentScale);
     });
 
     this.hammer.on('panend pancancel pinchend pinchcancel', () => {
       //console.log('-- Hammer end')
-
       this.updateValues();
     });
   }
 
+  getDevices(): DeviceModel[] {
+    return [ ...this._supervisors.values() ].map((supervisor) => supervisor.device);
+  }
+
   private checkStatus() {
     if (this._viewContainerRef) {
-      this._ready.next(true);
+      this._ready$.next(true);
     }
   }
 
   private updateTraversableElements() {
-    this.traversableElements = DocumentHelper.getTraverseChildren(this.pageElement);
+    this._traversableElements = DocumentHelper.getTraverseChildren(this.pageElement);
 
     this.pageElement.addEventListener('mouseout', (e) => {
       const event = e as MouseEventCustom;
       const element = event.toElement || event.relatedTarget;
-      if (!!~this.traversableElements.indexOf(element)) {
+      if (!!~this._traversableElements.indexOf(element)) {
         return;
       }
-      //console.log('-- Out of container');
 
+      //console.log('-- Out of container');
       if (this._hammer) {
         this.hammer.stop(true);
         this.updateValues();
@@ -209,11 +250,11 @@ export class MapBuilder {
   private updateValues() {
     /*console.log('-- Update values')
     console.log('--- Scale ', this._scale, this._currentScale);
-    console.log('--- X ', this.mapX, this.currentMapX);
-    console.log('--- Y ', this.mapY, this.currentMapY);*/
+    console.log('--- X ', this._mapPosition.x, this._currentMapPosition.x);
+    console.log('--- Y ', this._mapPosition.y, this._currentMapPosition.y);*/
 
     this._scale = this._currentScale;
-    this.mapX = this.currentMapX;
-    this.mapY = this.currentMapY;
+    this._mapPosition.x = this._currentMapPosition.x;
+    this._mapPosition.y = this._currentMapPosition.y;
   }
 }
