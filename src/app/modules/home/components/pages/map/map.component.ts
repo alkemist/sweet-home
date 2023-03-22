@@ -29,10 +29,13 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
 
     this.builder.ready$.pipe(filter((ready) => ready))
       .subscribe(() => {
-        console.log('-- Builder Ready');
-
+        //console.log('-- Builder Ready');
         this.loadDevices();
-      })
+      });
+    this.builder.deviceMoved$.subscribe((device) => {
+      //console.log('-- Device moved', device);
+      this.deviceService.update(device);
+    })
   }
 
   @HostListener('window:resize', [ '$event' ])
@@ -48,7 +51,14 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
 
   async ngAfterViewInit(): Promise<void> {
     this.builder.setViewContainer(this.viewContainerRef);
-    this.builder.setElements(this.pageRef as ElementRef, this.mapRef as ElementRef, this.planRef as ElementRef);
+
+    this.builder.setElements(this.pageRef as ElementRef, this.mapRef as ElementRef);
+    if (this.planRef) {
+      this.planRef.nativeElement.onload = (onLoadResult: Event) => {
+        this.builder.setPlan(onLoadResult.target as HTMLImageElement);
+      };
+      this.planRef.nativeElement.src = '/assets/images/plan.svg';
+    }
   }
 
   loadDevices() {

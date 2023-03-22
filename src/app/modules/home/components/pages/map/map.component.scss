@@ -15,6 +15,11 @@
   height: 100%;
 }
 
+#map {
+  touch-action: none;
+  position: relative;
+}
+
 .actions {
   position: fixed;
   right: 0;

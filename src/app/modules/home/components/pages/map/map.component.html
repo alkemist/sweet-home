@@ -1,8 +1,7 @@
 <blockable-div #blockable class="page-container__content">
   <div #page id="page">
     <div #map [class]="{draggable: !switchEditModeFormControl.value}" id="map">
-      <img #plan (mousedown)="$event.preventDefault()" alt="Plan"
-           src="/assets/images/plan.svg"/>
+      <img #plan (mousedown)="$event.preventDefault()" alt="Plan" src=""/>
       <ng-template #container></ng-template>
     </div>
   </div>
