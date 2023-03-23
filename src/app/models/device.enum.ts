@@ -28,22 +28,14 @@ export const TypesByCategory: Record<DeviceCategoryEnum, DeviceTypeEnum[]> = {
   ]
 }
 
-export const CommandsByType: Record<DeviceTypeEnum, string[]> = {
-  [DeviceTypeEnum.ThermostatAqara]: [
-    'THERMOSTAT_TEMPERATURE',
-    'THERMOSTAT_SETPOINT'
-  ],
-  [DeviceTypeEnum.ThermostatMoes]: [],
-  [DeviceTypeEnum.PlugLidle]: [],
-  [DeviceTypeEnum.ThermometerAqara]: [
-    'TEMPERATURE',
-    'HUMIDITY'
-  ]
+interface ComponentClass {
+  constructor: (new () => BaseDeviceComponent),
+  class: typeof ThermostatAqaraComponent
 }
 
-export const ComponentByType: Record<DeviceTypeEnum, (new () => BaseDeviceComponent)> = {
-  [DeviceTypeEnum.ThermostatAqara]: ThermostatAqaraComponent,
-  [DeviceTypeEnum.ThermostatMoes]: ThermostatAqaraComponent,
-  [DeviceTypeEnum.PlugLidle]: ThermostatAqaraComponent,
-  [DeviceTypeEnum.ThermometerAqara]: ThermostatAqaraComponent,
+export const ComponentClassByType: Record<DeviceTypeEnum, ComponentClass> = {
+  [DeviceTypeEnum.ThermostatAqara]: { constructor: ThermostatAqaraComponent, class: ThermostatAqaraComponent },
+  [DeviceTypeEnum.ThermostatMoes]: { constructor: ThermostatAqaraComponent, class: ThermostatAqaraComponent },
+  [DeviceTypeEnum.PlugLidle]: { constructor: ThermostatAqaraComponent, class: ThermostatAqaraComponent },
+  [DeviceTypeEnum.ThermometerAqara]: { constructor: ThermostatAqaraComponent, class: ThermostatAqaraComponent },
 }

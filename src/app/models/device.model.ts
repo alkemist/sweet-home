@@ -9,7 +9,7 @@ import { SmartArrayModel } from './smart-array.model';
 export class DeviceModel extends DocumentModel implements HasIdInterface {
   constructor(device: DeviceStoredInterface) {
     super(device);
-    this._objectId = device.objectId ?? null;
+    this._jeedomId = device.jeedomId ?? null;
     this._category = device.category ?? null;
     this._type = device.type ?? null;
     this._commands = new SmartArrayModel<string, number>(device.commands);
@@ -26,10 +26,10 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
     this._position = position;
   }
 
-  protected _objectId: number | null;
+  protected _jeedomId: number | null;
 
-  get objectId(): number | null {
-    return this._objectId;
+  get jeedomId(): number | null {
+    return this._jeedomId;
   }
 
   protected _commands: SmartArrayModel<string, number>;
@@ -90,7 +90,7 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
     const deviceData: DeviceStoredInterface = {
       id: formData.id,
       name: formData.name,
-      objectId: formData.objectId,
+      jeedomId: formData.jeedomId,
       slug: slugify(formData.name),
       category: formData.category,
       type: formData.type,
@@ -104,7 +104,7 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
   override toFirestore(): DeviceBackInterface {
     return {
       ...super.toFirestore(),
-      objectId: this._objectId,
+      jeedomId: this._jeedomId,
       position: this._position,
       category: this._category,
       type: this._type,
@@ -115,7 +115,7 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
   override toForm(): DeviceFrontInterface {
     return {
       ...super.toForm(),
-      objectId: this._objectId,
+      jeedomId: this._jeedomId,
       position: this._position,
       category: this._category,
       type: this._type,

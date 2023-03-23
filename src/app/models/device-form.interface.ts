@@ -5,7 +5,7 @@ import { DeviceCategoryEnum, DeviceTypeEnum } from './device.enum';
 import { DocumentFormInterface } from './document-form.interface';
 
 export interface DeviceFormInterface extends DocumentFormInterface {
-  objectId?: FormControl<number | null>
+  jeedomId?: FormControl<number | null>
   position: FormGroup<CoordinateFormInterface>
   category: FormControl<DeviceCategoryEnum | null>
   type: FormControl<DeviceTypeEnum | null>

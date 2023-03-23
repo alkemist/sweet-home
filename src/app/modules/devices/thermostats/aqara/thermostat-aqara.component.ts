@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { ThermostatComponent } from '../thermostat.component';
+import { ThermostatCommand, ThermostatComponent } from '../thermostat.component';
+
 
 @Component({
   selector: 'app-thermostat-aqara',
@@ -11,5 +12,14 @@ import { ThermostatComponent } from '../thermostat.component';
   ],
 })
 export class ThermostatAqaraComponent extends ThermostatComponent {
+  static override get availableCommands(): Record<ThermostatCommand, Record<string, string>> {
+    return {
+      ...super.availableCommands,
+      room: { generic_type: 'THERMOSTAT_SETPOINT', name: 'Consigne' },
+    }
+  }
 
+  override ngOnInit() {
+    super.ngOnInit();
+  }
 }

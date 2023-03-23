@@ -155,6 +155,12 @@ p-dropdown.ng-touched.p-invalid > div {
     .p-button-label {
       display: none;
     }
+    .p-button-icon-left {
+      margin-right: 0;
+    }
+    .p-button-icon-right {
+      margin-left: 0;
+    }
   }
 }
 

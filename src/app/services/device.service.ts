@@ -7,6 +7,10 @@ import { Observable } from 'rxjs';
 import { JeedomService } from './jeedom.service';
 import { LoggerService } from './logger.service';
 import { DataStoreService } from './data-store.service';
+import { MessageService } from 'primeng/api';
+import { JeedomRoomInterface } from '../models/jeedom-room.interface';
+import { JeedomDeviceModel } from '../models/jeedom-device.model';
+import { JeedomRoomModel } from '../models/jeedom-room.model';
 
 
 @Injectable({
@@ -17,15 +21,40 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
   // Données du store
   @Select(DeviceState.all) protected override all$?: Observable<DeviceStoredInterface[]>;
 
-  constructor(logger: LoggerService,
+  constructor(messageService: MessageService,
+              loggerService: LoggerService,
               store: Store,
-              jeedomService: JeedomService) {
-    super(logger, 'device', DeviceModel, store,
+              protected jeedomService: JeedomService) {
+    super(messageService, loggerService, 'device', $localize`device`, DeviceModel, store,
       AddDevice, UpdateDevice, RemoveDevice, FillDevices, InvalideDevices);
+  }
 
-    /*this.jeedomService.request("version").then((response) => {
-      console.log(response);
-    });*/
+  availableDevices(): Promise<JeedomRoomModel[]> {
+    return new Promise<JeedomRoomModel[]>(async resolve => {
+      this.jeedomService.request("jeeObject::full").then((rooms: JeedomRoomInterface[]) => {
+        resolve(
+          rooms
+            .filter((room) => room.eqLogics.length > 0
+              && room.id === '1' || room.father_id === '1')
+            .map((room) =>
+              new JeedomRoomModel(
+                room.id,
+                room.name,
+                room.eqLogics
+                  .filter((device) => device.isEnable === '1')
+                  .map((device) => {
+                    return new JeedomDeviceModel(
+                      device.id,
+                      device.name,
+                      device.eqType_name,
+                      device.cmds,
+                    );
+                  })
+              )
+            )
+        )
+      });
+    });
   }
 }
 

@@ -5,7 +5,7 @@ import { BaseComponent } from '../../components/base.component';
 @Directive()
 export abstract class BaseDeviceComponent extends BaseComponent {
   @HostBinding('class.draggable') draggable: boolean = false;
-  @Input() objectId?: number;
+  @Input() jeedomId?: number;
   @Input() position?: CoordinateInterface;
   @HostBinding('style.left') x = '0px';
   @HostBinding('style.top') y = '0px';
@@ -13,6 +13,10 @@ export abstract class BaseDeviceComponent extends BaseComponent {
 
   public constructor() {
     super();
+  }
+
+  static get availableCommands(): Record<string, Record<string, string>> {
+    return {};
   }
 
   override ngOnInit() {

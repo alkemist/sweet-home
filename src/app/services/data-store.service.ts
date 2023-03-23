@@ -14,6 +14,7 @@ import {
 } from '../stores/document.action';
 import { FirestoreService } from './firestore.service';
 import { HasIdInterface, HasIdWithInterface } from '../models/id.interface';
+import { MessageService } from 'primeng/api';
 
 export abstract class DataStoreService<
   S extends DocumentStoredInterface,
@@ -30,8 +31,10 @@ export abstract class DataStoreService<
   protected maxHourOutdated = 24;
   protected loaded: boolean = false;
 
-  protected constructor(loggerService: LoggerService,
+  protected constructor(messageService: MessageService,
+                        loggerService: LoggerService,
                         collectionName: string,
+                        collectionNameTranslated: string,
                         type: (new (data: S) => M),
                         protected store: Store,
                         protected addAction: (new (payload: S) => AddDocument<S>),
@@ -40,7 +43,7 @@ export abstract class DataStoreService<
                         protected fillAction: (new (payload: S[]) => FillDocuments<S>),
                         protected invalideAction: (new () => InvalideDocuments<S>),
   ) {
-    super(loggerService, collectionName, type);
+    super(messageService, loggerService, collectionName, collectionNameTranslated, type);
     this.initLastUpdated();
   }
 
@@ -142,6 +145,10 @@ export abstract class DataStoreService<
 
   async invalidStoredData() {
     this.store.dispatch(new this.invalideAction());
+    this.messageService.add({
+      severity: 'success',
+      detail: `${ this.collectionNameTranslated } ${ $localize`store cleaned` }`
+    });
   }
 
   /** La variable "all" n'est plus à jour et doit être rechargé */

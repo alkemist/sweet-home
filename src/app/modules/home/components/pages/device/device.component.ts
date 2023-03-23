@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { slugify } from '@tools';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ObjectHelper, slugify } from '@tools';
+import { ConfirmationService, FilterService, MessageService } from 'primeng/api';
 import { AppService, DeviceService } from '@services';
 import {
+  ComponentClassByType,
   CoordinateFormInterface,
   DeviceCategoryEnum,
   DeviceFormInterface,
@@ -16,6 +17,9 @@ import {
   TypesByCategory
 } from '@models';
 import { KeyValue } from '@angular/common';
+import { JeedomDeviceModel } from '../../../../../models/jeedom-device.model';
+import { BaseComponent } from '../../../../../components/base.component';
+import { JeedomRoomModel } from '../../../../../models/jeedom-room.model';
 
 @Component({
   selector: 'app-device',
@@ -25,7 +29,7 @@ import { KeyValue } from '@angular/common';
     class: 'page-container'
   }
 })
-export class DeviceComponent implements OnInit {
+export class DeviceComponent extends BaseComponent implements OnInit {
   device: DeviceModel | null = null;
   deviceCategoriesIterable = new SmartArrayModel<string, string>(DeviceCategoryEnum, true);
   deviceTypesIterable = new SmartArrayModel<string, string>(DeviceTypeEnum, true);
@@ -33,7 +37,7 @@ export class DeviceComponent implements OnInit {
 
   form: FormGroup<DeviceFormInterface> = new FormGroup<DeviceFormInterface>({
     id: new FormControl<string | null | undefined>(''),
-    objectId: new FormControl<number | null>(null, [ Validators.required ]),
+    jeedomId: new FormControl<number | null>(null, [ Validators.required ]),
     name: new FormControl<string>('', [ Validators.required ]),
     category: new FormControl<DeviceCategoryEnum | null>(null, [ Validators.required ]),
     type: new FormControl<DeviceTypeEnum | null>(null, [ Validators.required ]),
@@ -45,6 +49,9 @@ export class DeviceComponent implements OnInit {
   })
   loading = true;
   error: string = '';
+  importDeviceControl = new FormControl<JeedomDeviceModel | string | null>(null);
+  jeedomRooms: JeedomRoomModel[] = [];
+  filteredJeedomRooms: JeedomRoomModel[] = [];
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -52,9 +59,11 @@ export class DeviceComponent implements OnInit {
     private routerService: Router,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private appService: AppService
+    private appService: AppService,
+    private filterService: FilterService
   ) {
-    this.category.valueChanges.subscribe((category) => {
+    super();
+    this.sub = this.category.valueChanges.subscribe((category) => {
       if (category !== null) {
         this.deviceTypes = TypesByCategory[category].map((key) => {
           return {
@@ -64,29 +73,53 @@ export class DeviceComponent implements OnInit {
         })
       }
     })
+    this.sub = this.importDeviceControl.valueChanges.subscribe((jeedomDevice) => {
+      if (jeedomDevice && jeedomDevice instanceof JeedomDeviceModel && this.type.value) {
+        this.jeedomId.setValue(jeedomDevice.id);
+        this.commands.clear();
+
+        const availableCommands = ComponentClassByType[this.type.value].class.availableCommands;
+        const deviceCommands: Record<string, string>[] = jeedomDevice.commands
+          .map(command => ObjectHelper.objectToRecord<string>(command));
+
+        Object.entries(availableCommands).forEach(([ commandId, commandFilter ]) => {
+          const command = deviceCommands.find((command) => {
+            return Object.entries(commandFilter).every(([ key, value ]) => command[key] === value);
+          })
+
+          if (command) {
+            this.addCommand({ key: commandId, value: parseInt(command['id'], 10) })
+          }
+        });
+      }
+    })
   }
 
   get name() {
-    return this.form.controls['name'];
+    return this.form.controls.name;
   }
 
   get category() {
-    return this.form.controls['category'];
+    return this.form.controls.category;
+  }
+
+  get jeedomId() {
+    return this.form.controls.jeedomId as FormControl<number>;
   }
 
   get type() {
-    return this.form.controls['type'];
+    return this.form.controls.type;
   }
 
   get position() {
-    return this.form.controls['position'];
+    return this.form.controls.position;
   }
 
   get commands() {
-    return this.form.controls['commands'];
+    return this.form.controls.commands;
   }
 
-  async ngOnInit(): Promise<void> {
+  override async ngOnInit(): Promise<void> {
     this.loadData();
   }
 
@@ -107,10 +140,10 @@ export class DeviceComponent implements OnInit {
       }));
   }
 
-  addCommand() {
+  addCommand(keyValue?: KeyValue<string, number>) {
     this.commands.push(new FormGroup({
-      key: new FormControl<string | null>(null, [ Validators.required ]),
-      value: new FormControl<number | null>(null, [ Validators.required ]),
+      key: new FormControl<string | null>(keyValue?.key ?? null, [ Validators.required ]),
+      value: new FormControl<number | null>(keyValue?.value ?? null, [ Validators.required ]),
     }))
   }
 
@@ -181,5 +214,28 @@ export class DeviceComponent implements OnInit {
 
   removeCommand(i: number) {
     this.commands.removeAt(i);
+  }
+
+  async filterJeedomDevices(event: { query: string }) {
+    if (this.jeedomRooms.length === 0) {
+      this.jeedomRooms = await this.deviceService.availableDevices();
+    }
+    this.filteredJeedomRooms = [];
+    this.jeedomRooms.forEach((room) => {
+      const filteredDevices: JeedomDeviceModel[] =
+        this.filterService.filter(room.devices, [ 'name', 'id' ], event.query, "contains");
+
+      if (filteredDevices.length > 0) {
+        this.filteredJeedomRooms.push(
+          new JeedomRoomModel(room.id, room.name, filteredDevices)
+        )
+      }
+    });
+  }
+
+  discoverCommands() {
+    if (this.device && this.type.value) {
+
+    }
   }
 }

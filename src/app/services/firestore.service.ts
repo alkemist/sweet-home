@@ -19,6 +19,7 @@ import {
 import { DocumentBackInterface, DocumentModel } from '@models';
 import { objectConverter } from '../converters/object.converter';
 import { HasIdInterface, HasIdWithInterface } from '../models/id.interface';
+import { MessageService } from 'primeng/api';
 
 
 export abstract class FirestoreService<
@@ -28,8 +29,10 @@ export abstract class FirestoreService<
   private readonly ref: CollectionReference;
 
   protected constructor(
+    protected messageService: MessageService,
     private loggerService: LoggerService,
-    private collectionName: string,
+    protected collectionName: string,
+    protected collectionNameTranslated: string,
     protected type: (new (data: HasIdWithInterface<B>) => M),
     private converter: FirestoreDataConverter<B> = objectConverter<B>(),
   ) {
@@ -112,6 +115,10 @@ export abstract class FirestoreService<
     try {
       const ref = doc(this.ref, id).withConverter(this.converter);
       await setDoc(ref, document.toFirestore());
+      this.messageService.add({
+        severity: 'success',
+        summary: `${ this.collectionNameTranslated } ${ $localize`added` }`
+      });
     } catch (error) {
       this.loggerService.error(new DatabaseError(
         this.collectionName,
@@ -130,6 +137,10 @@ export abstract class FirestoreService<
     try {
       const ref = doc(this.ref, document.id).withConverter(this.converter);
       await setDoc(ref, document.toFirestore());
+      this.messageService.add({
+        severity: 'success',
+        detail: `${ this.collectionNameTranslated } ${ $localize`updated` }`
+      });
     } catch (error) {
       this.loggerService.error(new DatabaseError(
         this.collectionName,
@@ -148,6 +159,10 @@ export abstract class FirestoreService<
     try {
       const ref = doc(this.ref, document.id).withConverter(this.converter);
       await deleteDoc(ref);
+      this.messageService.add({
+        severity: 'success',
+        summary: `${ this.collectionNameTranslated } ${ $localize`deleted` }`
+      });
     } catch (error) {
       this.loggerService.error(new DatabaseError(
         this.collectionName,

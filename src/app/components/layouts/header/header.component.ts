@@ -72,7 +72,7 @@ export class HeaderComponent extends BaseComponent implements OnInit {
       }
     });
 
-    this.userService.isLoggedIn().subscribe((logged) => {
+    this.sub = this.userService.isLoggedIn().subscribe((logged) => {
       this.logged = logged;
       this.loading = false;
     });

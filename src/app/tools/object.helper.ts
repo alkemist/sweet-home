@@ -10,4 +10,11 @@ export abstract class ObjectHelper {
     });
     return clone;
   }
+
+  static objectToRecord<V>(object: any) {
+    return Object.entries(object).reduce((result, [ key, value ]) => {
+      result[key] = value as V;
+      return result;
+    }, {} as Record<string, V>)
+  }
 }

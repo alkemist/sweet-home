@@ -9,7 +9,7 @@ export interface DeviceBackInterface extends DocumentBackInterface {
   position?: CoordinateInterface,
   category?: DeviceCategoryEnum | null,
   type?: DeviceTypeEnum | null,
-  objectId?: number | null,
+  jeedomId?: number | null,
   commands?: Record<string, number>
 }
 
@@ -17,7 +17,7 @@ export interface DeviceFrontInterface extends DocumentFrontInterface {
   position: CoordinateInterface,
   category: DeviceCategoryEnum | null,
   type: DeviceTypeEnum | null,
-  objectId: number | null,
+  jeedomId: number | null,
   commands: KeyValue<string, number>[]
 }
 

@@ -5,6 +5,7 @@ import { UserInterface, UserModel } from '@models';
 import { InvalidEmailError, OfflineError, TooManyRequestError, WrongApiKeyError, WrongPasswordError } from '@errors';
 import { LoggerService } from './logger.service';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
+import { MessageService } from 'primeng/api';
 
 
 @Injectable({
@@ -16,15 +17,15 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
   private _user: UserModel | null = null;
   private _token: string = '';
 
-  constructor(private logger: LoggerService) {
-    super(logger, 'user', UserModel);
+  constructor(messageService: MessageService, loggerService: LoggerService) {
+    super(messageService, loggerService, 'user', $localize`User`, UserModel);
     this._isLoggedIn = new BehaviorSubject<boolean | null>(null);
 
     onAuthStateChanged(this.auth, (userFirebase) => {
       if (!userFirebase) {
         this._isLoggedIn.next(false);
       } else {
-        this.getUser(userFirebase);
+        void this.getUser(userFirebase);
       }
     });
   }

@@ -1,5 +1,5 @@
 import { ElementRef, ViewContainerRef } from '@angular/core';
-import { ComponentByType, CoordinateInterface, DeviceModel, SizeInterface } from '@models';
+import { ComponentClassByType, CoordinateInterface, DeviceModel, SizeInterface } from '@models';
 import * as Hammer from 'hammerjs';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { DocumentHelper } from './document.helper';
@@ -83,7 +83,7 @@ export class MapBuilder {
   build(devices: DeviceModel[]) {
     devices.forEach((device) => {
       if (device.type) {
-        const componentRef = this.viewContainer.createComponent(ComponentByType[device.type]);
+        const componentRef = this.viewContainer.createComponent(ComponentClassByType[device.type].constructor);
         componentRef.instance.setPosition(device.position);
 
         //console.log('-- Build device', device);
