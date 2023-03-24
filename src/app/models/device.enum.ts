@@ -1,5 +1,5 @@
 import { ThermostatAqaraComponent } from '../modules/devices/thermostats';
-import { BaseDeviceComponent } from '../modules/devices/device.component';
+import { BaseDeviceComponent } from '../modules/devices/base-device.component';
 
 
 export enum DeviceCategoryEnum {

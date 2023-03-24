@@ -73,16 +73,17 @@ export class DeviceComponent extends BaseComponent implements OnInit {
         })
       }
     })
+
     this.sub = this.importDeviceControl.valueChanges.subscribe((jeedomDevice) => {
       if (jeedomDevice && jeedomDevice instanceof JeedomDeviceModel && this.type.value) {
         this.jeedomId.setValue(jeedomDevice.id);
         this.commands.clear();
 
-        const availableCommands = ComponentClassByType[this.type.value].class.availableCommands;
+        const commandFilters = ComponentClassByType[this.type.value].class.commandFilters;
         const deviceCommands: Record<string, string>[] = jeedomDevice.commands
           .map(command => ObjectHelper.objectToRecord<string>(command));
 
-        Object.entries(availableCommands).forEach(([ commandId, commandFilter ]) => {
+        Object.entries(commandFilters).forEach(([ commandId, commandFilter ]) => {
           const command = deviceCommands.find((command) => {
             return Object.entries(commandFilter).every(([ key, value ]) => command[key] === value);
           })

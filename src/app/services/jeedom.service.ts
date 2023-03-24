@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { JSONRPCClient } from 'json-rpc-2.0';
 import { UserService } from './user.service';
+import { JeedomCommandResultInterface } from '../models/jeedom-command-result.interface';
+import { JeedomRoomInterface } from '../models/jeedom-room.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +30,16 @@ export class JeedomService {
     );
   }
 
-  request(method: string, params: Record<string, any> = {}) {
+  getFullObjects(): Promise<JeedomRoomInterface[]> {
+    return this.request("jeeObject::full") as Promise<JeedomRoomInterface[]>;
+  }
+
+  execCommands(commandIds: number[]): Promise<Record<number, JeedomCommandResultInterface>> {
+    return this.request("cmd::execCmd", { id: commandIds }) as
+      Promise<Record<number, JeedomCommandResultInterface>>;
+  }
+
+  private request(method: string, params: Record<string, any> = {}) {
     return this.api.request(method, {
       ...params,
       apikey: this.userService.getUserToken()

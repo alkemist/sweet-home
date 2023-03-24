@@ -6,6 +6,8 @@ import { DocumentHelper } from './document.helper';
 import { MathHelper } from './math.helper';
 import { DeviceSupervisor } from './device.supervisor';
 import { ObjectHelper } from './object.helper';
+import { SmartMapModel } from '../models/smart-map.model';
+import { BaseDeviceComponent } from '../modules/devices/base-device.component';
 
 interface WheelEventCustom extends WheelEvent {
   wheelDelta: number;
@@ -29,7 +31,7 @@ export class MapBuilder {
   private _currentMapPosition: CoordinateInterface = { x: 0, y: 0 };
   private _mapPosition: CoordinateInterface = { x: 0, y: 0 };
   private _traversableElements: Element[] = [];
-  private _supervisors = new Map<string, DeviceSupervisor>();
+  private _supervisors = new SmartMapModel<string, DeviceSupervisor>();
 
   constructor() {
   }
@@ -85,6 +87,7 @@ export class MapBuilder {
       if (device.type) {
         const componentRef = this.viewContainer.createComponent(ComponentClassByType[device.type].constructor);
         componentRef.instance.setPosition(device.position);
+        componentRef.instance.commandIds = device.commands;
 
         //console.log('-- Build device', device);
         const supervisor = new DeviceSupervisor(componentRef, ObjectHelper.clone(device));
@@ -98,6 +101,10 @@ export class MapBuilder {
     })
 
     this.updateTraversableElements();
+  }
+
+  getComponents(): BaseDeviceComponent[] {
+    return this._supervisors.toArray().map((supervisor) => supervisor.getComponent());
   }
 
   switchEditMode(editMode: boolean) {

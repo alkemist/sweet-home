@@ -1,20 +1,26 @@
 import { Component } from '@angular/core';
 import { ThermostatCommand, ThermostatComponent } from '../thermostat.component';
+import { JeedomCommandResultInterface } from '../../../../models/jeedom-command-result.interface';
 
 
 @Component({
   selector: 'app-thermostat-aqara',
   templateUrl: './thermostat-aqara.component.html',
   styleUrls: [
-    '../../device.component.scss',
+    '../../base-device.component.scss',
     '../thermostat.component.scss',
     './thermostat-aqara.component.scss'
   ],
 })
 export class ThermostatAqaraComponent extends ThermostatComponent {
-  static override get availableCommands(): Record<ThermostatCommand, Record<string, string>> {
+  override commandValues: Record<ThermostatCommand, JeedomCommandResultInterface | null> = {
+    thermostat: null,
+    room: null
+  };
+
+  static override get commandFilters(): Record<ThermostatCommand, Record<string, string>> {
     return {
-      ...super.availableCommands,
+      ...super.commandFilters,
       room: { generic_type: 'THERMOSTAT_SETPOINT', name: 'Consigne' },
     }
   }

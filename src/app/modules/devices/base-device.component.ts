@@ -1,6 +1,7 @@
 import { Directive, HostBinding, Input } from '@angular/core';
-import { CoordinateInterface } from '@models';
+import { CoordinateInterface, SmartArrayModel } from '@models';
 import { BaseComponent } from '../../components/base.component';
+import { JeedomCommandResultInterface } from '../../models/jeedom-command-result.interface';
 
 @Directive()
 export abstract class BaseDeviceComponent extends BaseComponent {
@@ -9,13 +10,14 @@ export abstract class BaseDeviceComponent extends BaseComponent {
   @Input() position?: CoordinateInterface;
   @HostBinding('style.left') x = '0px';
   @HostBinding('style.top') y = '0px';
-  @Input() commands?: Record<string, number>;
+  @Input() commandIds: SmartArrayModel<string, number> = new SmartArrayModel<string, number>();
+  commandValues: Record<string, JeedomCommandResultInterface | null> = {};
 
   public constructor() {
     super();
   }
 
-  static get availableCommands(): Record<string, Record<string, string>> {
+  static get commandFilters(): Record<string, Record<string, string>> {
     return {};
   }
 
@@ -31,5 +33,14 @@ export abstract class BaseDeviceComponent extends BaseComponent {
     // console.log('-- Set device position', position);
     this.x = position.x + 'px';
     this.y = position.y + 'px';
+  }
+
+  setCommandValues(values: Record<number, JeedomCommandResultInterface | null>) {
+    this.commandValues = this.commandIds.reduce((result, current) => {
+      result[current.key] = values[current.value];
+      return result;
+    }, {} as Record<string, JeedomCommandResultInterface | null>);
+
+    console.log('-- Set commands values', this.commandValues);
   }
 }

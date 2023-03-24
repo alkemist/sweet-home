@@ -8,9 +8,10 @@ import { JeedomService } from './jeedom.service';
 import { LoggerService } from './logger.service';
 import { DataStoreService } from './data-store.service';
 import { MessageService } from 'primeng/api';
-import { JeedomRoomInterface } from '../models/jeedom-room.interface';
 import { JeedomDeviceModel } from '../models/jeedom-device.model';
 import { JeedomRoomModel } from '../models/jeedom-room.model';
+import { BaseDeviceComponent } from '../modules/devices/base-device.component';
+import { JeedomCommandResultInterface } from '../models/jeedom-command-result.interface';
 
 
 @Injectable({
@@ -31,7 +32,7 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
 
   availableDevices(): Promise<JeedomRoomModel[]> {
     return new Promise<JeedomRoomModel[]>(async resolve => {
-      this.jeedomService.request("jeeObject::full").then((rooms: JeedomRoomInterface[]) => {
+      this.jeedomService.getFullObjects().then((rooms) => {
         resolve(
           rooms
             .filter((room) => room.eqLogics.length > 0
@@ -55,6 +56,29 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
         )
       });
     });
+  }
+
+  updateComponents(components: BaseDeviceComponent[]) {
+    const commandIds = components.reduce((result, current) => {
+      return result.concat(current.commandIds.getValues());
+    }, [] as number[])
+
+    console.log('-- Update commands', commandIds);
+
+    this.jeedomService.execCommands(commandIds).then((values) => {
+      console.log("-- Commands results", values);
+
+      components.forEach((component) => {
+        const commandIds = component.commandIds.getValues();
+        const componentValues: Record<number, JeedomCommandResultInterface | null>
+          = commandIds.reduce((result, current) => {
+          result[current] = values[current] ?? null;
+          return result;
+        }, {} as Record<number, JeedomCommandResultInterface | null>)
+
+        component.setCommandValues(componentValues);
+      })
+    })
   }
 }
 

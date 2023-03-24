@@ -1,5 +1,5 @@
 import { ComponentRef } from '@angular/core';
-import { BaseDeviceComponent } from '../modules/devices/device.component';
+import { BaseDeviceComponent } from '../modules/devices/base-device.component';
 import { CoordinateInterface, DeviceModel, SizeInterface } from '@models';
 import { Subject } from 'rxjs';
 import { MathHelper } from './math.helper';
@@ -66,6 +66,10 @@ export class DeviceSupervisor {
 
   get device(): DeviceModel {
     return this._device;
+  }
+
+  getComponent() {
+    return this._componentRef.instance;
   }
 
   switchEditMode(editMode: boolean, _mapSize: SizeInterface, _scale: number) {

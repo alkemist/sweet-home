@@ -67,6 +67,9 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
       this.loading = false;
 
       this.builder.build(devices);
+
+      const components = this.builder.getComponents();
+      this.deviceService.updateComponents(components);
     });
   }
 }

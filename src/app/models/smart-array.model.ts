@@ -45,6 +45,14 @@ export class SmartArrayModel<K extends string | number, V extends string | numbe
     );
   }
 
+  toArray(): KeyValue<K, V>[] {
+    return this.map((item) => item);
+  }
+
+  getValues(): V[] {
+    return this.map((item) => item.value);
+  }
+
   fromEnum(enumValue: Record<V, K>) {
     const keys = Object.keys(enumValue) as V[];
     this.record = new Map<K, V>();
