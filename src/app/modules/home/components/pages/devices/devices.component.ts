@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DeviceCategoryEnum, DeviceModel, DeviceTypeEnum, SmartArrayModel } from '@models';
 import { DeviceService } from '@services';
+import { BaseComponent } from '../../../../../components/base.component';
 
 
 @Component({
@@ -11,7 +12,7 @@ import { DeviceService } from '@services';
     class: 'page-container'
   }
 })
-export class DevicesComponent implements OnInit {
+export class DevicesComponent extends BaseComponent implements OnInit, OnDestroy {
   devices: DeviceModel[] = [];
   deviceCategories = new SmartArrayModel<string, string>(DeviceCategoryEnum, true);
   deviceTypes = new SmartArrayModel<string, string>(DeviceTypeEnum, true);
@@ -20,6 +21,7 @@ export class DevicesComponent implements OnInit {
   constructor(
     private deviceService: DeviceService,
   ) {
+    super();
   }
 
   async ngOnInit(): Promise<void> {

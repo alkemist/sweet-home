@@ -5,7 +5,7 @@ import { NgModule } from '@angular/core';
 
 
 const routes: Routes = [
-  { path: '', component: MapComponent, title: 'Map' },
+  { path: '', component: MapComponent, title: 'Map', data: { noSleep: true } },
   { path: 'devices', component: DevicesComponent, title: 'Devices' },
   { path: 'devices/add', component: DeviceComponent, title: 'Device' },
   { path: 'devices/:slug', component: DeviceComponent, title: 'Device', resolve: { device: deviceResolver } },

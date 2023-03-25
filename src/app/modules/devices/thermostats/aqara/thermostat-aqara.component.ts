@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ThermostatCommandInfo, ThermostatComponent } from '../thermostat.component';
 
 
@@ -11,7 +11,7 @@ import { ThermostatCommandInfo, ThermostatComponent } from '../thermostat.compon
     './thermostat-aqara.component.scss'
   ],
 })
-export class ThermostatAqaraComponent extends ThermostatComponent {
+export class ThermostatAqaraComponent extends ThermostatComponent implements OnInit, OnDestroy {
   static override get infoCommandFilters(): Record<ThermostatCommandInfo, Record<string, string>> {
     return {
       ...super.infoCommandFilters,
@@ -21,9 +21,5 @@ export class ThermostatAqaraComponent extends ThermostatComponent {
 
   override ngOnInit() {
     super.ngOnInit();
-  }
-
-  updateThermostat() {
-    void this.setThermostat(21);
   }
 }

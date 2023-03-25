@@ -1,9 +1,18 @@
 import { DeviceModel } from '@models';
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
 import { AppService, DeviceService } from '@services';
 import { MapBuilder } from '@tools';
 import { BaseComponent } from '../../../../../components/base.component';
-import { filter } from 'rxjs';
+import { BehaviorSubject, delay, filter, Subject } from 'rxjs';
 import { FormControl } from '@angular/forms';
 
 @Component({
@@ -14,19 +23,21 @@ import { FormControl } from '@angular/forms';
     class: 'page-container'
   }
 })
-export class MapComponent extends BaseComponent implements OnInit, AfterViewInit {
+export class MapComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild("container", { read: ViewContainerRef, static: true }) viewContainerRef?: ViewContainerRef;
   @ViewChild("page") pageRef?: ElementRef;
   @ViewChild("map") mapRef?: ElementRef;
   @ViewChild("plan") planRef?: ElementRef;
   devices: DeviceModel[] = [];
-  loading = true;
+  mapLoading = true;
+  apiLoading = false;
   builder: MapBuilder = new MapBuilder();
   switchEditModeFormControl = new FormControl<boolean>(false);
+  pollingDelay = 5000;
 
   constructor(
     private appService: AppService,
-    private deviceService: DeviceService
+    private deviceService: DeviceService,
   ) {
     super();
 
@@ -35,13 +46,20 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
         //console.log('-- Builder Ready');
         this.loadDevices();
       });
+
     this.sub = this.builder.deviceMoved$.subscribe((device) => {
       //console.log('-- Device moved', device);
-      this.appService.beginLoading();
+      const loader = this.appService.addLoader();
       this.deviceService.update(device).then(() => {
-        this.appService.endLoading();
+        loader.finish();
       })
     })
+
+    this.sub = this.appService.globalLoader.subscribe((globalLoader) => {
+      this.apiLoading = globalLoader;
+    })
+    this.sub = this.appService.allLoaders.subscribe(_ => {
+    });
   }
 
   @HostListener('window:resize', [ '$event' ])
@@ -49,9 +67,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     this.builder.onResize();
   }
 
-  override ngOnInit() {
-    this.appService.beginLoading();
-
+  ngOnInit() {
     this.sub = this.switchEditModeFormControl.valueChanges.subscribe((switchEditMode) => {
       this.builder.switchEditMode(!!switchEditMode);
     })
@@ -72,17 +88,30 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
   loadDevices() {
     this.deviceService.getListOrRefresh().then(devices => {
       this.devices = devices
-      this.loading = false;
-
+      this.mapLoading = false;
       this.builder.build(devices);
-      this.appService.endLoading();
 
-      // @TODO Remplacer par la mise en place du polling
-      this.appService.beginLoading();
       const components = this.builder.getComponents();
-      this.deviceService.updateComponents(components).then(() => {
-        this.appService.endLoading();
-      })
+
+      // Polling when data is resolved
+      const nextCall$ = new BehaviorSubject<boolean>(true);
+      const timer$ = new Subject<void>();
+
+      this.sub = timer$
+        .pipe(
+          delay(this.pollingDelay)
+        ).subscribe(() => {
+          // console.log('-- Ready for a new call');
+          nextCall$.next(true);
+        });
+
+      this.sub = nextCall$.subscribe(() => {
+        const loader = this.appService.addLoader();
+        this.deviceService.updateComponents(components).then(_ => {
+          loader.finish();
+          timer$.next();
+        });
+      });
     });
   }
 }

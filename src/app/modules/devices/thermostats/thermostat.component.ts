@@ -1,4 +1,4 @@
-import { Directive, Input } from '@angular/core';
+import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { BaseDeviceComponent } from '../base-device.component';
 import { SmartArrayModel } from '@models';
 
@@ -6,7 +6,7 @@ export type ThermostatCommandInfo = 'thermostat' | 'room';
 export type ThermostatCommandAction = 'thermostat';
 
 @Directive()
-export abstract class ThermostatComponent extends BaseDeviceComponent {
+export abstract class ThermostatComponent extends BaseDeviceComponent implements OnInit, OnDestroy {
   @Input() override actionInfoIds = new SmartArrayModel<ThermostatCommandInfo, number>();
   @Input() override actionCommandIds = new SmartArrayModel<ThermostatCommandAction, number>();
   override infoCommandValues: Record<ThermostatCommandInfo, number | null> = {
@@ -28,8 +28,17 @@ export abstract class ThermostatComponent extends BaseDeviceComponent {
   }
 
   setThermostat(value: number) {
-    console.log('-- Set thermostat', value);
-    return this.execUpdate(
-      this.actionCommandIds.toRecord().thermostat, { slider: value }, "thermostat")
+    // console.log('-- Set thermostat', value);
+    this.execUpdate('thermostat', { slider: value }).then(_ => {
+      this.infoCommandValues['thermostat'] = value;
+    })
+  }
+
+  private execUpdate(commandAction: ThermostatCommandAction, commandValue: any) {
+    return super.execCommand(
+      this.actionCommandIds.get(commandAction),
+      commandAction,
+      commandValue
+    );
   }
 }

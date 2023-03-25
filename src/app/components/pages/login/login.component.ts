@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '@services';
 import { UserFormInterface } from '@models';
+import { BaseComponent } from '../../base.component';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ import { UserFormInterface } from '@models';
     class: 'page-container'
   }
 })
-export class LoginComponent /*extends BaseComponent*/ implements OnInit {
+export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
   form = new FormGroup<UserFormInterface>({
     email: new FormControl<string | null>('', [
       Validators.required,
@@ -25,7 +26,7 @@ export class LoginComponent /*extends BaseComponent*/ implements OnInit {
   error: string = '';
 
   constructor(private userService: UserService, private router: Router) {
-    //super();
+    super();
 
     if (process.env['APP_AUTO_LOGIN'] && process.env['APP_AUTO_PASSWORD']) {
       this.form.setValue({

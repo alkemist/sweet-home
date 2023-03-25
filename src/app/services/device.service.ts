@@ -34,52 +34,60 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
   availableDevices(): Promise<JeedomRoomModel[]> {
     return new Promise<JeedomRoomModel[]>(async resolve => {
       this.jeedomService.getFullObjects().then((rooms) => {
-        resolve(
-          rooms
-            .filter((room) => room.eqLogics.length > 0
-              && room.id === '1' || room.father_id === '1')
-            .map((room) =>
-              new JeedomRoomModel(
-                room.id,
-                room.name,
-                room.eqLogics
-                  .filter((device) => device.isEnable === '1')
-                  .map((device) => {
-                    return new JeedomDeviceModel(
-                      device.id,
-                      device.name,
-                      device.eqType_name,
-                      device.cmds,
-                    );
-                  })
+        if (rooms) {
+          resolve(
+            rooms
+              .filter((room) => room.eqLogics.length > 0
+                && room.id === '1' || room.father_id === '1')
+              .map((room) =>
+                new JeedomRoomModel(
+                  room.id,
+                  room.name,
+                  room.eqLogics
+                    .filter((device) => device.isEnable === '1')
+                    .map((device) => {
+                      return new JeedomDeviceModel(
+                        device.id,
+                        device.name,
+                        device.eqType_name,
+                        device.cmds,
+                      );
+                    })
+                )
               )
-            )
-        )
+          )
+        } else {
+          resolve([])
+        }
       });
     });
   }
 
-  updateComponents(components: BaseDeviceComponent[]): Promise<void> {
+  updateComponents(components: BaseDeviceComponent[]): Promise<boolean> {
     const commandIds = components.reduce((result, current) => {
       return result.concat(current.actionInfoIds.getValues());
     }, [] as number[])
 
-    console.log('-- Update commands', commandIds);
+    // console.log('-- Update commands', commandIds);
 
-    return new Promise<void>((resolve) => {
+    return new Promise<boolean>((resolve) => {
       this.jeedomService.execInfoCommands(commandIds).then((values) => {
-        console.log("-- Commands results", values);
+        // console.log("-- Commands results", values);
 
-        components.forEach((component) => {
-          component.updateInfoCommandValues(values);
-          resolve();
-        })
+        if (values) {
+          components.forEach((component) => {
+            component.updateInfoCommandValues(values);
+            resolve(true);
+          })
+        } else {
+          resolve(false);
+        }
       })
     });
   }
 
-  execAction(commandId: number, commandValue: unknown, commandName: string): Promise<JeedomCommandResultInterface | null> {
-    console.log('-- Exec action', commandId, commandValue);
+  execAction(commandId: number, commandName: string, commandValue?: unknown): Promise<JeedomCommandResultInterface | null> {
+    // console.log('-- Exec action', commandId, commandValue);
 
     if (!commandId) {
       this.loggerService.error(

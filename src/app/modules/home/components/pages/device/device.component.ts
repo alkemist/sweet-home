@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ObjectHelper, slugify } from '@tools';
@@ -29,7 +29,7 @@ import { JeedomRoomModel } from '../../../../../models/jeedom-room.model';
     class: 'page-container'
   }
 })
-export class DeviceComponent extends BaseComponent implements OnInit {
+export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy {
   device: DeviceModel | null = null;
   deviceCategoriesIterable = new SmartArrayModel<string, string>(DeviceCategoryEnum, true);
   deviceTypesIterable = new SmartArrayModel<string, string>(DeviceTypeEnum, true);
@@ -141,7 +141,7 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     return this.form.controls.actionCommandIds;
   }
 
-  override async ngOnInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {
     this.loadData();
   }
 

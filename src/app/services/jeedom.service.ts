@@ -3,6 +3,8 @@ import { JSONRPCClient } from 'json-rpc-2.0';
 import { UserService } from './user.service';
 import { JeedomCommandResultInterface } from '../models/jeedom-command-result.interface';
 import { JeedomRoomInterface } from '../models/jeedom-room.interface';
+import { UnknownJeedomError } from '../errors/unknown-jeedom.error';
+import { LoggerService } from './logger.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,10 @@ import { JeedomRoomInterface } from '../models/jeedom-room.interface';
 export class JeedomService {
   private api: JSONRPCClient;
 
-  constructor(private userService: UserService) {
+  constructor(
+    private userService: UserService,
+    private loggerService: LoggerService
+  ) {
     const jeedomApiUrl = `${ process.env['JEEDOM_HOST'] }/core/api/jeeApi.php`;
 
     this.api = new JSONRPCClient((jsonRPCRequest) =>
@@ -24,22 +29,23 @@ export class JeedomService {
             .json()
             .then((jsonRPCResponse) => this.api.receive(jsonRPCResponse));
         } else {
-          return Promise.reject(new Error(response.statusText));
+          this.loggerService.error(new UnknownJeedomError(response.statusText));
+          return Promise.resolve();
         }
       })
     );
   }
 
-  getFullObjects(): Promise<JeedomRoomInterface[]> {
+  getFullObjects(): Promise<JeedomRoomInterface[] | null> {
     return this.request("jeeObject::full") as Promise<JeedomRoomInterface[]>;
   }
 
-  execInfoCommands(commandIds: number[]): Promise<Record<number, JeedomCommandResultInterface>> {
+  execInfoCommands(commandIds: number[]): Promise<Record<number, JeedomCommandResultInterface> | null> {
     return this.request("cmd::execCmd", { id: commandIds }) as
       Promise<Record<number, JeedomCommandResultInterface>>;
   }
 
-  execActionCommand(commandId: number, options: unknown): Promise<JeedomCommandResultInterface> {
+  execActionCommand(commandId: number, options?: unknown): Promise<JeedomCommandResultInterface | null> {
     return this.request("cmd::execCmd", { id: commandId, options }) as
       Promise<JeedomCommandResultInterface>;
   }

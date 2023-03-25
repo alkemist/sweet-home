@@ -5,10 +5,12 @@
       <ng-template #container></ng-template>
     </div>
   </div>
-  <div class="actions flex align-items-center justify-content-center gap-2">
+  <div class="actions flex align-items-center justify-content-end gap-4">
+    <p-progressSpinner *ngIf="apiLoading" animationDuration="2s" fill="var(--surface-ground)" strokeWidth="8"
+                       styleClass="w-2rem h-2rem"></p-progressSpinner>
     <p-inputSwitch [formControl]="switchEditModeFormControl"></p-inputSwitch>
   </div>
 </blockable-div>
-<p-blockUI [blocked]="loading" [target]="blockable">
+<p-blockUI [blocked]="mapLoading" [target]="blockable">
   <p-progressSpinner></p-progressSpinner>
 </p-blockUI>

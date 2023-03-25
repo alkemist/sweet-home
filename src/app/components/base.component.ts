@@ -1,8 +1,8 @@
-import { Directive, OnDestroy, OnInit } from '@angular/core';
+import { Directive, OnDestroy } from '@angular/core';
 import { Subscription, Unsubscribable } from 'rxjs';
 
 @Directive()
-export abstract class BaseComponent implements OnInit, OnDestroy {
+export abstract class BaseComponent implements OnDestroy {
   protected allSubscriptions = new Subscription();
 
   protected constructor() {
@@ -11,9 +11,6 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
 
   set sub(sub: Unsubscribable) {
     this.allSubscriptions.add(sub);
-  }
-
-  ngOnInit(): void {
   }
 
   ngOnDestroy(): void {
