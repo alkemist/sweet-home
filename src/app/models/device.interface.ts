@@ -10,7 +10,8 @@ export interface DeviceBackInterface extends DocumentBackInterface {
   category?: DeviceCategoryEnum | null,
   type?: DeviceTypeEnum | null,
   jeedomId?: number | null,
-  commands?: Record<string, number>
+  infoCommandIds?: Record<string, number>,
+  actionCommandIds?: Record<string, number>
 }
 
 export interface DeviceFrontInterface extends DocumentFrontInterface {
@@ -18,7 +19,8 @@ export interface DeviceFrontInterface extends DocumentFrontInterface {
   category: DeviceCategoryEnum | null,
   type: DeviceTypeEnum | null,
   jeedomId: number | null,
-  commands: KeyValue<string, number>[]
+  infoCommandIds: KeyValue<string, number>[],
+  actionCommandIds: KeyValue<string, number>[],
 }
 
 export type DeviceStoredInterface = HasIdWithInterface<DeviceBackInterface>;

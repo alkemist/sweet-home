@@ -32,7 +32,7 @@ export abstract class DataStoreService<
   protected loaded: boolean = false;
 
   protected constructor(messageService: MessageService,
-                        loggerService: LoggerService,
+                        protected override loggerService: LoggerService,
                         collectionName: string,
                         collectionNameTranslated: string,
                         type: (new (data: S) => M),

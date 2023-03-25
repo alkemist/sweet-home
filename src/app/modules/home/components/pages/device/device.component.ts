@@ -45,7 +45,8 @@ export class DeviceComponent extends BaseComponent implements OnInit {
       x: new FormControl<number | null>(null, [ Validators.required ]),
       y: new FormControl<number | null>(null, [ Validators.required ]),
     }),
-    commands: new FormArray<FormGroup<KeyValueFormInterface>>([])
+    infoCommandIds: new FormArray<FormGroup<KeyValueFormInterface>>([]),
+    actionCommandIds: new FormArray<FormGroup<KeyValueFormInterface>>([]),
   })
   loading = true;
   error: string = '';
@@ -77,19 +78,35 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     this.sub = this.importDeviceControl.valueChanges.subscribe((jeedomDevice) => {
       if (jeedomDevice && jeedomDevice instanceof JeedomDeviceModel && this.type.value) {
         this.jeedomId.setValue(jeedomDevice.id);
-        this.commands.clear();
+        if (!this.name.value) {
+          this.name.setValue(jeedomDevice.name);
+        }
 
-        const commandFilters = ComponentClassByType[this.type.value].class.commandFilters;
+        this.infoCommandIds.clear();
+        this.actionCommandIds.clear();
+
+        const infoCommandFilters = ComponentClassByType[this.type.value].class.infoCommandFilters;
+        const actionCommandFilters = ComponentClassByType[this.type.value].class.actionCommandFilters;
         const deviceCommands: Record<string, string>[] = jeedomDevice.commands
           .map(command => ObjectHelper.objectToRecord<string>(command));
 
-        Object.entries(commandFilters).forEach(([ commandId, commandFilter ]) => {
+        Object.entries(infoCommandFilters).forEach(([ commandId, commandFilter ]) => {
           const command = deviceCommands.find((command) => {
             return Object.entries(commandFilter).every(([ key, value ]) => command[key] === value);
           })
 
           if (command) {
-            this.addCommand({ key: commandId, value: parseInt(command['id'], 10) })
+            this.addInfoCommand({ key: commandId, value: parseInt(command['id'], 10) })
+          }
+        });
+
+        Object.entries(actionCommandFilters).forEach(([ commandId, commandFilter ]) => {
+          const command = deviceCommands.find((command) => {
+            return Object.entries(commandFilter).every(([ key, value ]) => command[key] === value);
+          })
+
+          if (command) {
+            this.addActionCommand({ key: commandId, value: parseInt(command['id'], 10) })
           }
         });
       }
@@ -116,8 +133,12 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     return this.form.controls.position;
   }
 
-  get commands() {
-    return this.form.controls.commands;
+  get infoCommandIds() {
+    return this.form.controls.infoCommandIds;
+  }
+
+  get actionCommandIds() {
+    return this.form.controls.actionCommandIds;
   }
 
   override async ngOnInit(): Promise<void> {
@@ -131,7 +152,8 @@ export class DeviceComponent extends BaseComponent implements OnInit {
           this.device = data['device'] as DeviceModel;
           this.appService.setSubTitle(this.device.name);
 
-          this.device.commands.forEach(() => this.addCommand());
+          this.device.infoCommandIds.forEach(() => this.addInfoCommand());
+          this.device.actionCommandIds.forEach(() => this.addActionCommand());
           this.form.setValue(this.device.toForm())
         } else {
           this.appService.setSubTitle();
@@ -141,11 +163,23 @@ export class DeviceComponent extends BaseComponent implements OnInit {
       }));
   }
 
-  addCommand(keyValue?: KeyValue<string, number>) {
-    this.commands.push(new FormGroup({
+  addInfoCommand(keyValue?: KeyValue<string, number>) {
+    this.infoCommandIds.push(
+      this.addCommandForm(keyValue)
+    );
+  }
+
+  addActionCommand(keyValue?: KeyValue<string, number>) {
+    this.actionCommandIds.push(
+      this.addCommandForm(keyValue)
+    );
+  }
+
+  addCommandForm(keyValue?: KeyValue<string, number>) {
+    return new FormGroup({
       key: new FormControl<string | null>(keyValue?.key ?? null, [ Validators.required ]),
       value: new FormControl<number | null>(keyValue?.value ?? null, [ Validators.required ]),
-    }))
+    });
   }
 
   async handleSubmit(): Promise<void> {
@@ -213,8 +247,12 @@ export class DeviceComponent extends BaseComponent implements OnInit {
     });
   }
 
-  removeCommand(i: number) {
-    this.commands.removeAt(i);
+  removeInfoCommand(i: number) {
+    this.infoCommandIds.removeAt(i);
+  }
+
+  removeActionCommand(i: number) {
+    this.actionCommandIds.removeAt(i);
   }
 
   async filterJeedomDevices(event: { query: string }) {
@@ -232,11 +270,5 @@ export class DeviceComponent extends BaseComponent implements OnInit {
         )
       }
     });
-  }
-
-  discoverCommands() {
-    if (this.device && this.type.value) {
-
-    }
   }
 }

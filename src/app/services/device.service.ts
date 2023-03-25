@@ -12,6 +12,7 @@ import { JeedomDeviceModel } from '../models/jeedom-device.model';
 import { JeedomRoomModel } from '../models/jeedom-room.model';
 import { BaseDeviceComponent } from '../modules/devices/base-device.component';
 import { JeedomCommandResultInterface } from '../models/jeedom-command-result.interface';
+import { UnknownCommandIdError } from '../errors/unknown-command-id.error';
 
 
 @Injectable({
@@ -23,7 +24,7 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
   @Select(DeviceState.all) protected override all$?: Observable<DeviceStoredInterface[]>;
 
   constructor(messageService: MessageService,
-              loggerService: LoggerService,
+              protected override loggerService: LoggerService,
               store: Store,
               protected jeedomService: JeedomService) {
     super(messageService, loggerService, 'device', $localize`device`, DeviceModel, store,
@@ -58,27 +59,36 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
     });
   }
 
-  updateComponents(components: BaseDeviceComponent[]) {
+  updateComponents(components: BaseDeviceComponent[]): Promise<void> {
     const commandIds = components.reduce((result, current) => {
-      return result.concat(current.commandIds.getValues());
+      return result.concat(current.actionInfoIds.getValues());
     }, [] as number[])
 
     console.log('-- Update commands', commandIds);
 
-    this.jeedomService.execCommands(commandIds).then((values) => {
-      console.log("-- Commands results", values);
+    return new Promise<void>((resolve) => {
+      this.jeedomService.execInfoCommands(commandIds).then((values) => {
+        console.log("-- Commands results", values);
 
-      components.forEach((component) => {
-        const commandIds = component.commandIds.getValues();
-        const componentValues: Record<number, JeedomCommandResultInterface | null>
-          = commandIds.reduce((result, current) => {
-          result[current] = values[current] ?? null;
-          return result;
-        }, {} as Record<number, JeedomCommandResultInterface | null>)
-
-        component.setCommandValues(componentValues);
+        components.forEach((component) => {
+          component.updateInfoCommandValues(values);
+          resolve();
+        })
       })
-    })
+    });
+  }
+
+  execAction(commandId: number, commandValue: unknown, commandName: string): Promise<JeedomCommandResultInterface | null> {
+    console.log('-- Exec action', commandId, commandValue);
+
+    if (!commandId) {
+      this.loggerService.error(
+        new UnknownCommandIdError(commandName)
+      );
+      return Promise.resolve(null);
+    }
+
+    return this.jeedomService.execActionCommand(commandId, commandValue)
   }
 }
 

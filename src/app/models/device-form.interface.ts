@@ -9,5 +9,6 @@ export interface DeviceFormInterface extends DocumentFormInterface {
   position: FormGroup<CoordinateFormInterface>
   category: FormControl<DeviceCategoryEnum | null>
   type: FormControl<DeviceTypeEnum | null>
-  commands: FormArray<FormGroup<KeyValueFormInterface>>
+  infoCommandIds: FormArray<FormGroup<KeyValueFormInterface>>
+  actionCommandIds: FormArray<FormGroup<KeyValueFormInterface>>
 }

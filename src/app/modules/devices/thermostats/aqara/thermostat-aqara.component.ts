@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { ThermostatCommand, ThermostatComponent } from '../thermostat.component';
-import { JeedomCommandResultInterface } from '../../../../models/jeedom-command-result.interface';
+import { ThermostatCommandInfo, ThermostatComponent } from '../thermostat.component';
 
 
 @Component({
@@ -13,19 +12,18 @@ import { JeedomCommandResultInterface } from '../../../../models/jeedom-command-
   ],
 })
 export class ThermostatAqaraComponent extends ThermostatComponent {
-  override commandValues: Record<ThermostatCommand, JeedomCommandResultInterface | null> = {
-    thermostat: null,
-    room: null
-  };
-
-  static override get commandFilters(): Record<ThermostatCommand, Record<string, string>> {
+  static override get infoCommandFilters(): Record<ThermostatCommandInfo, Record<string, string>> {
     return {
-      ...super.commandFilters,
+      ...super.infoCommandFilters,
       room: { generic_type: 'THERMOSTAT_SETPOINT', name: 'Consigne' },
     }
   }
 
   override ngOnInit() {
     super.ngOnInit();
+  }
+
+  updateThermostat() {
+    void this.setThermostat(21);
   }
 }

@@ -52,31 +52,31 @@
           </val-errors>
         </div>
         <div *ngIf="type.value" class="flex-column col-4">
-          <div class="p-float-label">
-            <input class="w-12" formControlName="name" id="name" pInputText type="text">
-            <label for="name" i18n>Name</label>
+          <div class="p-float-label flex">
+            <p-autoComplete (completeMethod)="filterJeedomDevices($event)" [dropdown]="true"
+                            [formControl]="importDeviceControl"
+                            [group]="true" [suggestions]="filteredJeedomRooms" class="w-12"
+                            field="name" optionGroupChildren="devices" optionGroupLabel="name"></p-autoComplete>
+            <label i18n>Import via jeedom</label>
           </div>
-          <val-errors class="p-error" controlName="name">
-            <ng-template valError="required">
-              <ng-container i18n>Name is required.</ng-container>
-            </ng-template>
-            <ng-template valError="exist">
-              <ng-container i18n>Device already exist.</ng-container>
-            </ng-template>
-          </val-errors>
         </div>
       </div>
 
       <div *ngIf="type.value">
         <div class="field-row field-float flex flex-row gap-2">
           <div class="flex-column col-8">
-            <div class="p-float-label flex">
-              <p-autoComplete (completeMethod)="filterJeedomDevices($event)" [dropdown]="true"
-                              [formControl]="importDeviceControl"
-                              [group]="true" [suggestions]="filteredJeedomRooms" class="w-12"
-                              field="name" optionGroupChildren="devices" optionGroupLabel="name"></p-autoComplete>
-              <label i18n>Import jeedom device</label>
+            <div class="p-float-label">
+              <input class="w-12" formControlName="name" id="name" pInputText type="text">
+              <label for="name" i18n>Name</label>
             </div>
+            <val-errors class="p-error" controlName="name">
+              <ng-template valError="required">
+                <ng-container i18n>Name is required.</ng-container>
+              </ng-template>
+              <ng-template valError="exist">
+                <ng-container i18n>Device already exist.</ng-container>
+              </ng-template>
+            </val-errors>
           </div>
           <div class="flex-column col-4">
             <div class="p-float-label">
@@ -127,10 +127,10 @@
           </div>
         </div>
 
-        <h5 i18n>Commands</h5>
-        <div class="field-column flex-column gap-2" formArrayName="commands">
-          <div *ngIf="commands.controls.length === 0" i18n>No commands</div>
-          <div *ngFor="let commandForm of commands.controls; let i = index" [formGroupName]="i"
+        <h5 i18n>Info Commands</h5>
+        <div class="field-column flex-column gap-2" formArrayName="infoCommandIds">
+          <div *ngIf="infoCommandIds.controls.length === 0" i18n>No info commands</div>
+          <div *ngFor="let commandForm of infoCommandIds.controls; let i = index" [formGroupName]="i"
                class="flex field-row field-float">
             <div class="flex-column flex-1">
               <div class="p-float-label">
@@ -154,7 +154,40 @@
                 </ng-template>
               </val-errors>
             </div>
-            <button (click)="removeCommand(i)" class="p-button-rounded p-button-text" icon="pi pi-minus"
+            <button (click)="removeInfoCommand(i)" class="p-button-rounded p-button-text" icon="pi pi-minus"
+                    pButton pRipple
+                    type="button"></button>
+          </div>
+        </div>
+
+        <h5 i18n>Action Commands</h5>
+        <div class="field-column flex-column gap-2" formArrayName="actionCommandIds">
+          <div *ngIf="actionCommandIds.controls.length === 0" i18n>No action commands</div>
+          <div *ngFor="let commandForm of actionCommandIds.controls; let i = index" [formGroupName]="i"
+               class="flex field-row field-float">
+            <div class="flex-column flex-1">
+              <div class="p-float-label">
+                <input class="w-12" formControlName="key" pInputText type="text">
+                <label i18n>Command name</label>
+              </div>
+              <val-errors class="p-error" controlName="key">
+                <ng-template valError="required">
+                  <ng-container i18n>Command name is required.</ng-container>
+                </ng-template>
+              </val-errors>
+            </div>
+            <div class="flex-column flex-1">
+              <div class="p-float-label flex">
+                <input class="w-12" formControlName="value" pInputText type="number">
+                <label i18n>Command id</label>
+              </div>
+              <val-errors class="p-error" controlName="value">
+                <ng-template valError="required">
+                  <ng-container i18n>Command id is required.</ng-container>
+                </ng-template>
+              </val-errors>
+            </div>
+            <button (click)="removeActionCommand(i)" class="p-button-rounded p-button-text" icon="pi pi-minus"
                     pButton pRipple
                     type="button"></button>
           </div>
@@ -170,7 +203,8 @@
                   type="button"></button>
           <div class="flex-grow-1"></div>
           <div class="flex flex-row gap-3">
-            <button (click)="addCommand()" *ngIf="type.value" class="p-button-rounded p-button-text hide-label-mobile"
+            <button (click)="addInfoCommand()" *ngIf="type.value"
+                    class="p-button-rounded p-button-text hide-label-mobile"
                     i18n-label
                     icon="pi pi-plus"
                     label="Add command"

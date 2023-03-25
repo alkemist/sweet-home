@@ -23,7 +23,7 @@ export class DevicesComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.deviceService.getListOrRefresh().then(devices => {
+    this.deviceService.getListOrRefresh().then((devices) => {
       this.devices = devices.map((device) => {
         device.categoryLabel = this.deviceCategories.get(device.category);
         device.typeLabel = this.deviceTypes.get(device.type);

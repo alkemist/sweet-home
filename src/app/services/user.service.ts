@@ -6,6 +6,8 @@ import { InvalidEmailError, OfflineError, TooManyRequestError, WrongApiKeyError,
 import { LoggerService } from './logger.service';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
 import { MessageService } from 'primeng/api';
+import { UserNotLoggedError } from '../errors/user-not-logged.error';
+import { UserNotExistError } from '../errors/user-not-exist.error';
 
 
 @Injectable({
@@ -43,8 +45,7 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
 
   getUserToken(): string {
     if (!this._user) {
-      // @TODO Create custom error
-      throw new Error();
+      this.loggerService.error(new UserNotLoggedError());
     }
 
     return this._token
@@ -82,8 +83,8 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
     return this.findOneById(userFirebase.uid).then((dataUser) => {
       if (!dataUser) {
         this._isLoggedIn.next(false);
-        // @TODO Create custom error
-        throw new Error();
+        this.loggerService.error(new UserNotExistError());
+        return;
       }
 
       this._user = new UserModel(dataUser);

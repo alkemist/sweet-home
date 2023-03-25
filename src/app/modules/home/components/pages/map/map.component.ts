@@ -1,6 +1,6 @@
 import { DeviceModel } from '@models';
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { DeviceService } from '@services';
+import { AppService, DeviceService } from '@services';
 import { MapBuilder } from '@tools';
 import { BaseComponent } from '../../../../../components/base.component';
 import { filter } from 'rxjs';
@@ -24,17 +24,23 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
   builder: MapBuilder = new MapBuilder();
   switchEditModeFormControl = new FormControl<boolean>(false);
 
-  constructor(private deviceService: DeviceService) {
+  constructor(
+    private appService: AppService,
+    private deviceService: DeviceService
+  ) {
     super();
 
-    this.builder.ready$.pipe(filter((ready) => ready))
+    this.sub = this.builder.ready$.pipe(filter((ready) => ready))
       .subscribe(() => {
         //console.log('-- Builder Ready');
         this.loadDevices();
       });
-    this.builder.deviceMoved$.subscribe((device) => {
+    this.sub = this.builder.deviceMoved$.subscribe((device) => {
       //console.log('-- Device moved', device);
-      this.deviceService.update(device);
+      this.appService.beginLoading();
+      this.deviceService.update(device).then(() => {
+        this.appService.endLoading();
+      })
     })
   }
 
@@ -44,6 +50,8 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
   }
 
   override ngOnInit() {
+    this.appService.beginLoading();
+
     this.sub = this.switchEditModeFormControl.valueChanges.subscribe((switchEditMode) => {
       this.builder.switchEditMode(!!switchEditMode);
     })
@@ -67,9 +75,14 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
       this.loading = false;
 
       this.builder.build(devices);
+      this.appService.endLoading();
 
+      // @TODO Remplacer par la mise en place du polling
+      this.appService.beginLoading();
       const components = this.builder.getComponents();
-      this.deviceService.updateComponents(components);
+      this.deviceService.updateComponents(components).then(() => {
+        this.appService.endLoading();
+      })
     });
   }
 }

@@ -30,7 +30,7 @@ export abstract class FirestoreService<
 
   protected constructor(
     protected messageService: MessageService,
-    private loggerService: LoggerService,
+    protected loggerService: LoggerService,
     protected collectionName: string,
     protected collectionNameTranslated: string,
     protected type: (new (data: HasIdWithInterface<B>) => M),

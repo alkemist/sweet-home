@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { Title } from '@angular/platform-browser';
-import { DeviceService, UserService } from '@services';
+import { AppService, DeviceService, UserService } from '@services';
 import { MenuItem } from 'primeng/api';
 import { DataModelMenuItems, LogoutMenuItem, MenuItems } from './menuItems.data';
 import { BaseComponent } from '../../base.component';
@@ -23,6 +23,7 @@ export class HeaderComponent extends BaseComponent implements OnInit {
   constructor(
     titleService: Title,
     private router: Router,
+    private appService: AppService,
     private userService: UserService,
     private deviceService: DeviceService,
   ) {
@@ -71,6 +72,8 @@ export class HeaderComponent extends BaseComponent implements OnInit {
         });
       }
     });
+
+    this.appService.loading$.subscribe((loading) => this.loading = loading);
 
     this.sub = this.userService.isLoggedIn().subscribe((logged) => {
       this.logged = logged;

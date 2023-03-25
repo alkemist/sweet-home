@@ -87,7 +87,8 @@ export class MapBuilder {
       if (device.type) {
         const componentRef = this.viewContainer.createComponent(ComponentClassByType[device.type].constructor);
         componentRef.instance.setPosition(device.position);
-        componentRef.instance.commandIds = device.commands;
+        componentRef.instance.actionInfoIds = device.infoCommandIds;
+        componentRef.instance.actionCommandIds = device.actionCommandIds;
 
         //console.log('-- Build device', device);
         const supervisor = new DeviceSupervisor(componentRef, ObjectHelper.clone(device));

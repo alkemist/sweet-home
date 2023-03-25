@@ -34,15 +34,25 @@ export class JeedomService {
     return this.request("jeeObject::full") as Promise<JeedomRoomInterface[]>;
   }
 
-  execCommands(commandIds: number[]): Promise<Record<number, JeedomCommandResultInterface>> {
+  execInfoCommands(commandIds: number[]): Promise<Record<number, JeedomCommandResultInterface>> {
     return this.request("cmd::execCmd", { id: commandIds }) as
       Promise<Record<number, JeedomCommandResultInterface>>;
   }
 
+  execActionCommand(commandId: number, options: unknown): Promise<JeedomCommandResultInterface> {
+    return this.request("cmd::execCmd", { id: commandId, options }) as
+      Promise<JeedomCommandResultInterface>;
+  }
+
   private request(method: string, params: Record<string, any> = {}) {
+    const apikey = this.userService.getUserToken();
+    if (!apikey) {
+      return Promise.resolve();
+    }
+
     return this.api.request(method, {
       ...params,
-      apikey: this.userService.getUserToken()
+      apikey
     });
   }
 }

@@ -1,14 +1,29 @@
 import { Title } from '@angular/platform-browser';
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppService {
-  pageTitle: string | undefined = undefined;
+  private pageTitle: string | undefined = undefined;
 
   constructor(private readonly titleService: Title) {
 
+  }
+
+  private _loading$ = new Subject<boolean>();
+
+  get loading$() {
+    return this._loading$.asObservable();
+  }
+
+  beginLoading() {
+    this._loading$.next(true);
+  }
+
+  endLoading() {
+    this._loading$.next(false);
   }
 
   setTitle(title: string | undefined) {

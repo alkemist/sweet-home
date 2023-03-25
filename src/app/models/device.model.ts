@@ -12,7 +12,8 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
     this._jeedomId = device.jeedomId ?? null;
     this._category = device.category ?? null;
     this._type = device.type ?? null;
-    this._commands = new SmartArrayModel<string, number>(device.commands);
+    this._infoCommandIds = new SmartArrayModel<string, number>(device.infoCommandIds);
+    this._actionCommandIds = new SmartArrayModel<string, number>(device.actionCommandIds);
     this._position = device.position ?? { x: 0, y: 0 };
   }
 
@@ -32,10 +33,16 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
     return this._jeedomId;
   }
 
-  protected _commands: SmartArrayModel<string, number>;
+  protected _infoCommandIds: SmartArrayModel<string, number>;
 
-  get commands() {
-    return this._commands;
+  get infoCommandIds() {
+    return this._infoCommandIds;
+  }
+
+  protected _actionCommandIds: SmartArrayModel<string, number>;
+
+  get actionCommandIds() {
+    return this._actionCommandIds;
   }
 
   get x(): number {
@@ -95,7 +102,8 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
       category: formData.category,
       type: formData.type,
       position: formData.position,
-      commands: new SmartArrayModel<string, number>(formData.commands).toRecord()
+      infoCommandIds: new SmartArrayModel<string, number>(formData.infoCommandIds).toRecord(),
+      actionCommandIds: new SmartArrayModel<string, number>(formData.actionCommandIds).toRecord(),
     }
 
     return new DeviceModel(deviceData)
@@ -108,7 +116,8 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
       position: this._position,
       category: this._category,
       type: this._type,
-      commands: this._commands.toRecord(),
+      infoCommandIds: this._infoCommandIds.toRecord(),
+      actionCommandIds: this._actionCommandIds.toRecord(),
     }
   }
 
@@ -119,7 +128,8 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
       position: this._position,
       category: this._category,
       type: this._type,
-      commands: this._commands,
+      infoCommandIds: this._infoCommandIds,
+      actionCommandIds: this._actionCommandIds,
     };
   }
 }

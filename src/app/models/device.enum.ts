@@ -1,5 +1,6 @@
 import { ThermostatAqaraComponent } from '../modules/devices/thermostats';
 import { BaseDeviceComponent } from '../modules/devices/base-device.component';
+import { AppService, DeviceService } from '@services';
 
 
 export enum DeviceCategoryEnum {
@@ -29,7 +30,7 @@ export const TypesByCategory: Record<DeviceCategoryEnum, DeviceTypeEnum[]> = {
 }
 
 interface ComponentClass {
-  constructor: (new () => BaseDeviceComponent),
+  constructor: (new (aS: AppService, dS: DeviceService) => BaseDeviceComponent),
   class: typeof ThermostatAqaraComponent
 }
 
