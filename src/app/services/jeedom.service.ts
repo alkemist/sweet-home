@@ -20,25 +20,23 @@ export class JeedomService {
     const jeedomApiUrl = `${ process.env['JEEDOM_HOST'] }/core/api/jeeApi.php`;
 
     this.api = new JSONRPCClient((jsonRPCRequest) => {
-        try {
-          return fetch(jeedomApiUrl, {
-            method: "POST",
-            body: JSON.stringify(jsonRPCRequest),
-          }).then((response) => {
-            if (response.status === 200) {
-              // Use client.receive when you received a JSON-RPC response.
-              return response
-                .json()
-                .then((jsonRPCResponse) => this.api.receive(jsonRPCResponse));
-            }
+        return fetch(jeedomApiUrl, {
+          method: "POST",
+          body: JSON.stringify(jsonRPCRequest),
+        }).then((response) => {
+          if (response.status === 200) {
+            // Use client.receive when you received a JSON-RPC response.
+            return response
+              .json()
+              .then((jsonRPCResponse) => this.api.receive(jsonRPCResponse));
+          }
 
-            this.loggerService.error(new JeedomApiError(response));
-            return Promise.resolve();
-          })
-        } catch (e) {
+          this.loggerService.error(new JeedomApiError(response));
+          return Promise.resolve();
+        }).catch((e) => {
           this.loggerService.error(new UnknownJeedomError(e));
-        }
-        return Promise.resolve();
+          return Promise.resolve();
+        })
       }
     );
   }
