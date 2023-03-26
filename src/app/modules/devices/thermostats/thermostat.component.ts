@@ -1,14 +1,19 @@
-import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { BaseDeviceComponent } from '../base-device.component';
 import { SmartArrayModel } from '@models';
+import { FormControl } from '@angular/forms';
+import { JeedomCommandResultInterface } from '../../../models/jeedom-command-result.interface';
+import { debounceTime } from 'rxjs';
 
 export type ThermostatCommandInfo = 'thermostat' | 'room';
 export type ThermostatCommandAction = 'thermostat';
 
 @Directive()
-export abstract class ThermostatComponent extends BaseDeviceComponent implements OnInit, OnDestroy {
+export abstract class ThermostatComponent extends BaseDeviceComponent implements OnInit, AfterContentInit, AfterViewInit, OnDestroy {
   @Input() override actionInfoIds = new SmartArrayModel<ThermostatCommandInfo, number>();
   @Input() override actionCommandIds = new SmartArrayModel<ThermostatCommandAction, number>();
+  thermostatControl = new FormControl<number>(0);
+  thermostatStep = 0.5;
   override infoCommandValues: Record<ThermostatCommandInfo, number | null> = {
     thermostat: null,
     room: null
@@ -16,8 +21,8 @@ export abstract class ThermostatComponent extends BaseDeviceComponent implements
 
   static override get infoCommandFilters(): Record<ThermostatCommandInfo, Record<string, string>> {
     return {
-      thermostat: { generic_type: 'THERMOSTAT_TEMPERATURE' },
-      room: {},
+      room: { generic_type: 'THERMOSTAT_TEMPERATURE' },
+      thermostat: {},
     }
   }
 
@@ -27,11 +32,40 @@ export abstract class ThermostatComponent extends BaseDeviceComponent implements
     }
   }
 
+  override closeModal() {
+    super.closeModal();
+
+    if (this.thermostatControl.value) {
+      this.setThermostat(this.thermostatControl.value);
+    }
+  }
+
+  override ngOnInit() {
+    super.ngOnInit();
+
+    this.sub = this.thermostatControl.valueChanges
+      .pipe(
+        debounceTime(2000),
+      )
+      .subscribe((thermostatValue) => {
+        if (thermostatValue) {
+
+        }
+      });
+  }
+
   setThermostat(value: number) {
     // console.log('-- Set thermostat', value);
     this.execUpdate('thermostat', { slider: value }).then(_ => {
       this.infoCommandValues['thermostat'] = value;
     })
+  }
+
+  override updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
+    super.updateInfoCommandValues(values);
+    if (!this.modalOpened) {
+      this.thermostatControl.setValue(this.infoCommandValues.thermostat, { emitEvent: false });
+    }
   }
 
   private execUpdate(commandAction: ThermostatCommandAction, commandValue: any) {

@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, RoutesRecognized } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { AppService, DeviceService, UserService } from '@services';
@@ -39,7 +39,8 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
       map(_ => titleService.getTitle().replaceAll('-', '/'))
     );
 
-    this.sub = this.router.events.subscribe((route: any) => {
+    // @TODO Trouver comment attendre le chargement de la page
+    /*this.sub = this.router.events.subscribe((route: any) => {
       if (route instanceof RoutesRecognized) {
         let routeData = route.state.root.firstChild?.data as Record<string, any>;
         // Submodule route data
@@ -55,7 +56,7 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
           this.noSleep.disable();
         }
       }
-    });
+    });*/
 
     DataModelMenuItems.forEach((menuItem) => {
       this.menuItems.push({
@@ -95,7 +96,7 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
       }
     });
 
-    this.userService.isLoggedIn().subscribe((logged) => {
+    this.sub = this.userService.isLoggedIn().subscribe((logged) => {
       this.logged = logged;
       this.loading = false;
     });

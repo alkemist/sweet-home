@@ -42,8 +42,8 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     category: new FormControl<DeviceCategoryEnum | null>(null, [ Validators.required ]),
     type: new FormControl<DeviceTypeEnum | null>(null, [ Validators.required ]),
     position: new FormGroup<CoordinateFormInterface>({
-      x: new FormControl<number | null>(null, [ Validators.required ]),
-      y: new FormControl<number | null>(null, [ Validators.required ]),
+      x: new FormControl<number | null>(10, [ Validators.required ]),
+      y: new FormControl<number | null>(10, [ Validators.required ]),
     }),
     infoCommandIds: new FormArray<FormGroup<KeyValueFormInterface>>([]),
     actionCommandIds: new FormArray<FormGroup<KeyValueFormInterface>>([]),
@@ -109,6 +109,8 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
             this.addActionCommand({ key: commandId, value: parseInt(command['id'], 10) })
           }
         });
+
+        this.importDeviceControl.setValue('', { emitEvent: false });
       }
     })
   }
@@ -146,7 +148,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
   }
 
   loadData() {
-    this.activatedRoute.data.subscribe(
+    this.sub = this.activatedRoute.data.subscribe(
       ((data) => {
         if (data && data['device']) {
           this.device = data['device'] as DeviceModel;

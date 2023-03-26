@@ -1,13 +1,14 @@
-import { ElementRef, ViewContainerRef } from '@angular/core';
+import { ElementRef, Injectable, ViewContainerRef } from '@angular/core';
 import { ComponentClassByType, CoordinateInterface, DeviceModel, SizeInterface } from '@models';
 import * as Hammer from 'hammerjs';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { DocumentHelper } from './document.helper';
 import { MathHelper } from './math.helper';
 import { DeviceSupervisor } from './device.supervisor';
-import { ObjectHelper } from './object.helper';
 import { SmartMapModel } from '../models/smart-map.model';
 import { BaseDeviceComponent } from '../modules/devices/base-device.component';
+import { SmartLoaderModel } from '../models/smart-loader.model';
+import { ObjectHelper } from './object.helper';
 
 interface WheelEventCustom extends WheelEvent {
   wheelDelta: number;
@@ -17,7 +18,12 @@ interface MouseEventCustom extends MouseEvent {
   toElement: Element;
 }
 
+@Injectable({
+  providedIn: 'root'
+})
 export class MapBuilder {
+  private _loaderManager = new SmartLoaderModel();
+
   private _viewContainerRef?: ViewContainerRef;
   private _containerSize: SizeInterface = { w: 0, h: 0 };
   private _mapSize: SizeInterface = { w: 0, h: 0 };
@@ -32,14 +38,18 @@ export class MapBuilder {
   private _mapPosition: CoordinateInterface = { x: 0, y: 0 };
   private _traversableElements: Element[] = [];
   private _supervisors = new SmartMapModel<string, DeviceSupervisor>();
+  private _hammerEnabled = true;
+  private _isEditMode = false;
 
   constructor() {
   }
 
-  private _editMode$ = new BehaviorSubject<boolean>(false);
+  get globalLoader() {
+    return this._loaderManager.globalLoader;
+  }
 
-  get editMode$() {
-    return this._editMode$.asObservable();
+  get allLoaders() {
+    return this._loaderManager.allLoaders;
   }
 
   private _deviceMoved$ = new Subject<DeviceModel>();
@@ -52,6 +62,12 @@ export class MapBuilder {
 
   get ready$() {
     return this._ready$.asObservable();
+  }
+
+  private _loaded$ = new Subject<boolean>();
+
+  get loaded$() {
+    return this._loaded$.asObservable();
   }
 
   private _hammer?: HammerManager;
@@ -76,28 +92,67 @@ export class MapBuilder {
     return this._viewContainerRef as ViewContainerRef;
   }
 
-  setViewContainer(viewContainerRef: ViewContainerRef | undefined) {
-    //console.log('-- Set View Container Ref', viewContainerRef);
-    this._viewContainerRef = viewContainerRef;
-    this.checkStatus();
+  reset() {
+    this._loaderManager = new SmartLoaderModel();
+
+    this._viewContainerRef = undefined;
+    this._mapElement = undefined;
+    this._pageElement = undefined;
+    this._hammer = undefined;
+    this._containerSize = { w: 0, h: 0 };
+    this._mapSize = { w: 0, h: 0 };
+    this._currentScale = 1;
+    this._scale = 1;
+    this._scaleMin = 1;
+    this._scaleMax = 1;
+    this._range = { x: 0, y: 0 };
+    this._rangeMin = { x: 0, y: 0 };
+    this._rangeMax = { x: 0, y: 0 };
+    this._currentMapPosition = { x: 0, y: 0 };
+    this._mapPosition = { x: 0, y: 0 };
+    this._traversableElements = [];
+    this._supervisors = new SmartMapModel<string, DeviceSupervisor>();
+    this._ready$ = new BehaviorSubject<boolean>(false);
+    this._loaded$ = new Subject<boolean>();
+    this._deviceMoved$ = new Subject<DeviceModel>();
+    this._hammerEnabled = true;
+    this._isEditMode = false;
+  }
+
+  isEditMode() {
+    return this._isEditMode;
+  }
+
+  enableHammer(enable: boolean) {
+    this._hammerEnabled = enable;
+    this.hammer.get('pinch').set({ enable });
+    this.hammer.get('pan').set({ enable, direction: Hammer.DIRECTION_ALL });
+  }
+
+  addLoader() {
+    return this._loaderManager.addLoader();
   }
 
   build(devices: DeviceModel[]) {
     devices.forEach((device) => {
       if (device.type) {
         const componentRef = this.viewContainer.createComponent(ComponentClassByType[device.type].constructor);
-        componentRef.instance.setPosition(device.position);
-        componentRef.instance.actionInfoIds = device.infoCommandIds;
-        componentRef.instance.actionCommandIds = device.actionCommandIds;
+        const componentInstance = componentRef.instance;
+        componentInstance.setPosition(device.position);
+        componentInstance.name = device.name;
+        componentInstance.actionInfoIds = device.infoCommandIds;
+        componentInstance.actionCommandIds = device.actionCommandIds;
 
-        //console.log('-- Build device', device);
-        const supervisor = new DeviceSupervisor(componentRef, ObjectHelper.clone(device));
+        componentInstance.loaded.subscribe(() => {
+          const supervisor = new DeviceSupervisor(componentRef, ObjectHelper.clone(device));
 
-        supervisor.moved$.subscribe(() => {
-          this._deviceMoved$.next(supervisor.device);
+          supervisor.moved$.subscribe(() => {
+            this._deviceMoved$.next(supervisor.device);
+          });
+
+          this._supervisors.set(device.id, supervisor);
+          this.checkDevicesStatus(devices.length);
         });
-
-        this._supervisors.set(device.id, supervisor);
       }
     })
 
@@ -109,11 +164,10 @@ export class MapBuilder {
   }
 
   switchEditMode(editMode: boolean) {
-    this._editMode$.next(editMode);
     //console.log('-- Switch Edit Mode');
 
-    this.hammer.get('pinch').set({ enable: !editMode });
-    this.hammer.get('pan').set({ enable: !editMode, direction: Hammer.DIRECTION_ALL });
+    this.enableHammer(!editMode)
+    this._isEditMode = editMode;
 
     this._supervisors
       .forEach((supervisor) => supervisor.switchEditMode(
@@ -138,10 +192,13 @@ export class MapBuilder {
     //console.log('Update current position', this._currentMapPosition);
   }
 
-  setElements(pageRef: ElementRef, mapRef: ElementRef) {
+  setElements(viewContainerRef: ViewContainerRef | undefined, pageRef: ElementRef, mapRef: ElementRef) {
     //console.log('-- Set Elements');
+
+    this._viewContainerRef = viewContainerRef;
     this._pageElement = pageRef.nativeElement;
     this._mapElement = mapRef.nativeElement;
+    this.checkPageStatus();
   }
 
   updateSize() {
@@ -229,17 +286,23 @@ export class MapBuilder {
     this._mapSize.w = target.naturalWidth;
     this._mapSize.h = target.naturalHeight;
 
-    this.checkStatus();
+    this.checkPageStatus();
   }
 
-  private checkStatus() {
-    if (this._viewContainerRef && this._mapSize.w && this._mapSize.h) {
-      this._ready$.next(true);
+  private checkDevicesStatus(devicesCount: number) {
+    // console.log('-- Check devices status', this._supervisors.size, devicesCount)
 
+    if (this._supervisors.size === devicesCount) {
+      this._loaded$.next(true);
+    }
+  }
+
+  private checkPageStatus() {
+    if (this._viewContainerRef && this._mapSize.w && this._mapSize.h) {
       this.onResize();
       this.initHammer();
       this.pageElement.addEventListener('wheel', (e) => {
-        if (this._editMode$.value) {
+        if (!this._hammerEnabled) {
           return;
         }
 
@@ -255,6 +318,8 @@ export class MapBuilder {
 
         this.updateMap(this._currentMapPosition.x, this._currentMapPosition.y, this._scale);
       }, false);
+
+      this._ready$.next(true);
     }
   }
 

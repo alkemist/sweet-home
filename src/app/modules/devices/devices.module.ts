@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
-import { ThermostatAqaraComponent } from './thermostats';
+import { ThermostatAqaraComponent, ThermostatMoesComponent } from './thermostats';
 import { SharingModule } from '../sharing.module';
 
 @NgModule({
   declarations: [
-    ThermostatAqaraComponent
+    ThermostatAqaraComponent,
+    ThermostatMoesComponent
   ],
   imports: [
     SharingModule

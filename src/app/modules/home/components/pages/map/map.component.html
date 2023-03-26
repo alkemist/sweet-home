@@ -1,4 +1,4 @@
-<blockable-div #blockable class="page-container__content">
+<blockable-div #lockable class="page-container__content">
   <div #page id="page">
     <div #map [class]="{draggable: !switchEditModeFormControl.value}" id="map">
       <img #plan (mousedown)="$event.preventDefault()" alt="Plan" src=""/>
@@ -11,6 +11,6 @@
     <p-inputSwitch [formControl]="switchEditModeFormControl"></p-inputSwitch>
   </div>
 </blockable-div>
-<p-blockUI [blocked]="mapLoading" [target]="blockable">
+<p-blockUI [blocked]="mapLoading" [target]="lockable">
   <p-progressSpinner></p-progressSpinner>
 </p-blockUI>

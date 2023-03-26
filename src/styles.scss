@@ -180,3 +180,8 @@ p-dropdown.ng-touched.p-invalid > div {
 .draggable {
   cursor: move;
 }
+
+.editMode {
+  box-shadow: 0 0 0 1px #d0d0d0;
+  background: rgba(0, 0, 0, 0.6);
+}

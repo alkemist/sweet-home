@@ -5,6 +5,7 @@ import { JeedomCommandResultInterface } from '../models/jeedom-command-result.in
 import { JeedomRoomInterface } from '../models/jeedom-room.interface';
 import { UnknownJeedomError } from '../errors/unknown-jeedom.error';
 import { LoggerService } from './logger.service';
+import { JeedomApiError } from '../errors/jeedom-api.error';
 
 @Injectable({
   providedIn: 'root'
@@ -28,10 +29,10 @@ export class JeedomService {
           return response
             .json()
             .then((jsonRPCResponse) => this.api.receive(jsonRPCResponse));
-        } else {
-          this.loggerService.error(new UnknownJeedomError(response.statusText));
-          return Promise.resolve();
         }
+
+        this.loggerService.error(new JeedomApiError(response));
+        return Promise.resolve();
       })
     );
   }
@@ -56,9 +57,14 @@ export class JeedomService {
       return Promise.resolve();
     }
 
-    return this.api.request(method, {
-      ...params,
-      apikey
-    });
+    try {
+      return this.api.request(method, {
+        ...params,
+        apikey
+      });
+    } catch (e) {
+      this.loggerService.error(new UnknownJeedomError(e));
+    }
+    return Promise.resolve();
   }
 }

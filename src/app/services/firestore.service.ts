@@ -117,7 +117,7 @@ export abstract class FirestoreService<
       await setDoc(ref, document.toFirestore());
       this.messageService.add({
         severity: 'success',
-        summary: `${ this.collectionNameTranslated } ${ $localize`added` }`
+        detail: `${ this.collectionNameTranslated } ${ $localize`added` }`
       });
     } catch (error) {
       this.loggerService.error(new DatabaseError(
@@ -161,7 +161,7 @@ export abstract class FirestoreService<
       await deleteDoc(ref);
       this.messageService.add({
         severity: 'success',
-        summary: `${ this.collectionNameTranslated } ${ $localize`deleted` }`
+        detail: `${ this.collectionNameTranslated } ${ $localize`deleted` }`
       });
     } catch (error) {
       this.loggerService.error(new DatabaseError(

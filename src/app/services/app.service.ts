@@ -1,28 +1,14 @@
 import { Title } from '@angular/platform-browser';
 import { Injectable } from '@angular/core';
-import { SmartLoaderModel } from '../models/smart-loader.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppService {
-  private loaderManager = new SmartLoaderModel();
   private pageTitle: string | undefined = undefined;
 
   constructor(private readonly titleService: Title) {
 
-  }
-
-  get globalLoader() {
-    return this.loaderManager.globalLoader;
-  }
-
-  get allLoaders() {
-    return this.loaderManager.allLoaders;
-  }
-
-  addLoader() {
-    return this.loaderManager.addLoader();
   }
 
   setTitle(title: string | undefined) {

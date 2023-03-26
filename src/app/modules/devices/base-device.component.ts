@@ -1,22 +1,34 @@
-import { Directive, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterContentInit,
+  AfterViewInit,
+  Directive,
+  EventEmitter,
+  HostBinding,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output
+} from '@angular/core';
 import { CoordinateInterface, SmartArrayModel } from '@models';
 import { BaseComponent } from '../../components/base.component';
 import { JeedomCommandResultInterface } from '../../models/jeedom-command-result.interface';
-import { AppService, DeviceService } from '@services';
+import { DeviceService } from '@services';
+import { MapBuilder } from '@tools';
 
 @Directive()
-export abstract class BaseDeviceComponent extends BaseComponent implements OnInit, OnDestroy {
+export abstract class BaseDeviceComponent extends BaseComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
   @HostBinding('class.draggable') draggable: boolean = false;
-  @Input() jeedomId?: number;
-  @Input() position?: CoordinateInterface;
   @HostBinding('style.left') x = '0px';
   @HostBinding('style.top') y = '0px';
+  @Input() name: string = '';
   @Input() actionInfoIds = new SmartArrayModel<string, number>();
   @Input() actionCommandIds = new SmartArrayModel<string, number>();
+  @Output() loaded = new EventEmitter<boolean>();
   infoCommandValues: Record<string, unknown> = {};
+  modalOpened: boolean = false;
 
   public constructor(
-    private appService: AppService,
+    private mapBuilder: MapBuilder,
     private deviceService: DeviceService
   ) {
     super();
@@ -30,10 +42,31 @@ export abstract class BaseDeviceComponent extends BaseComponent implements OnIni
     return {};
   }
 
+  @HostBinding('class.editMode') get isEditMode() {
+    return this.mapBuilder.isEditMode();
+  };
+
   ngOnInit() {
-    if (this.position) {
-      this.setPosition(this.position);
+  }
+
+  ngAfterContentInit() {
+  }
+
+  ngAfterViewInit() {
+    this.loaded.emit(true);
+  }
+
+  openModal(): boolean {
+    if (this.mapBuilder.isEditMode()) {
+      return false;
     }
+
+    this.modalOpened = true;
+    return true;
+  }
+
+  closeModal() {
+    this.modalOpened = false;
   }
 
   setPosition(position: CoordinateInterface) {
@@ -58,7 +91,7 @@ export abstract class BaseDeviceComponent extends BaseComponent implements OnIni
 
   execCommand(commandId: number, commandName: string, commandValue: unknown) {
     return new Promise<any>(resolve => {
-      const loader = this.appService.addLoader();
+      const loader = this.mapBuilder.addLoader();
       this.deviceService.execAction(commandId, commandName, commandValue).then(_ => {
         // console.log('-- Exec action result', value);
         loader.finish();

@@ -10,7 +10,6 @@ import { RippleModule } from 'primeng/ripple';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { TableModule } from 'primeng/table';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { ValdemortModule } from 'ngx-valdemort';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -18,6 +17,10 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { BlockUIModule } from 'primeng/blockui';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { DialogModule } from 'primeng/dialog';
+
+import { ValdemortModule } from 'ngx-valdemort';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 const modules = [
   ToolbarModule,
@@ -34,12 +37,15 @@ const modules = [
   DropdownModule,
   InputNumberModule,
   ConfirmDialogModule,
+  DialogModule,
   BlockUIModule,
   ProgressSpinnerModule,
   InputSwitchModule,
+  OverlayPanelModule,
 
   ValdemortModule,
 ];
+
 
 @NgModule({
   imports: modules,
