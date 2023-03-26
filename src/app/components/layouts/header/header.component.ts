@@ -2,12 +2,13 @@ import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RoutesRecognized } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { Title } from '@angular/platform-browser';
-import { AppService, DeviceService, UserService } from '@services';
+import { AppService, DeviceService, LoggerService, UserService } from '@services';
 import { MenuItem } from 'primeng/api';
 import { DataModelMenuItems, LogoutMenuItem, MenuItems } from './menuItems.data';
 import { BaseComponent } from '../../base.component';
 import { default as NoSleep } from 'nosleep.js';
 import { MapBuilder } from '@tools';
+import { NoSleepError } from '../../../errors/no-sleep.error';
 
 
 @Component({
@@ -30,6 +31,7 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
     private appService: AppService,
     private userService: UserService,
     private deviceService: DeviceService,
+    private loggerService: LoggerService,
     private mapBuilder: MapBuilder,
   ) {
     super();
@@ -41,9 +43,11 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
       map(_ => titleService.getTitle().replaceAll('-', '/'))
     );
 
-    this.sub = this.mapBuilder.ready$.subscribe((ready) => {
+    this.sub = this.mapBuilder.loaded$.subscribe((ready) => {
       if (ready && !this.noSleep.isEnabled) {
-        void this.noSleep.enable();
+        void this.noSleep.enable().catch((e) => {
+          this.loggerService.error(new NoSleepError(e));
+        })
       } else if (!ready && this.noSleep.isEnabled) {
         this.noSleep.disable();
       }

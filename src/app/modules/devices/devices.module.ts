@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
-import { ThermostatAqaraComponent, ThermostatMoesComponent } from './thermostats';
+import { ThermostatAqaraComponent, ThermostatMoesComponent } from './thermostat';
 import { SharingModule } from '../sharing.module';
+import { OnOffPlugLidlComponent } from './on-off';
 
 @NgModule({
   declarations: [
     ThermostatAqaraComponent,
-    ThermostatMoesComponent
+    ThermostatMoesComponent,
+    OnOffPlugLidlComponent
   ],
   imports: [
     SharingModule

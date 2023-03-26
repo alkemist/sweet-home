@@ -16,9 +16,8 @@ import {
   setDoc,
   where,
 } from 'firebase/firestore';
-import { DocumentBackInterface, DocumentModel } from '@models';
+import { DocumentBackInterface, DocumentModel, HasIdInterface, HasIdWithInterface } from '@models';
 import { objectConverter } from '../converters/object.converter';
-import { HasIdInterface, HasIdWithInterface } from '../models/id.interface';
 import { MessageService } from 'primeng/api';
 
 
@@ -139,7 +138,7 @@ export abstract class FirestoreService<
       await setDoc(ref, document.toFirestore());
       this.messageService.add({
         severity: 'success',
-        detail: `${ this.collectionNameTranslated } ${ $localize`updated` }`
+        detail: `${ this.collectionNameTranslated } ${ $localize`updated` }`,
       });
     } catch (error) {
       this.loggerService.error(new DatabaseError(

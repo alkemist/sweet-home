@@ -173,6 +173,18 @@ p-dropdown.ng-touched.p-invalid > div {
   }
 }
 
+.p-toast {
+  &, .p-element {
+    max-width: 100%;
+  }
+
+  &.p-toast-bottom-right, &.p-toast-top-right {
+    right: 0 !important;
+  }
+
+  padding: 0 20px;
+}
+
 .align-right {
   text-align: right !important;
 }

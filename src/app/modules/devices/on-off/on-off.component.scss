@@ -1,0 +1,14 @@
+:host {
+  height: 50px;
+  width: 50px;
+}
+
+#content {
+  &.on i {
+    color: yellow;
+  }
+
+  i {
+    font-size: 32px;
+  }
+}

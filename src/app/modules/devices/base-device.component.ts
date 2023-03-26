@@ -10,9 +10,8 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { CoordinateInterface, SmartArrayModel } from '@models';
+import { CoordinateInterface, JeedomCommandResultInterface, SmartArrayModel } from '@models';
 import { BaseComponent } from '../../components/base.component';
-import { JeedomCommandResultInterface } from '../../models/jeedom-command-result.interface';
 import { DeviceService } from '@services';
 import { MapBuilder } from '@tools';
 import { OverlayPanel } from 'primeng/overlaypanel';
@@ -68,12 +67,15 @@ export abstract class BaseDeviceComponent extends BaseComponent implements OnIni
     this.loaded.emit(true);
   }
 
-  openModal(): boolean {
-    if (this.mapBuilder.isEditMode() || this.mapBuilder.isDraggging()) {
-      return false;
+  isUserAction() {
+    return !this.mapBuilder.isEditMode() && !this.mapBuilder.isDraggging()
+  }
+
+  openModal() {
+    if (!this.isUserAction()) {
+      return;
     }
     this.modalOpened = true;
-    return true;
   }
 
   closeModal() {
@@ -81,14 +83,13 @@ export abstract class BaseDeviceComponent extends BaseComponent implements OnIni
   }
 
   setPosition(position: CoordinateInterface) {
-    // console.log('-- Set device position', position);
+    // console.log(`-- [${this.name}] -- Set device position`, position);
     this.x = position.x + 'px';
     this.y = position.y + 'px';
   }
 
   updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
-    // console.log("-- Current info command values", this.infoCommandValues);
-    // console.log("-- Update info command values", values);
+    //console.log(`-- [${ this.name }] Update info command values`, values);
 
     this.infoCommandValues = this.actionInfoIds.reduce((result, current) => {
       result[current.key] = values[current.value]
@@ -97,14 +98,14 @@ export abstract class BaseDeviceComponent extends BaseComponent implements OnIni
       return result;
     }, {} as Record<string, unknown>);
 
-    // console.log('-- Updated info command values', this.infoCommandValues)
+    // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
   }
 
-  execCommand(commandId: number, commandName: string, commandValue: unknown) {
+  execCommand(commandId: number, commandName: string, commandValue?: unknown) {
     return new Promise<any>(resolve => {
       const loader = this.mapBuilder.addLoader();
-      this.deviceService.execAction(commandId, commandName, commandValue).then(_ => {
-        // console.log('-- Exec action result', value);
+      this.deviceService.execAction(commandId, commandName, commandValue).then((value) => {
+        console.log(`-- [${ this.name }] Exec action result`, value);
         loader.finish();
         resolve(commandValue);
       });

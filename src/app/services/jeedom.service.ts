@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { JSONRPCClient } from 'json-rpc-2.0';
 import { UserService } from './user.service';
-import { JeedomCommandResultInterface } from '../models/jeedom-command-result.interface';
+import { JeedomCommandResultInterface } from '@models';
 import { JeedomRoomInterface } from '../models/jeedom-room.interface';
 import { UnknownJeedomError } from '../errors/unknown-jeedom.error';
 import { LoggerService } from './logger.service';
@@ -19,21 +19,27 @@ export class JeedomService {
   ) {
     const jeedomApiUrl = `${ process.env['JEEDOM_HOST'] }/core/api/jeeApi.php`;
 
-    this.api = new JSONRPCClient((jsonRPCRequest) =>
-      fetch(jeedomApiUrl, {
-        method: "POST",
-        body: JSON.stringify(jsonRPCRequest),
-      }).then((response) => {
-        if (response.status === 200) {
-          // Use client.receive when you received a JSON-RPC response.
-          return response
-            .json()
-            .then((jsonRPCResponse) => this.api.receive(jsonRPCResponse));
-        }
+    this.api = new JSONRPCClient((jsonRPCRequest) => {
+        try {
+          return fetch(jeedomApiUrl, {
+            method: "POST",
+            body: JSON.stringify(jsonRPCRequest),
+          }).then((response) => {
+            if (response.status === 200) {
+              // Use client.receive when you received a JSON-RPC response.
+              return response
+                .json()
+                .then((jsonRPCResponse) => this.api.receive(jsonRPCResponse));
+            }
 
-        this.loggerService.error(new JeedomApiError(response));
+            this.loggerService.error(new JeedomApiError(response));
+            return Promise.resolve();
+          })
+        } catch (e) {
+          this.loggerService.error(new UnknownJeedomError(e));
+        }
         return Promise.resolve();
-      })
+      }
     );
   }
 

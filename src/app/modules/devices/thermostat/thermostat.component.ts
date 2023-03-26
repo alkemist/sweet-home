@@ -1,8 +1,7 @@
 import { AfterContentInit, AfterViewInit, Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { BaseDeviceComponent } from '../base-device.component';
-import { SmartArrayModel } from '@models';
+import { JeedomCommandResultInterface, SmartArrayModel } from '@models';
 import { FormControl } from '@angular/forms';
-import { JeedomCommandResultInterface } from '../../../models/jeedom-command-result.interface';
 import { debounceTime } from 'rxjs';
 
 export type ThermostatCommandInfo = 'thermostat' | 'room';
@@ -55,7 +54,7 @@ export abstract class ThermostatComponent extends BaseDeviceComponent implements
   }
 
   setThermostat(value: number) {
-    // console.log('-- Set thermostat', value);
+    // console.log(`-- [${this.name}] Set thermostat`, value);
     this.execUpdate('thermostat', { slider: value }).then(_ => {
       this.infoCommandValues['thermostat'] = value;
     })

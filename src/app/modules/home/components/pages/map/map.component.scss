@@ -20,6 +20,10 @@
   position: relative;
 }
 
+#plan {
+  pointer-events: none;
+}
+
 .actions {
   position: fixed;
   right: 0;
