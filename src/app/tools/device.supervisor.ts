@@ -4,6 +4,7 @@ import { CoordinateInterface, DeviceModel, SizeInterface } from '@models';
 import { Subject } from 'rxjs';
 import { MathHelper } from './math.helper';
 import * as Hammer from 'hammerjs';
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 export class DeviceSupervisor {
   private _isDragging = false;
@@ -12,6 +13,7 @@ export class DeviceSupervisor {
   private _mapSize: SizeInterface = { w: 0, h: 0 };
   private _scale: number = 1;
   private readonly _hammer?: HammerManager;
+  private _overlayPanel: OverlayPanel;
 
   constructor(
     private _componentRef: ComponentRef<BaseDeviceComponent>,
@@ -19,6 +21,7 @@ export class DeviceSupervisor {
   ) {
     //console.log('-- Supervisor', _device.position, _device.x, _device.y);
 
+    this._overlayPanel = _componentRef.instance.overlayPanel;
     this._hammer = new Hammer(this._componentRef.location.nativeElement);
     this._deviceSize = {
       w: this._componentRef.location.nativeElement.offsetWidth,
@@ -86,6 +89,7 @@ export class DeviceSupervisor {
     this.hammer.get('pan').set({ enable: editMode, direction: Hammer.DIRECTION_ALL });
 
     if (editMode) {
+      this._overlayPanel.show({ target: this._componentRef.location.nativeElement } as MouseEvent);
       this._componentRef.instance.draggable = true;
       this._scale = _scale;
       this._mapSize = _mapSize;
@@ -93,6 +97,7 @@ export class DeviceSupervisor {
 
 
     } else {
+      this._overlayPanel.hide();
       this.hammer.stop(true);
       this._componentRef.instance.draggable = false;
     }

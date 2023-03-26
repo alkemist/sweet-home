@@ -49,7 +49,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
         this.loadDevices();
       });
 
-    this.sub = this.mapBuilder.loaded$.subscribe(() => {
+    this.sub = this.mapBuilder.loaded$.pipe(filter((loaded) => loaded)).subscribe(() => {
       //console.log('-- Map loaded');
 
       this.mapLoading = false;
@@ -99,7 +99,6 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
 
   ngOnInit() {
     this.sub = this.switchEditModeFormControl.valueChanges.subscribe((switchEditMode) => {
-      // @TODO Trouver comment afficher le nom des devices en tooltip sur le EditMode = true
       this.mapBuilder.switchEditMode(!!switchEditMode);
     })
   }
@@ -113,6 +112,12 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
       };
       this.planRef.nativeElement.src = '/assets/images/plan.svg';
     }
+  }
+
+  override ngOnDestroy() {
+    super.ngOnDestroy();
+
+    this.mapBuilder.reset();
   }
 
   loadDevices() {

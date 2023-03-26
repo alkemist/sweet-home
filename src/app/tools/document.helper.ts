@@ -12,6 +12,7 @@ export abstract class DocumentHelper {
       }
     }
 
+    // console.log("traverseChildren", children);
     return children;
   }
 }

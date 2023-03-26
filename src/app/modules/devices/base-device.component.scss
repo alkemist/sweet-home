@@ -2,6 +2,14 @@
   display: block;
   position: absolute;
   padding: 5px;
+
+  ::ng-deep {
+    .p-overlaypanel {
+      top: 100% !important;
+      left: 0 !important;
+      text-align: center;
+    }
+  }
 }
 
 .name {
@@ -11,3 +19,7 @@
   height: 20px;
   font-weight: bold;
 }
+
+
+
+

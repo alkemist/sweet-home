@@ -7,13 +7,15 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Output
+  Output,
+  ViewChild
 } from '@angular/core';
 import { CoordinateInterface, SmartArrayModel } from '@models';
 import { BaseComponent } from '../../components/base.component';
 import { JeedomCommandResultInterface } from '../../models/jeedom-command-result.interface';
 import { DeviceService } from '@services';
 import { MapBuilder } from '@tools';
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 @Directive()
 export abstract class BaseDeviceComponent extends BaseComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
@@ -42,9 +44,19 @@ export abstract class BaseDeviceComponent extends BaseComponent implements OnIni
     return {};
   }
 
+  @ViewChild("overlayPanel") _overlayPanel?: OverlayPanel;
+
+  get overlayPanel() {
+    return this._overlayPanel as OverlayPanel;
+  }
+
   @HostBinding('class.editMode') get isEditMode() {
     return this.mapBuilder.isEditMode();
   };
+
+  get isDragging() {
+    return this.mapBuilder.isDraggging();
+  }
 
   ngOnInit() {
   }
@@ -57,10 +69,9 @@ export abstract class BaseDeviceComponent extends BaseComponent implements OnIni
   }
 
   openModal(): boolean {
-    if (this.mapBuilder.isEditMode()) {
+    if (this.mapBuilder.isEditMode() || this.mapBuilder.isDraggging()) {
       return false;
     }
-
     this.modalOpened = true;
     return true;
   }

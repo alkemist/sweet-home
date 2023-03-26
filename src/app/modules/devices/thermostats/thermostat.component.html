@@ -1,5 +1,7 @@
-<div (click)="openModal()" class="flex flex-column gap-2">
-  <div *ngIf="infoCommandValues.room" class="info flex flex-row align-content-center gap-1">
+<div #content (click)="openModal()" [pTooltip]="name"
+     [tooltipDisabled]="isEditMode || isDragging" class="flex flex-column gap-2"
+     tooltipEvent="hover" tooltipPosition="top">
+  <div class="info flex flex-row align-content-center gap-1">
     <div class="icon">
       <i class="fa fa-thermometer-half"></i>
     </div>
@@ -7,7 +9,7 @@
       {{ infoCommandValues.room }}°
     </div>
   </div>
-  <div *ngIf="infoCommandValues.thermostat" class="info flex flex-row align-content-center gap-1">
+  <div class="info flex flex-row align-content-center gap-1">
     <div class="icon">
       <i class="fa fa-cog"></i>
     </div>
@@ -16,6 +18,9 @@
     </div>
   </div>
 </div>
+<p-overlayPanel #overlayPanel [appendTo]="content" [dismissable]="false">
+  {{ name }}
+</p-overlayPanel>
 <p-dialog (onHide)="closeModal()" [(visible)]="modalOpened"
           [header]="name" [resizable]="false"
           appendTo="body"

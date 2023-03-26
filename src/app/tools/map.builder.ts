@@ -40,6 +40,7 @@ export class MapBuilder {
   private _supervisors = new SmartMapModel<string, DeviceSupervisor>();
   private _hammerEnabled = true;
   private _isEditMode = false;
+  private _isDragging = false;
 
   constructor() {
   }
@@ -112,15 +113,20 @@ export class MapBuilder {
     this._mapPosition = { x: 0, y: 0 };
     this._traversableElements = [];
     this._supervisors = new SmartMapModel<string, DeviceSupervisor>();
-    this._ready$ = new BehaviorSubject<boolean>(false);
-    this._loaded$ = new Subject<boolean>();
-    this._deviceMoved$ = new Subject<DeviceModel>();
     this._hammerEnabled = true;
     this._isEditMode = false;
+    this._isDragging = false;
+
+    this._ready$.next(false);
+    this._loaded$.next(false);
   }
 
   isEditMode() {
     return this._isEditMode;
+  }
+
+  isDraggging() {
+    return this._isDragging;
   }
 
   enableHammer(enable: boolean) {
@@ -155,8 +161,6 @@ export class MapBuilder {
         });
       }
     })
-
-    this.updateTraversableElements();
   }
 
   getComponents(): BaseDeviceComponent[] {
@@ -246,6 +250,7 @@ export class MapBuilder {
 
     this.hammer.on('pan', (event) => {
       //console.log('-- Hammer pan', event.deltaX, event.deltaY)
+      this._isDragging = true;
 
       this.updateCurrentPosition({
         x: MathHelper.round(this._mapPosition.x + event.deltaX),
@@ -257,6 +262,7 @@ export class MapBuilder {
 
     this.hammer.on('pinch pinchmove', (event) => {
       //console.log('-- Hammer pinch')
+      this._isDragging = true;
 
       this._currentScale = MathHelper.clamp(
         MathHelper.round(this._scale * event.scale),
@@ -275,6 +281,10 @@ export class MapBuilder {
     this.hammer.on('panend pancancel pinchend pinchcancel', () => {
       //console.log('-- Hammer end')
       this.updateValues();
+
+      setTimeout(() => {
+        this._isDragging = false;
+      }, 200)
     });
   }
 
@@ -294,6 +304,8 @@ export class MapBuilder {
 
     if (this._supervisors.size === devicesCount) {
       this._loaded$.next(true);
+
+      this.updateTraversableElements();
     }
   }
 
@@ -333,10 +345,11 @@ export class MapBuilder {
         return;
       }
 
-      //console.log('-- Out of container');
+      // console.log('-- Out of container', element);
       if (this._hammer) {
         this.hammer.stop(true);
         this.updateValues();
+        this._isDragging = false;
       }
     }, true);
   }

@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RoutesRecognized } from '@angular/router';
 import { map, Observable } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { AppService, DeviceService, UserService } from '@services';
@@ -7,6 +7,7 @@ import { MenuItem } from 'primeng/api';
 import { DataModelMenuItems, LogoutMenuItem, MenuItems } from './menuItems.data';
 import { BaseComponent } from '../../base.component';
 import { default as NoSleep } from 'nosleep.js';
+import { MapBuilder } from '@tools';
 
 
 @Component({
@@ -29,6 +30,7 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
     private appService: AppService,
     private userService: UserService,
     private deviceService: DeviceService,
+    private mapBuilder: MapBuilder,
   ) {
     super();
 
@@ -39,8 +41,15 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
       map(_ => titleService.getTitle().replaceAll('-', '/'))
     );
 
-    // @TODO Trouver comment attendre le chargement de la page
-    /*this.sub = this.router.events.subscribe((route: any) => {
+    this.sub = this.mapBuilder.ready$.subscribe((ready) => {
+      if (ready && !this.noSleep.isEnabled) {
+        void this.noSleep.enable();
+      } else if (!ready && this.noSleep.isEnabled) {
+        this.noSleep.disable();
+      }
+    })
+
+    this.sub = this.router.events.subscribe((route: any) => {
       if (route instanceof RoutesRecognized) {
         let routeData = route.state.root.firstChild?.data as Record<string, any>;
         // Submodule route data
@@ -48,15 +57,10 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
           routeData = route.state.root.children[0].children[0].data;
         }
 
-        if (routeData && routeData['noSleep'] && routeData['noSleep'] === true) {
-          if (!this.noSleep.isEnabled) {
-            void this.noSleep.enable();
-          }
-        } else if (this.noSleep.isEnabled) {
-          this.noSleep.disable();
+        if (routeData) {
         }
       }
-    });*/
+    });
 
     DataModelMenuItems.forEach((menuItem) => {
       this.menuItems.push({
