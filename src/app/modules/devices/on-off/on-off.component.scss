@@ -4,11 +4,12 @@
 }
 
 #content {
-  &.on i {
-    color: yellow;
+  i {
+    color: grey;
+    font-size: 32px;
   }
 
-  i {
-    font-size: 32px;
+  &.on i {
+    color: yellow;
   }
 }

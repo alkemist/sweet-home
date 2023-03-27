@@ -1,0 +1,14 @@
+<div #content (click)="openModal()" [pTooltip]="name"
+     [tooltipDisabled]="isEditMode || isDragging" class="flex flex-column gap-2"
+     tooltipEvent="hover" tooltipPosition="top">
+  Chromecast
+</div>
+<p-overlayPanel #overlayPanel [appendTo]="content" [dismissable]="false">
+  {{ name }}
+</p-overlayPanel>
+<p-dialog (onHide)="closeModal()" [(visible)]="modalOpened"
+          [header]="name" [resizable]="false"
+          appendTo="body"
+          position="bottom">
+  Chromecast
+</p-dialog>

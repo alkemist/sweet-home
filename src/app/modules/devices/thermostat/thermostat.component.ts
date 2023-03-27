@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Directive, Input, OnDestroy, OnInit } from '@angular/core';
+import { Directive, Input } from '@angular/core';
 import { BaseDeviceComponent } from '../base-device.component';
 import { JeedomCommandResultInterface, SmartArrayModel } from '@models';
 import { FormControl } from '@angular/forms';
@@ -8,15 +8,17 @@ export type ThermostatCommandInfo = 'thermostat' | 'room';
 export type ThermostatCommandAction = 'thermostat';
 
 @Directive()
-export abstract class ThermostatComponent extends BaseDeviceComponent implements OnInit, AfterContentInit, AfterViewInit, OnDestroy {
+export abstract class DeviceThermostatComponent extends BaseDeviceComponent {
   @Input() override actionInfoIds = new SmartArrayModel<ThermostatCommandInfo, number>();
-  @Input() override actionCommandIds = new SmartArrayModel<ThermostatCommandAction, number>();
-  thermostatControl = new FormControl<number>(0);
-  thermostatStep = 0.5;
+  @Input() override actionCommandIds = new SmartArrayModel<ThermostatCommandAction, number>()
+
   override infoCommandValues: Record<ThermostatCommandInfo, number | null> = {
     thermostat: null,
     room: null
   };
+
+  thermostatControl = new FormControl<number>(0);
+  thermostatStep = 0.5;
 
   static override get infoCommandFilters(): Record<ThermostatCommandInfo, Record<string, string>> {
     return {

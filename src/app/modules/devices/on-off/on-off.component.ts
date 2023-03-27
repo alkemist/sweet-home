@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Directive, Input, OnDestroy, OnInit } from '@angular/core';
+import { Directive, Input } from '@angular/core';
 import { BaseDeviceComponent } from '../base-device.component';
 import { JeedomCommandResultInterface, SmartArrayModel } from '@models';
 import { FormControl } from '@angular/forms';
@@ -7,13 +7,15 @@ export type OnOffCommandInfo = 'state';
 export type OnOffCommandAction = 'on' | 'off' | 'toggle';
 
 @Directive()
-export abstract class OnOffComponent extends BaseDeviceComponent implements OnInit, AfterContentInit, AfterViewInit, OnDestroy {
+export abstract class DeviceOnOffComponent extends BaseDeviceComponent {
   @Input() override actionInfoIds = new SmartArrayModel<OnOffCommandInfo, number>();
   @Input() override actionCommandIds = new SmartArrayModel<OnOffCommandAction, number>();
-  onOffControl = new FormControl<boolean>(false);
+
   override infoCommandValues: Record<OnOffCommandInfo, boolean | null> = {
     state: null
   };
+
+  onOffControl = new FormControl<boolean>(false);
 
   static override get infoCommandFilters(): Record<OnOffCommandInfo, Record<string, string>> {
     return {

@@ -1,16 +1,16 @@
-import { AfterContentInit, AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { ThermostatCommandInfo, ThermostatComponent } from '../thermostat.component';
+import { Component } from '@angular/core';
+import { DeviceThermostatComponent, ThermostatCommandInfo } from '../thermostat.component';
 
 
 @Component({
-  selector: 'app-thermostat-moes',
+  selector: 'app-device-thermostat-moes',
   templateUrl: '../thermostat.component.html',
   styleUrls: [
     '../../base-device.component.scss',
     '../thermostat.component.scss',
   ],
 })
-export class ThermostatMoesComponent extends ThermostatComponent implements OnInit, AfterContentInit, AfterViewInit, OnDestroy {
+export class DeviceThermostatMoesComponent extends DeviceThermostatComponent {
   override thermostatStep = 1;
 
   static override get infoCommandFilters(): Record<ThermostatCommandInfo, Record<string, string>> {

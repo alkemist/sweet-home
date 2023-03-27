@@ -1,13 +1,15 @@
-import { ThermostatAqaraComponent, ThermostatMoesComponent } from '../modules/devices/thermostat';
+import { DeviceThermostatAqaraComponent, DeviceThermostatMoesComponent } from '../modules/devices/thermostat';
 import { BaseDeviceComponent } from '../modules/devices/base-device.component';
 import { DeviceService } from '@services';
 import { MapBuilder } from '@tools';
-import { OnOffPlugLidlComponent } from '../modules/devices/on-off';
+import { DeviceOnOffPlugLidlComponent } from '../modules/devices/on-off';
+import { DeviceChromecastComponent, DeviceSonosComponent } from '../modules/devices/multimedia';
 
 
 export enum DeviceCategoryEnum {
   Thermostat = 'thermostat',
-  OnOff = 'on-off'
+  OnOff = 'on-off',
+  Multimedia = 'multimedia'
   //Thermometer = 'thermometer',
 }
 
@@ -15,6 +17,8 @@ export enum DeviceTypeEnum {
   ThermostatAqara = 'thermostat-aqara',
   ThermostatMoes = 'thermostat-moes',
   PlugLidl = 'plug-lidle',
+  Chromecast = 'chromecast',
+  Sonos = 'sonos',
   //ThermometerAqara = 'thermometer-aqara'
 }
 
@@ -25,6 +29,10 @@ export const TypesByCategory: Record<DeviceCategoryEnum, DeviceTypeEnum[]> = {
   ],
   [DeviceCategoryEnum.OnOff]: [
     DeviceTypeEnum.PlugLidl
+  ],
+  [DeviceCategoryEnum.Multimedia]: [
+    DeviceTypeEnum.Chromecast,
+    DeviceTypeEnum.Sonos,
   ],
   /*[DeviceCategoryEnum.Thermometer]: [
     DeviceTypeEnum.ThermometerAqara
@@ -37,8 +45,13 @@ interface ComponentClass {
 }
 
 export const ComponentClassByType: Record<DeviceTypeEnum, ComponentClass> = {
-  [DeviceTypeEnum.ThermostatAqara]: { constructor: ThermostatAqaraComponent, class: ThermostatAqaraComponent },
-  [DeviceTypeEnum.ThermostatMoes]: { constructor: ThermostatMoesComponent, class: ThermostatMoesComponent },
-  [DeviceTypeEnum.PlugLidl]: { constructor: OnOffPlugLidlComponent, class: OnOffPlugLidlComponent },
+  [DeviceTypeEnum.ThermostatAqara]: {
+    constructor: DeviceThermostatAqaraComponent,
+    class: DeviceThermostatAqaraComponent
+  },
+  [DeviceTypeEnum.ThermostatMoes]: { constructor: DeviceThermostatMoesComponent, class: DeviceThermostatMoesComponent },
+  [DeviceTypeEnum.PlugLidl]: { constructor: DeviceOnOffPlugLidlComponent, class: DeviceOnOffPlugLidlComponent },
+  [DeviceTypeEnum.Chromecast]: { constructor: DeviceChromecastComponent, class: DeviceChromecastComponent },
+  [DeviceTypeEnum.Sonos]: { constructor: DeviceSonosComponent, class: DeviceSonosComponent },
   //[DeviceTypeEnum.ThermometerAqara]: { constructor: ThermostatAqaraComponent, class: ThermostatAqaraComponent },
 }

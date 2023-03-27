@@ -1,13 +1,16 @@
 import { NgModule } from '@angular/core';
-import { ThermostatAqaraComponent, ThermostatMoesComponent } from './thermostat';
+import { DeviceThermostatAqaraComponent, DeviceThermostatMoesComponent } from './thermostat';
 import { SharingModule } from '../sharing.module';
-import { OnOffPlugLidlComponent } from './on-off';
+import { DeviceOnOffPlugLidlComponent } from './on-off';
+import { DeviceChromecastComponent, DeviceSonosComponent } from './multimedia';
 
 @NgModule({
   declarations: [
-    ThermostatAqaraComponent,
-    ThermostatMoesComponent,
-    OnOffPlugLidlComponent
+    DeviceThermostatAqaraComponent,
+    DeviceThermostatMoesComponent,
+    DeviceOnOffPlugLidlComponent,
+    DeviceChromecastComponent,
+    DeviceSonosComponent
   ],
   imports: [
     SharingModule
