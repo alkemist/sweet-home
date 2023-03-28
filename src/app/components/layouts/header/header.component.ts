@@ -58,7 +58,7 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
         let routeData = route.state.root.firstChild?.data as Record<string, any>;
         // Submodule route data
         if (Object.keys(routeData).length === 0) {
-          routeData = route.state.root.children[0].children[0].data;
+          routeData = route.state.root.children[0]?.children[0]?.data;
         }
 
         if (routeData) {
