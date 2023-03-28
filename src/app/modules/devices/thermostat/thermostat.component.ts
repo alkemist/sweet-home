@@ -1,6 +1,6 @@
-import { Directive, Input } from '@angular/core';
+import { Directive } from '@angular/core';
 import { BaseDeviceComponent } from '../base-device.component';
-import { JeedomCommandResultInterface, SmartArrayModel } from '@models';
+import { JeedomCommandResultInterface } from '@models';
 import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs';
 
@@ -8,17 +8,14 @@ export type ThermostatCommandInfo = 'thermostat' | 'room';
 export type ThermostatCommandAction = 'thermostat';
 
 @Directive()
-export abstract class DeviceThermostatComponent extends BaseDeviceComponent {
-  @Input() override actionInfoIds = new SmartArrayModel<ThermostatCommandInfo, number>();
-  @Input() override actionCommandIds = new SmartArrayModel<ThermostatCommandAction, number>()
-
-  override infoCommandValues: Record<ThermostatCommandInfo, number | null> = {
+export abstract class DeviceThermostatComponent
+  extends BaseDeviceComponent<ThermostatCommandInfo, ThermostatCommandAction, string> {
+  thermostatControl = new FormControl<number>(0);
+  thermostatStep = 0.5;
+  protected override _infoCommandValues: Record<ThermostatCommandInfo, number | null> = {
     thermostat: null,
     room: null
   };
-
-  thermostatControl = new FormControl<number>(0);
-  thermostatStep = 0.5;
 
   static override get infoCommandFilters(): Record<ThermostatCommandInfo, Record<string, string>> {
     return {
@@ -57,7 +54,7 @@ export abstract class DeviceThermostatComponent extends BaseDeviceComponent {
 
   setThermostat(value: number) {
     // console.log(`-- [${this.name}] Set thermostat`, value);
-    this.execUpdate('thermostat', { slider: value }).then(_ => {
+    this.execUpdateSlider('thermostat', value).then(_ => {
       this.infoCommandValues['thermostat'] = value;
     })
   }
@@ -65,15 +62,7 @@ export abstract class DeviceThermostatComponent extends BaseDeviceComponent {
   override updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
     super.updateInfoCommandValues(values);
     if (!this.modalOpened) {
-      this.thermostatControl.setValue(this.infoCommandValues.thermostat, { emitEvent: false });
+      this.thermostatControl.setValue(this.infoCommandValues.thermostat as number, { emitEvent: false });
     }
-  }
-
-  private execUpdate(commandAction: ThermostatCommandAction, commandValue: any) {
-    return super.execCommand(
-      this.actionCommandIds.get(commandAction),
-      commandAction,
-      commandValue
-    );
   }
 }

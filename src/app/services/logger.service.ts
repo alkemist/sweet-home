@@ -23,7 +23,7 @@ export class LoggerService {
     if (!process.env['APP_DEBUG']) {
       this.errorHandler.report(error);
     } else {
-      console.error(`-- Error [${ error.type }]`, error.message, error.context);
+      console.error(`-- Error [${ error.type }]`, error.message, ':', error.context);
     }
   }
 }

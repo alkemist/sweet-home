@@ -40,8 +40,8 @@ export const TypesByCategory: Record<DeviceCategoryEnum, DeviceTypeEnum[]> = {
 }
 
 interface ComponentClass {
-  constructor: (new (mP: MapBuilder, dS: DeviceService) => BaseDeviceComponent),
-  class: typeof BaseDeviceComponent
+  constructor: (new (mP: MapBuilder, dS: DeviceService) => BaseDeviceComponent<string, string, string>),
+  class: typeof BaseDeviceComponent<string, string, string>
 }
 
 export const ComponentClassByType: Record<DeviceTypeEnum, ComponentClass> = {

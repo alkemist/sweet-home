@@ -12,6 +12,7 @@ export interface DeviceBackInterface extends DocumentBackInterface {
   jeedomId?: number | null,
   infoCommandIds?: Record<string, number>,
   actionCommandIds?: Record<string, number>
+  paramValues?: Record<string, number | string>
 }
 
 export interface DeviceFrontInterface extends DocumentFrontInterface {
@@ -21,6 +22,7 @@ export interface DeviceFrontInterface extends DocumentFrontInterface {
   jeedomId: number | null,
   infoCommandIds: KeyValue<string, number>[],
   actionCommandIds: KeyValue<string, number>[],
+  paramValues: KeyValue<string, number | string>[],
 }
 
 export type DeviceStoredInterface = HasIdWithInterface<DeviceBackInterface>;

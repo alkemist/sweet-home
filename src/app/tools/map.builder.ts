@@ -148,6 +148,10 @@ export class MapBuilder {
         componentInstance.name = device.name;
         componentInstance.actionInfoIds = device.infoCommandIds;
         componentInstance.actionCommandIds = device.actionCommandIds;
+        if (device.paramValues) {
+          console.log(device.paramValues.toRecord());
+        }
+        componentInstance._paramValues = device.paramValues.toRecord();
 
         componentInstance.loaded.subscribe(() => {
           const supervisor = new DeviceSupervisor(componentRef, ObjectHelper.clone(device));
@@ -163,7 +167,7 @@ export class MapBuilder {
     })
   }
 
-  getComponents(): BaseDeviceComponent[] {
+  getComponents(): BaseDeviceComponent<string, string, string>[] {
     return this._supervisors.toArray().map((supervisor) => supervisor.getComponent());
   }
 

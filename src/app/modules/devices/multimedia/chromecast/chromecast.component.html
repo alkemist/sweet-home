@@ -1,7 +1,14 @@
 <div #content (click)="openModal()" [pTooltip]="name"
      [tooltipDisabled]="isEditMode || isDragging" class="flex flex-column gap-2"
      tooltipEvent="hover" tooltipPosition="top">
-  Chromecast
+  <div class="map-icon-value flex flex-row align-content-center gap-1">
+    <div class="icon">
+      <i class="fa fa-volume-up"></i>
+    </div>
+    <div class="value">
+      {{ infoCommandValues.volume }}%
+    </div>
+  </div>
 </div>
 <p-overlayPanel #overlayPanel [appendTo]="content" [dismissable]="false">
   {{ name }}
@@ -10,5 +17,6 @@
           [header]="name" [resizable]="false"
           appendTo="body"
           position="bottom">
-  Chromecast
+  <div class="volume">{{ volumeControl.value }}%</div>
+  <p-slider [formControl]="volumeControl" [max]="volumeMax" [min]="0"></p-slider>
 </p-dialog>

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ObjectHelper, slugify } from '@tools';
 import { ConfirmationService, FilterService, MessageService } from 'primeng/api';
 import { AppService, DeviceService } from '@services';
+import { KeyValue } from '@angular/common';
 import {
   ComponentClassByType,
   CoordinateFormInterface,
@@ -12,14 +13,13 @@ import {
   DeviceFrontInterface,
   DeviceModel,
   DeviceTypeEnum,
+  JeedomDeviceModel,
+  JeedomRoomModel,
   KeyValueFormInterface,
   SmartArrayModel,
   TypesByCategory
 } from '@models';
-import { KeyValue } from '@angular/common';
-import { JeedomDeviceModel } from '../../../../../models/jeedom-device.model';
 import { BaseComponent } from '../../../../../components/base.component';
-import { JeedomRoomModel } from '../../../../../models/jeedom-room.model';
 
 @Component({
   selector: 'app-device',
@@ -45,8 +45,9 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
       x: new FormControl<number | null>(10, [ Validators.required ]),
       y: new FormControl<number | null>(10, [ Validators.required ]),
     }),
-    infoCommandIds: new FormArray<FormGroup<KeyValueFormInterface>>([]),
-    actionCommandIds: new FormArray<FormGroup<KeyValueFormInterface>>([]),
+    infoCommandIds: new FormArray<FormGroup<KeyValueFormInterface<number>>>([]),
+    actionCommandIds: new FormArray<FormGroup<KeyValueFormInterface<number>>>([]),
+    paramValues: new FormArray<FormGroup<KeyValueFormInterface<number | string>>>([]),
   })
   loading = true;
   error: string = '';
@@ -65,7 +66,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
   ) {
     super();
     this.sub = this.category.valueChanges.subscribe((category) => {
-      if (category !== null) {
+      if (category !== null && TypesByCategory[category]) {
         this.deviceTypes = TypesByCategory[category].map((key) => {
           return {
             key,
@@ -84,9 +85,12 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
 
         this.infoCommandIds.clear();
         this.actionCommandIds.clear();
+        this.paramValues.clear();
 
         const infoCommandFilters = ComponentClassByType[this.type.value].class.infoCommandFilters;
         const actionCommandFilters = ComponentClassByType[this.type.value].class.actionCommandFilters;
+        const paramValues = ComponentClassByType[this.type.value].class.paramValues;
+
         const deviceCommands: Record<string, string>[] = jeedomDevice.commands
           .map(command => ObjectHelper.objectToRecord<string>(command));
 
@@ -109,6 +113,10 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
             this.addActionCommand({ key: commandId, value: parseInt(command['id'], 10) })
           }
         });
+
+        paramValues.forEach((paramName) => {
+          this.addParamValue({ key: paramName, value: '' });
+        })
 
         this.importDeviceControl.setValue('', { emitEvent: false });
       }
@@ -143,6 +151,10 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     return this.form.controls.actionCommandIds;
   }
 
+  get paramValues() {
+    return this.form.controls.paramValues;
+  }
+
   async ngOnInit(): Promise<void> {
     this.loadData();
   }
@@ -156,6 +168,8 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
 
           this.device.infoCommandIds.forEach(() => this.addInfoCommand());
           this.device.actionCommandIds.forEach(() => this.addActionCommand());
+          this.device.paramValues.forEach(() => this.addParamValue());
+
           this.form.setValue(this.device.toForm())
         } else {
           this.appService.setSubTitle();
@@ -163,6 +177,12 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
 
         this.loading = false;
       }));
+  }
+
+  addParamValue(keyValue?: KeyValue<string, string | number>) {
+    this.paramValues.push(
+      this.addCommandForm(keyValue)
+    );
   }
 
   addInfoCommand(keyValue?: KeyValue<string, number>) {
@@ -177,10 +197,10 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     );
   }
 
-  addCommandForm(keyValue?: KeyValue<string, number>) {
+  addCommandForm<T>(keyValue?: KeyValue<string, T>) {
     return new FormGroup({
       key: new FormControl<string | null>(keyValue?.key ?? null, [ Validators.required ]),
-      value: new FormControl<number | null>(keyValue?.value ?? null, [ Validators.required ]),
+      value: new FormControl<T | null>(keyValue?.value ?? null, [ Validators.required ]),
     });
   }
 
@@ -209,24 +229,24 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     const device = DeviceModel.importFormData(formData);
 
     if (this.device) {
-      this.deviceService.update(device).then(async (deviceUpdated) => {
+      this.deviceService.update(device).then(async _ => {
         this.device = device;
         this.loading = false;
         this.messageService.add({
           severity: 'success',
           detail: $localize`Device updated`
         });
-        await this.routerService.navigate([ '../', deviceUpdated.slug ], { relativeTo: this.activatedRoute });
+        await this.routerService.navigate([ '../' ], { relativeTo: this.activatedRoute });
       });
     } else {
-      await this.deviceService.add(device).then(async (deviceUpdated) => {
+      await this.deviceService.add(device).then(async _ => {
         this.device = device;
         this.loading = false;
         this.messageService.add({
           severity: 'success',
           detail: $localize`Device added`,
         });
-        await this.routerService.navigate([ '../', deviceUpdated.slug ], { relativeTo: this.activatedRoute });
+        await this.routerService.navigate([ '../' ], { relativeTo: this.activatedRoute });
       });
     }
   }
@@ -247,14 +267,6 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
         });
       }
     });
-  }
-
-  removeInfoCommand(i: number) {
-    this.infoCommandIds.removeAt(i);
-  }
-
-  removeActionCommand(i: number) {
-    this.actionCommandIds.removeAt(i);
   }
 
   async filterJeedomDevices(event: { query: string }) {

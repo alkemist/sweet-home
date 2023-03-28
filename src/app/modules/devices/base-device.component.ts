@@ -17,15 +17,14 @@ import { MapBuilder } from '@tools';
 import { OverlayPanel } from 'primeng/overlaypanel';
 
 @Directive()
-export abstract class BaseDeviceComponent extends BaseComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
+export abstract class BaseDeviceComponent<I extends string, A extends string, P extends string> extends BaseComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
   @HostBinding('class.draggable') draggable: boolean = false;
   @HostBinding('style.left') x = '0px';
   @HostBinding('style.top') y = '0px';
   @Input() name: string = '';
-  @Input() actionInfoIds = new SmartArrayModel<string, number>();
-  @Input() actionCommandIds = new SmartArrayModel<string, number>();
+  @Input() actionInfoIds = new SmartArrayModel<I, number>();
+  @Input() actionCommandIds = new SmartArrayModel<A, number>();
   @Output() loaded = new EventEmitter<boolean>();
-  infoCommandValues: Record<string, unknown> = {};
   modalOpened: boolean = false;
 
   public constructor(
@@ -35,12 +34,28 @@ export abstract class BaseDeviceComponent extends BaseComponent implements OnIni
     super();
   }
 
+  @Input() _paramValues?: Record<P, number | string | null>;
+
+  static get paramValues(): string[] {
+    return [];
+  }
+
   static get infoCommandFilters(): Record<string, Record<string, string>> {
     return {};
   }
 
   static get actionCommandFilters(): Record<string, Record<string, string>> {
     return {};
+  }
+
+  protected _infoCommandValues?: Record<I, number | string | null>;
+
+  get infoCommandValues() {
+    return this._infoCommandValues as Record<I, number | string | null>;
+  }
+
+  get paramValues() {
+    return this._paramValues as Record<P, number | string | null>;
   }
 
   @ViewChild("overlayPanel") _overlayPanel?: OverlayPanel;
@@ -91,12 +106,12 @@ export abstract class BaseDeviceComponent extends BaseComponent implements OnIni
   updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
     //console.log(`-- [${ this.name }] Update info command values`, values);
 
-    this.infoCommandValues = this.actionInfoIds.reduce((result, current) => {
+    this._infoCommandValues = this.actionInfoIds.reduce((result, current) => {
       result[current.key] = values[current.value]
         ? values[current.value].value
         : this.infoCommandValues[current.key];
       return result;
-    }, {} as Record<string, unknown>);
+    }, {} as Record<I, number | string | null>);
 
     // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
   }
@@ -110,5 +125,28 @@ export abstract class BaseDeviceComponent extends BaseComponent implements OnIni
         resolve(commandValue);
       });
     })
+  }
+
+  protected execUpdateSlider(commandAction: A, commandValue: number) {
+    return this.execCommand(
+      this.actionCommandIds.get(commandAction),
+      commandAction,
+      { slider: commandValue }
+    );
+  }
+
+  protected execUpdateValue(commandAction: A, commandValue: any) {
+    return this.execCommand(
+      this.actionCommandIds.get(commandAction),
+      commandAction,
+      commandValue
+    );
+  }
+
+  protected execUpdate(commandAction: A) {
+    return this.execCommand(
+      this.actionCommandIds.get(commandAction),
+      commandAction
+    );
   }
 }

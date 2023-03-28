@@ -14,6 +14,7 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
     this._type = device.type ?? null;
     this._infoCommandIds = new SmartArrayModel<string, number>(device.infoCommandIds);
     this._actionCommandIds = new SmartArrayModel<string, number>(device.actionCommandIds);
+    this._paramValues = new SmartArrayModel<string, number | string>(device.paramValues);
     this._position = device.position ?? { x: 0, y: 0 };
   }
 
@@ -43,6 +44,12 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
 
   get actionCommandIds() {
     return this._actionCommandIds;
+  }
+
+  protected _paramValues: SmartArrayModel<string, number | string>;
+
+  get paramValues() {
+    return this._paramValues;
   }
 
   get x(): number {
@@ -104,6 +111,7 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
       position: formData.position,
       infoCommandIds: new SmartArrayModel<string, number>(formData.infoCommandIds).toRecord(),
       actionCommandIds: new SmartArrayModel<string, number>(formData.actionCommandIds).toRecord(),
+      paramValues: new SmartArrayModel<string, string | number>(formData.paramValues).toRecord(),
     }
 
     return new DeviceModel(deviceData)
@@ -118,6 +126,7 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
       type: this._type,
       infoCommandIds: this._infoCommandIds.toRecord(),
       actionCommandIds: this._actionCommandIds.toRecord(),
+      paramValues: this._paramValues.toRecord(),
     }
   }
 
@@ -130,6 +139,7 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
       type: this._type,
       infoCommandIds: this._infoCommandIds,
       actionCommandIds: this._actionCommandIds,
+      paramValues: this._paramValues,
     };
   }
 }

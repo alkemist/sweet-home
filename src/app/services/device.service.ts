@@ -1,4 +1,10 @@
-import { DeviceModel, DeviceStoredInterface } from '@models';
+import {
+  DeviceModel,
+  DeviceStoredInterface,
+  JeedomCommandResultInterface,
+  JeedomDeviceModel,
+  JeedomRoomModel
+} from '@models';
 import { inject, Injectable } from '@angular/core';
 import { AddDevice, DeviceState, FillDevices, InvalideDevices, RemoveDevice, UpdateDevice } from '@stores';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
@@ -8,10 +14,7 @@ import { JeedomService } from './jeedom.service';
 import { LoggerService } from './logger.service';
 import { DataStoreService } from './data-store.service';
 import { MessageService } from 'primeng/api';
-import { JeedomDeviceModel } from '../models/jeedom-device.model';
-import { JeedomRoomModel } from '../models/jeedom-room.model';
 import { BaseDeviceComponent } from '../modules/devices/base-device.component';
-import { JeedomCommandResultInterface } from '../models/jeedom-command-result.interface';
 import { UnknownCommandIdError } from '../errors/unknown-command-id.error';
 
 
@@ -63,7 +66,7 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
     });
   }
 
-  updateComponents(components: BaseDeviceComponent[]): Promise<boolean> {
+  updateComponents(components: BaseDeviceComponent<string, string, string>[]): Promise<boolean> {
     const commandIds = components.reduce((result, current) => {
       return result.concat(current.actionInfoIds.getValues());
     }, [] as number[])
@@ -80,9 +83,13 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
             resolve(true);
           })
         } else {
+          console.info('NO VALUES');
           resolve(false);
         }
       })
+        .catch(() => {
+          console.info('CATCH updateComponents');
+        })
     });
   }
 

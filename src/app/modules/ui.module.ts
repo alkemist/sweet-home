@@ -21,6 +21,7 @@ import { DialogModule } from 'primeng/dialog';
 
 import { ValdemortModule } from 'ngx-valdemort';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { SliderModule } from 'primeng/slider';
 
 const modules = [
   ToolbarModule,
@@ -42,6 +43,7 @@ const modules = [
   ProgressSpinnerModule,
   InputSwitchModule,
   OverlayPanelModule,
+  SliderModule,
 
   ValdemortModule,
 ];

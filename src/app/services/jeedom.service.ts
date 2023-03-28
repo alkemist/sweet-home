@@ -6,6 +6,7 @@ import { JeedomRoomInterface } from '../models/jeedom-room.interface';
 import { UnknownJeedomError } from '../errors/unknown-jeedom.error';
 import { LoggerService } from './logger.service';
 import { JeedomApiError } from '../errors/jeedom-api.error';
+import { WrongApiKeyError } from '@errors';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +35,7 @@ export class JeedomService {
           this.loggerService.error(new JeedomApiError(response));
           return Promise.resolve();
         }).catch((e) => {
+          console.info('CATCH fetch')
           this.loggerService.error(new UnknownJeedomError(e));
           return Promise.resolve();
         })
@@ -58,17 +60,13 @@ export class JeedomService {
   private request(method: string, params: Record<string, any> = {}) {
     const apikey = this.userService.getUserToken();
     if (!apikey) {
+      this.loggerService.error(new WrongApiKeyError());
       return Promise.resolve();
     }
 
-    try {
-      return this.api.request(method, {
-        ...params,
-        apikey
-      });
-    } catch (e) {
-      this.loggerService.error(new UnknownJeedomError(e));
-    }
-    return Promise.resolve();
+    return this.api.request(method, {
+      ...params,
+      apikey
+    });
   }
 }
