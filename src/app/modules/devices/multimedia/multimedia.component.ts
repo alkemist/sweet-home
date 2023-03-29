@@ -1,37 +1,35 @@
 import { Directive } from '@angular/core';
 import { BaseDeviceComponent } from '../base-device.component';
 import { FormControl } from '@angular/forms';
-import { JeedomCommandResultInterface } from '@models';
+import {
+  JeedomCommandResultInterface,
+  MultimediaCommandAction,
+  MultimediaCommandInfo,
+  MultimediaParamValue
+} from '@models';
 import { debounceTime } from 'rxjs';
 
-export type MultimediaCommandInfo = 'volume';
-export type MultimediaCommandAction = 'volume';
-export type MultimediaParamValue = 'volumeMax';
+export enum MultimediaState {
+  playing,
+  paused,
+  stopped
+}
 
 @Directive()
-export abstract class DeviceMultimediaComponent<I extends MultimediaCommandInfo, A extends MultimediaCommandAction>
-  extends BaseDeviceComponent<I, A, MultimediaParamValue> {
+export abstract class DeviceMultimediaComponent<
+  IE extends MultimediaCommandInfo, AE extends MultimediaCommandAction,
+  I extends string, A extends string
+>
+  extends BaseDeviceComponent<IE, AE, I, A | MultimediaCommandAction, MultimediaParamValue> {
+
   volumeControl = new FormControl<number>(0);
 
-  static override get infoCommandFilters(): Record<any, Record<string, string>> {
-    return {
-      volume: {},
-    }
-  }
+  MultimediaState = MultimediaState;
+  state: MultimediaState = MultimediaState.stopped;
 
-  static override get actionCommandFilters(): Record<any, Record<string, string>> {
-    return {
-      volume: {},
-    }
-  }
-
-  protected override _infoCommandValues: Record<I, number | string | null> = {
-    volume: null
-  } as Record<I, number | string | null>;
-
-  override get infoCommandValues() {
-    return this._infoCommandValues as Record<MultimediaCommandInfo, number | string | null>;
-  }
+  protected override infoCommandValues: Record<MultimediaCommandInfo, string | number | boolean | null> = {
+    volume: null,
+  };
 
   get volumeMax() {
     return this.paramValues.volumeMax as number ?? 100;
@@ -47,7 +45,7 @@ export abstract class DeviceMultimediaComponent<I extends MultimediaCommandInfo,
       .subscribe((volume) => {
         if (volume) {
           this.setVolume(volume).then(_ => {
-            this.infoCommandValues['volume'] = volume;
+            this.infoCommandValues.volume = volume;
           })
         }
       })
@@ -58,9 +56,29 @@ export abstract class DeviceMultimediaComponent<I extends MultimediaCommandInfo,
   }
 
   setVolume(volume: number): Promise<void> {
-    return this.execUpdateSlider('volume' as A, volume).then(_ => {
-      this.infoCommandValues['volume'] = volume;
+    return this.execUpdateSlider('volume', volume).then(_ => {
+      this.infoCommandValues.volume = volume;
     })
+  }
+
+  play(): Promise<void> {
+    return this.execUpdateValue('play').then(_ => {
+      this.state = MultimediaState.playing;
+    })
+  }
+
+  pause(): Promise<void> {
+    return this.execUpdateValue('pause').then(_ => {
+      this.state = MultimediaState.paused;
+    })
+  }
+
+  previous(): Promise<void> {
+    return this.execUpdateValue('previous');
+  }
+
+  next(): Promise<void> {
+    return this.execUpdateValue('next');
   }
 
   override updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {

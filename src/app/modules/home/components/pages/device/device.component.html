@@ -21,6 +21,22 @@
         <div class="flex-column col-4">
           <div class="p-float-label flex">
             <p-dropdown [autoDisplayFirst]="false"
+                        [options]="deviceConnectivitiesIterable" appendTo="body" class="flex-1"
+                        formControlName="connectivity"
+                        i18n-placeholder inputId="connectivity"
+                        optionLabel="value" optionValue="key" placeholder="Select a connectivity"
+                        styleClass=""></p-dropdown>
+            <label for="name" i18n>Connectivity</label>
+          </div>
+          <val-errors class="p-error" controlName="connectivity">
+            <ng-template valError="required">
+              <ng-container i18n>Connectivity is required.</ng-container>
+            </ng-template>
+          </val-errors>
+        </div>
+        <div class="flex-column col-4">
+          <div class="p-float-label flex">
+            <p-dropdown [autoDisplayFirst]="false"
                         [options]="deviceCategoriesIterable" appendTo="body" class="flex-1"
                         formControlName="category"
                         i18n-placeholder inputId="category"
@@ -51,20 +67,12 @@
             </ng-template>
           </val-errors>
         </div>
-        <div *ngIf="type.value" class="flex-column col-4">
-          <div class="p-float-label flex">
-            <p-autoComplete (completeMethod)="filterJeedomDevices($event)" [dropdown]="true"
-                            [formControl]="importDeviceControl"
-                            [group]="true" [suggestions]="filteredJeedomRooms" class="w-12"
-                            field="name" optionGroupChildren="devices" optionGroupLabel="name"></p-autoComplete>
-            <label i18n>Import via jeedom</label>
-          </div>
-        </div>
+
       </div>
 
       <div *ngIf="type.value">
         <div class="field-row field-float flex flex-row gap-2">
-          <div class="flex-column col-8">
+          <div class="flex-column col-4">
             <div class="p-float-label">
               <input class="w-12" formControlName="name" id="name" pInputText type="text">
               <label for="name" i18n>Name</label>
@@ -77,6 +85,15 @@
                 <ng-container i18n>Device already exist.</ng-container>
               </ng-template>
             </val-errors>
+          </div>
+          <div class="flex-column col-4">
+            <div class="p-float-label flex">
+              <p-autoComplete (completeMethod)="filterJeedomDevices($event)" [dropdown]="true"
+                              [formControl]="importDeviceControl"
+                              [group]="true" [suggestions]="filteredJeedomRooms" class="w-12"
+                              field="name" optionGroupChildren="devices" optionGroupLabel="name"></p-autoComplete>
+              <label i18n>Import via jeedom</label>
+            </div>
           </div>
           <div class="flex-column col-4">
             <div class="p-float-label">

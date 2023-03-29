@@ -66,7 +66,7 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
     });
   }
 
-  updateComponents(components: BaseDeviceComponent<string, string, string>[]): Promise<boolean> {
+  updateComponents(components: BaseDeviceComponent[]): Promise<boolean> {
     const commandIds = components.reduce((result, current) => {
       return result.concat(current.actionInfoIds.getValues());
     }, [] as number[])
@@ -87,15 +87,14 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
           resolve(false);
         }
       })
-        .catch(() => {
-          console.info('CATCH updateComponents');
+        .catch((e) => {
+          console.info('/!\ CATCH updateComponents');
+          return resolve(false);
         })
     });
   }
 
-  execAction(commandId: number, commandName: string, commandValue?: unknown): Promise<JeedomCommandResultInterface | null> {
-    // console.log('-- Exec action', commandId, commandValue);
-
+  execCommand(commandId: number, commandName: string, commandValue?: unknown): Promise<JeedomCommandResultInterface | null> {
     if (!commandId) {
       this.loggerService.error(
         new UnknownCommandIdError(commandName)

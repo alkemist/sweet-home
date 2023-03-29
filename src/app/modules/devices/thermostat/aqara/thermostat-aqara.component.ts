@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DeviceThermostatComponent, ThermostatCommandInfo } from '../thermostat.component';
+import { DeviceThermostatComponent } from '../thermostat.component';
 
 
 @Component({
@@ -11,10 +11,5 @@ import { DeviceThermostatComponent, ThermostatCommandInfo } from '../thermostat.
   ],
 })
 export class DeviceThermostatAqaraComponent extends DeviceThermostatComponent {
-  static override get infoCommandFilters(): Record<ThermostatCommandInfo, Record<string, string>> {
-    return {
-      ...super.infoCommandFilters,
-      thermostat: { generic_type: 'THERMOSTAT_SETPOINT', name: 'Consigne 1' },
-    }
-  }
+
 }

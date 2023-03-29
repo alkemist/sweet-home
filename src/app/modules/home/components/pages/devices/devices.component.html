@@ -6,6 +6,7 @@
     <ng-template pTemplate="header">
       <tr>
         <th i18n>Name</th>
+        <th i18n>Connectivity</th>
         <th i18n>Category</th>
         <th i18n>Type</th>
         <th>
@@ -19,6 +20,18 @@
             </ng-template>
           </p-columnFilter>
         </th>
+        <th>
+          <p-columnFilter [showMatchModes]="false" [showMenu]="false" [showOperator]="false" display="row"
+                          field="connectivity" matchMode="in">
+            <ng-template let-filter="filterCallback" let-value pTemplate="filter">
+              <p-multiSelect (onChange)="filter($event.value)"
+                             [ngModel]="value" [options]="deviceConnectivities" [selectionLimit]="3"
+                             [showHeader]="false"
+                             optionLabel="value"
+                             optionValue="key">
+              </p-multiSelect>
+            </ng-template>
+          </p-columnFilter>
         <th>
           <p-columnFilter [showMatchModes]="false" [showMenu]="false" [showOperator]="false" display="row"
                           field="category" matchMode="in">
@@ -58,6 +71,9 @@
       <tr>
         <td>
           {{device.name}}
+        </td>
+        <td>
+          {{device.connectivityLabel}}
         </td>
         <td>
           {{device.categoryLabel}}

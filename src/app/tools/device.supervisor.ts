@@ -16,7 +16,7 @@ export class DeviceSupervisor {
   private _overlayPanel: OverlayPanel;
 
   constructor(
-    private _componentRef: ComponentRef<BaseDeviceComponent<string, string, string>>,
+    private _componentRef: ComponentRef<BaseDeviceComponent>,
     private _device: DeviceModel,
   ) {
     //console.log('-- Supervisor', _device.position, _device.x, _device.y);

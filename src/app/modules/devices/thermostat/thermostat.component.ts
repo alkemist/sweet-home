@@ -9,26 +9,14 @@ export type ThermostatCommandAction = 'thermostat';
 
 @Directive()
 export abstract class DeviceThermostatComponent
-  extends BaseDeviceComponent<ThermostatCommandInfo, ThermostatCommandAction, string> {
+  extends BaseDeviceComponent<ThermostatCommandInfo, ThermostatCommandAction> {
+
   thermostatControl = new FormControl<number>(0);
   thermostatStep = 0.5;
-  protected override _infoCommandValues: Record<ThermostatCommandInfo, number | null> = {
+  protected override infoCommandValues: Record<ThermostatCommandInfo, number | null> = {
     thermostat: null,
     room: null
   };
-
-  static override get infoCommandFilters(): Record<ThermostatCommandInfo, Record<string, string>> {
-    return {
-      room: { generic_type: 'THERMOSTAT_TEMPERATURE' },
-      thermostat: {},
-    }
-  }
-
-  static override get actionCommandFilters(): Record<ThermostatCommandAction, Record<string, string>> {
-    return {
-      thermostat: { generic_type: 'THERMOSTAT_SET_SETPOINT' },
-    }
-  }
 
   override closeModal() {
     super.closeModal();

@@ -1,19 +1,14 @@
 import { Component } from '@angular/core';
-import { JeedomCommandResultInterface } from '@models';
-import { DeviceMultimediaComponent, MultimediaCommandAction, MultimediaCommandInfo } from '../multimedia.component';
+import {
+  ChromecastCommandAction,
+  ChromecastCommandInfo,
+  ChromecastExtendCommandAction,
+  ChromecastExtendCommandInfo,
+  ChromecastGlobalCommandInfo,
+  JeedomCommandResultInterface
+} from '@models';
+import { DeviceMultimediaComponent, MultimediaState } from '../multimedia.component';
 
-export type ChromecastCommandInfo = MultimediaCommandInfo & (
-  'online'
-  | 'muted'
-  | 'playing' | 'player'
-  | 'status' | 'display' | 'title' | 'artist'
-  );
-
-export type ChromecastCommandAction = MultimediaCommandAction & (
-  'uncast' | 'backdrop'
-  | 'mute_on' | 'mute_off'
-  | 'play' | 'pause' | 'prev' | 'back' | 'next' | 'stop'
-  );
 
 @Component({
   selector: 'app-device-chromecast',
@@ -24,65 +19,49 @@ export type ChromecastCommandAction = MultimediaCommandAction & (
     'chromecast.component.scss',
   ],
 })
-export class DeviceChromecastComponent
-  extends DeviceMultimediaComponent<ChromecastCommandInfo, ChromecastCommandAction> {
+export class DeviceChromecastComponent extends DeviceMultimediaComponent<
+  ChromecastExtendCommandInfo, ChromecastExtendCommandAction,
+  ChromecastCommandInfo, ChromecastCommandAction
+> {
 
-  override _infoCommandValues: Record<ChromecastCommandInfo, number | string | null> = {
+  override infoCommandValues: Record<ChromecastGlobalCommandInfo, string | number | boolean | null> = {
+    ...super.infoCommandValues,
     online: null, //0-1
-    volume: null, //0-100
     muted: null, //0-1
     player: null, //"UNKNOWN", "PLAYING" (si en cours), "IDLE" ???
     status: null, //"&nbsp;",
     // "Netflix", "Diffusion: Netflix" (si en cours),
     // "Diffusion: Azalea Town" (si en cours, mais pas à jour)
+    // "YouTube"
     display: null, //
     // "Netflix",
     // "Spotify"
+    // Youtube
     // "Backdrop
     title: null, //"",
     // "Netflix"
     // "Green Hills" (titre en cours)
+    // "RÉSUMÉ : MY HERO ACADEMIA : SAISON 5" (titre en cours)
     artist: null,
     //
     // "Helynt, Koreskape, GameChops"
   };
 
-  static override get infoCommandFilters(): Record<ChromecastCommandInfo, Record<string, string>> {
-    return {
-      online: { logicalId: 'online' },
-      volume: { logicalId: 'volume_level' },
-      muted: { logicalId: 'volume_muted' },
-      player: { logicalId: 'player_state' },
-      status: { logicalId: 'status_text' },
-      display: { logicalId: 'display_name' },
-      title: { logicalId: 'title' },
-      artist: { logicalId: 'artist' },
-    }
-  }
-
-  static override get actionCommandFilters(): Record<ChromecastCommandAction, Record<string, string>> {
-    return {
-      uncast: { logicalId: 'quit_app' },
-      backdrop: { logicalId: 'app=backdrop' },
-      volume: { logicalId: 'volume_set' },
-      mute_on: { logicalId: 'mute_on' },
-      mute_off: { logicalId: 'mute_off' },
-      play: { logicalId: 'play' },
-      pause: { logicalId: 'pause' },
-      prev: { logicalId: 'prev' },
-      back: { logicalId: 'rewind' },
-      //
-      // début de la chanson
-      next: { logicalId: 'skip' },
-      stop: { logicalId: 'stop' },
-      // Quitte la lecture en cours
-      // Quit spotify
-    }
-  }
-
   override updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
     super.updateInfoCommandValues(values);
 
+    if (this.infoCommandValues.player === "PLAYING") {
+      this.state = MultimediaState.playing;
+    } else if (this.infoCommandValues.player === "PAUSED") {
+      this.state = MultimediaState.paused;
+    } else {
+      this.state = MultimediaState.stopped;
+    }
+
     console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
+  }
+
+  back(): Promise<void> {
+    return this.execUpdateValue('back');
   }
 }

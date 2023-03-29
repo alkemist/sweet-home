@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ObjectHelper, slugify } from '@tools';
+import { DeviceHelper, ObjectHelper, slugify } from '@tools';
 import { ConfirmationService, FilterService, MessageService } from 'primeng/api';
 import { AppService, DeviceService } from '@services';
 import { KeyValue } from '@angular/common';
 import {
-  ComponentClassByType,
   CoordinateFormInterface,
   DeviceCategoryEnum,
+  DeviceConnectivityEnum,
   DeviceFormInterface,
   DeviceFrontInterface,
   DeviceModel,
@@ -31,16 +31,18 @@ import { BaseComponent } from '../../../../../components/base.component';
 })
 export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy {
   device: DeviceModel | null = null;
+  deviceConnectivitiesIterable = new SmartArrayModel<string, string>(DeviceConnectivityEnum, true);
   deviceCategoriesIterable = new SmartArrayModel<string, string>(DeviceCategoryEnum, true);
   deviceTypesIterable = new SmartArrayModel<string, string>(DeviceTypeEnum, true);
   deviceTypes: KeyValue<string, string>[] = [];
 
   form: FormGroup<DeviceFormInterface> = new FormGroup<DeviceFormInterface>({
     id: new FormControl<string | null | undefined>(''),
-    jeedomId: new FormControl<number | null>(null, [ Validators.required ]),
-    name: new FormControl<string>('', [ Validators.required ]),
+    connectivity: new FormControl<DeviceConnectivityEnum | null>(null, [ Validators.required ]),
     category: new FormControl<DeviceCategoryEnum | null>(null, [ Validators.required ]),
     type: new FormControl<DeviceTypeEnum | null>(null, [ Validators.required ]),
+    name: new FormControl<string>('', [ Validators.required ]),
+    jeedomId: new FormControl<number | null>(null, [ Validators.required ]),
     position: new FormGroup<CoordinateFormInterface>({
       x: new FormControl<number | null>(10, [ Validators.required ]),
       y: new FormControl<number | null>(10, [ Validators.required ]),
@@ -77,7 +79,9 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     })
 
     this.sub = this.importDeviceControl.valueChanges.subscribe((jeedomDevice) => {
-      if (jeedomDevice && jeedomDevice instanceof JeedomDeviceModel && this.type.value) {
+      if (jeedomDevice && jeedomDevice instanceof JeedomDeviceModel
+        && this.connectivity.value && this.category.value && this.type.value) {
+
         this.jeedomId.setValue(jeedomDevice.id);
         if (!this.name.value) {
           this.name.setValue(jeedomDevice.name);
@@ -85,62 +89,72 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
 
         this.infoCommandIds.clear();
         this.actionCommandIds.clear();
+
+        const paramValues = new SmartArrayModel(this.paramValues.value as KeyValue<string, string | number>[]);
         this.paramValues.clear();
 
-        const infoCommandFilters = ComponentClassByType[this.type.value].class.infoCommandFilters;
-        const actionCommandFilters = ComponentClassByType[this.type.value].class.actionCommandFilters;
-        const paramValues = ComponentClassByType[this.type.value].class.paramValues;
 
         const deviceCommands: Record<string, string>[] = jeedomDevice.commands
           .map(command => ObjectHelper.objectToRecord<string>(command));
+        const configurations = DeviceHelper.getConfigurations(this.connectivity.value, this.category.value, this.type.value)
 
-        Object.entries(infoCommandFilters).forEach(([ commandId, commandFilter ]) => {
-          const command = deviceCommands.find((command) => {
-            return Object.entries(commandFilter).every(([ key, value ]) => command[key] === value);
+        if (configurations) {
+          Object.entries(configurations.infoCommandFilters).forEach(([ commandId, commandFilter ]) => {
+            const command = deviceCommands.find((command) => {
+              return Object.entries(commandFilter).every(([ key, value ]) => command[key] === value);
+            })
+
+            if (command) {
+              this.addInfoCommand({ key: commandId, value: parseInt(command['id'], 10) })
+            }
+          });
+
+          Object.entries(configurations.actionCommandFilters).forEach(([ commandId, commandFilter ]) => {
+            const command = deviceCommands.find((command) => {
+              return Object.entries(commandFilter).every(([ key, value ]) => command[key] === value);
+            })
+
+            if (command) {
+              this.addActionCommand({ key: commandId, value: parseInt(command['id'], 10) })
+            }
+          });
+
+          configurations.customParams.forEach((paramName) => {
+            this.addParamValue({ key: paramName, value: paramValues.get(paramName) ?? '' });
           })
-
-          if (command) {
-            this.addInfoCommand({ key: commandId, value: parseInt(command['id'], 10) })
-          }
-        });
-
-        Object.entries(actionCommandFilters).forEach(([ commandId, commandFilter ]) => {
-          const command = deviceCommands.find((command) => {
-            return Object.entries(commandFilter).every(([ key, value ]) => command[key] === value);
-          })
-
-          if (command) {
-            this.addActionCommand({ key: commandId, value: parseInt(command['id'], 10) })
-          }
-        });
-
-        paramValues.forEach((paramName) => {
-          this.addParamValue({ key: paramName, value: '' });
-        })
+        }
 
         this.importDeviceControl.setValue('', { emitEvent: false });
       }
     })
   }
 
-  get name() {
-    return this.form.controls.name;
+  get connectivity() {
+    return this.form.controls.connectivity;
   }
 
   get category() {
     return this.form.controls.category;
   }
 
-  get jeedomId() {
-    return this.form.controls.jeedomId as FormControl<number>;
-  }
-
   get type() {
     return this.form.controls.type;
   }
 
+  get name() {
+    return this.form.controls.name;
+  }
+
+  get jeedomId() {
+    return this.form.controls.jeedomId as FormControl<number>;
+  }
+
   get position() {
     return this.form.controls.position;
+  }
+
+  get paramValues() {
+    return this.form.controls.paramValues;
   }
 
   get infoCommandIds() {
@@ -149,10 +163,6 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
 
   get actionCommandIds() {
     return this.form.controls.actionCommandIds;
-  }
-
-  get paramValues() {
-    return this.form.controls.paramValues;
   }
 
   async ngOnInit(): Promise<void> {

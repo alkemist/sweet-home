@@ -164,14 +164,21 @@ p-dropdown.ng-touched.p-invalid > div {
   }
 }
 
-.p-dialog-content .p-card {
-  margin-bottom: 0;
-  margin-top: 10px;
+.p-dialog {
+  .p-dialog-content {
+    padding-top: 5px;
 
-  .p-card-body {
-    padding: 0;
+    .p-card {
+      margin-bottom: 0;
+      margin-top: 10px;
+
+      .p-card-body {
+        padding: 0;
+      }
+    }
   }
 }
+
 
 .p-toast {
   &, .p-element {

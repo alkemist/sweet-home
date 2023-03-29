@@ -15,17 +15,25 @@ import { BaseComponent } from '../../components/base.component';
 import { DeviceService } from '@services';
 import { MapBuilder } from '@tools';
 import { OverlayPanel } from 'primeng/overlaypanel';
+import { UndefinedVarError } from '../../errors/undefined-var.error';
 
 @Directive()
-export abstract class BaseDeviceComponent<I extends string, A extends string, P extends string> extends BaseComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
+export abstract class BaseDeviceComponent<
+  IE extends string = string, AE extends string = string,
+  I extends string = IE, A extends string = AE,
+  P extends string = string
+> extends BaseComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
+
   @HostBinding('class.draggable') draggable: boolean = false;
   @HostBinding('style.left') x = '0px';
   @HostBinding('style.top') y = '0px';
   @Input() name: string = '';
-  @Input() actionInfoIds = new SmartArrayModel<I, number>();
+  @Input() actionInfoIds = new SmartArrayModel<IE, number>();
   @Input() actionCommandIds = new SmartArrayModel<A, number>();
   @Output() loaded = new EventEmitter<boolean>();
   modalOpened: boolean = false;
+  @Input() paramValues: Partial<Record<P, string | number | boolean | null>> = {};
+  protected infoCommandValues: Partial<Record<IE, string | number | boolean | null>> = {};
 
   public constructor(
     private mapBuilder: MapBuilder,
@@ -34,34 +42,14 @@ export abstract class BaseDeviceComponent<I extends string, A extends string, P 
     super();
   }
 
-  @Input() _paramValues?: Record<P, number | string | null>;
-
-  static get paramValues(): string[] {
-    return [];
-  }
-
-  static get infoCommandFilters(): Record<string, Record<string, string>> {
-    return {};
-  }
-
-  static get actionCommandFilters(): Record<string, Record<string, string>> {
-    return {};
-  }
-
-  protected _infoCommandValues?: Record<I, number | string | null>;
-
-  get infoCommandValues() {
-    return this._infoCommandValues as Record<I, number | string | null>;
-  }
-
-  get paramValues() {
-    return this._paramValues as Record<P, number | string | null>;
-  }
-
   @ViewChild("overlayPanel") _overlayPanel?: OverlayPanel;
 
   get overlayPanel() {
-    return this._overlayPanel as OverlayPanel;
+    if (!this._overlayPanel) {
+      throw new UndefinedVarError('overlayPanel');
+    }
+
+    return this._overlayPanel;
   }
 
   @HostBinding('class.editMode') get isEditMode() {
@@ -106,36 +94,18 @@ export abstract class BaseDeviceComponent<I extends string, A extends string, P 
   updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
     //console.log(`-- [${ this.name }] Update info command values`, values);
 
-    this._infoCommandValues = this.actionInfoIds.reduce((result, current) => {
+    const infoCommandValues: Partial<Record<IE, string | number | boolean | null>> = {};
+    this.infoCommandValues = this.actionInfoIds.reduce((result, current) => {
       result[current.key] = values[current.value]
         ? values[current.value].value
-        : this.infoCommandValues[current.key];
+        : this.infoCommandValues[current.key] ?? null;
       return result;
-    }, {} as Record<I, number | string | null>);
+    }, infoCommandValues);
 
     // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
   }
 
-  execCommand(commandId: number, commandName: string, commandValue?: unknown) {
-    return new Promise<any>(resolve => {
-      const loader = this.mapBuilder.addLoader();
-      this.deviceService.execAction(commandId, commandName, commandValue).then((value) => {
-        console.log(`-- [${ this.name }] Exec action result`, value);
-        loader.finish();
-        resolve(commandValue);
-      });
-    })
-  }
-
-  protected execUpdateSlider(commandAction: A, commandValue: number) {
-    return this.execCommand(
-      this.actionCommandIds.get(commandAction),
-      commandAction,
-      { slider: commandValue }
-    );
-  }
-
-  protected execUpdateValue(commandAction: A, commandValue: any) {
+  protected execUpdateValue(commandAction: A, commandValue?: any) {
     return this.execCommand(
       this.actionCommandIds.get(commandAction),
       commandAction,
@@ -143,10 +113,22 @@ export abstract class BaseDeviceComponent<I extends string, A extends string, P 
     );
   }
 
-  protected execUpdate(commandAction: A) {
-    return this.execCommand(
-      this.actionCommandIds.get(commandAction),
-      commandAction
+  protected execUpdateSlider(commandAction: A, commandValue: number) {
+    return this.execUpdateValue(
+      commandAction,
+      { slider: commandValue }
     );
+  }
+
+  private execCommand(commandId: number, commandName: string, commandValue?: unknown) {
+    return new Promise<any>(resolve => {
+      const loader = this.mapBuilder.addLoader();
+      // console.log(`-- [${ this.name }][${ commandName }] Exec action`, commandValue);
+      this.deviceService.execCommand(commandId, commandName, commandValue).then((value) => {
+        console.log(`-- [${ this.name }][${ commandName }] Exec action result`, value);
+        loader.finish();
+        resolve(commandValue);
+      });
+    })
   }
 }

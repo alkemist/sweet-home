@@ -1,22 +1,13 @@
 import { Component } from '@angular/core';
-import { JeedomCommandResultInterface } from '@models';
-import { DeviceMultimediaComponent, MultimediaCommandAction, MultimediaCommandInfo } from '../multimedia.component';
-
-export type SonosCommandInfo = MultimediaCommandInfo & (
-  'state'
-  | 'shuffle' | 'repeat'
-  | 'mute'
-  | 'artist' | 'album' | 'title'
-  );
-
-export type SonosCommandAction = MultimediaCommandAction & (
-  'play' | 'pause' | 'stop' | 'previous' | 'next'
-  | 'mute' | 'unmute'
-  | 'shuffle' | 'repeat'
-  | 'favourite' | 'playlist' | 'radio'
-  );
-
-export type SonosCustomValue = 'volumeMax';
+import {
+  JeedomCommandResultInterface,
+  SonosCommandAction,
+  SonosCommandInfo,
+  SonosExtendCommandAction,
+  SonosExtendCommandInfo,
+  SonosGlobalCommandInfo
+} from '@models';
+import { DeviceMultimediaComponent, MultimediaState } from '../multimedia.component';
 
 @Component({
   selector: 'app-device-sonos',
@@ -28,56 +19,42 @@ export type SonosCustomValue = 'volumeMax';
   ],
 })
 export class DeviceSonosComponent
-  extends DeviceMultimediaComponent<SonosCommandInfo, SonosCommandAction> {
+  extends DeviceMultimediaComponent<
+    SonosExtendCommandInfo, SonosExtendCommandAction,
+    SonosCommandInfo, SonosCommandAction
+  > {
+  showPlayer = true;
 
-  protected override _infoCommandValues = {
-    state: null,
-    volume: null,
-    artist: null,
-    album: null,
-    title: null,
+  protected override infoCommandValues: Record<SonosGlobalCommandInfo, string | number | boolean | null> = {
+    ...super.infoCommandValues,
+    state: null, // "Lecture"
     mute: null, // 0, 1
     shuffle: null, // 0, 1
     repeat: null, // 0, 1
-  } as Record<SonosCommandInfo, number | string | null>;
+    artist: null,
+    album: null,
+    title: null,
+  };
 
-  static override get infoCommandFilters(): Record<SonosCommandInfo, Record<string, string>> {
-    return {
-      state: { logicalId: 'state' },
-      mute: { logicalId: 'mute_state' },
-      volume: { logicalId: 'volume' },
-      shuffle: { logicalId: 'shuffle_state' },
-      repeat: { logicalId: 'repeat_state' },
-      artist: { logicalId: 'track_artist' },
-      album: { logicalId: 'track_album' },
-      title: { logicalId: 'track_title' },
-    } as Record<SonosCommandInfo, Record<string, string>>
-  }
-
-  static override get actionCommandFilters(): Record<SonosCommandAction, Record<string, string>> {
-    return {
-      play: { logicalId: 'play' },
-      pause: { logicalId: 'pause' },
-      stop: { logicalId: 'stop' },
-      previous: { logicalId: 'previous' },
-      next: { logicalId: 'next' },
-      mute: { logicalId: 'mute' },
-      unmute: { logicalId: 'unmute' },
-      volume: { logicalId: 'setVolume' },
-      shuffle: { logicalId: 'shuffle' },
-      repeat: { logicalId: 'repeat' },
-      favourite: { logicalId: 'play_favourite' },
-      playlist: { logicalId: 'play_playlist' },
-      radio: { logicalId: 'play_radio' },
-    }
-  }
-
-  static override get paramValues(): SonosCustomValue[] {
-    return [ 'volumeMax' ];
+  shuffle() {
+    void this.execUpdateValue("shuffle")
   }
 
   override updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
     super.updateInfoCommandValues(values);
+
+    if (this.infoCommandValues.title !== "Entrée de ligne") {
+      this.showPlayer = true;
+
+      if (this.infoCommandValues.state === "Lecture") {
+        this.state = MultimediaState.playing;
+      } else if (this.infoCommandValues.state === "Pause") {
+        this.state = MultimediaState.paused;
+      }
+    } else {
+      this.showPlayer = false;
+      this.state = MultimediaState.stopped;
+    }
 
     console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
   }

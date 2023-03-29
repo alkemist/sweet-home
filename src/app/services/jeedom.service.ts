@@ -3,10 +3,10 @@ import { JSONRPCClient } from 'json-rpc-2.0';
 import { UserService } from './user.service';
 import { JeedomCommandResultInterface } from '@models';
 import { JeedomRoomInterface } from '../models/jeedom-room.interface';
-import { UnknownJeedomError } from '../errors/unknown-jeedom.error';
 import { LoggerService } from './logger.service';
 import { JeedomApiError } from '../errors/jeedom-api.error';
 import { WrongApiKeyError } from '@errors';
+import { UnknownJeedomError } from '../errors/unknown-jeedom.error';
 
 @Injectable({
   providedIn: 'root'
@@ -35,10 +35,10 @@ export class JeedomService {
           this.loggerService.error(new JeedomApiError(response));
           return Promise.resolve();
         }).catch((e) => {
-          console.info('CATCH fetch')
           this.loggerService.error(new UnknownJeedomError(e));
-          return Promise.resolve();
-        })
+          console.info('/!\ CATCH fetch')
+          throw e;
+        });
       }
     );
   }
@@ -57,7 +57,7 @@ export class JeedomService {
       Promise<JeedomCommandResultInterface>;
   }
 
-  private request(method: string, params: Record<string, any> = {}) {
+  private request(method: string, params: Record<string, any> = {}): PromiseLike<any> {
     const apikey = this.userService.getUserToken();
     if (!apikey) {
       this.loggerService.error(new WrongApiKeyError());
