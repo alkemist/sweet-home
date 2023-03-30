@@ -1,4 +1,4 @@
-export type MultimediaCommandInfo = 'volume';
+export type MultimediaCommandInfo = 'volume' | 'muted';
 export type MultimediaCommandAction = 'volume'
   | MultimediaPlayerCommandAction | MultimediaTitleCommandAction | MultimediaMuteCommandAction;
 export type MultimediaPlayerCommandAction = 'play' | 'pause' | 'stop';

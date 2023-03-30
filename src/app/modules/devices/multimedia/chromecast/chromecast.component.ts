@@ -23,6 +23,8 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
   ChromecastExtendCommandInfo, ChromecastExtendCommandAction,
   ChromecastCommandInfo, ChromecastCommandAction
 > {
+  stopDisabled = false;
+  application: string | null = null;
 
   override infoCommandValues: Record<ChromecastGlobalCommandInfo, string | number | boolean | null> = {
     ...super.infoCommandValues,
@@ -33,15 +35,18 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
     // "Netflix", "Diffusion: Netflix" (si en cours),
     // "Diffusion: Azalea Town" (si en cours, mais pas à jour)
     // "YouTube"
+    // "Casting Prime Video"
     display: null, //
     // "Netflix",
     // "Spotify"
-    // Youtube
-    // "Backdrop
+    // "Youtube"
+    // "Prime Video"
+    // "Backdrop"
     title: null, //"",
     // "Netflix"
     // "Green Hills" (titre en cours)
     // "RÉSUMÉ : MY HERO ACADEMIA : SAISON 5" (titre en cours)
+    // "Les Épreuves de Vasselheim"
     artist: null,
     //
     // "Helynt, Koreskape, GameChops"
@@ -58,10 +63,20 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
       this.state = MultimediaState.stopped;
     }
 
-    console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
+    this.stopDisabled = this.infoCommandValues.display === 'Netflix';
+    this.application = this.infoCommandValues.display && this.infoCommandValues.display !== "Backdrop" ?
+      this.infoCommandValues.display.toString() : null;
+
+    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
   }
 
   back(): Promise<void> {
     return this.execUpdateValue('back');
+  }
+
+  unCast(): Promise<void> {
+    return this.execUpdateValue('backdrop').then(_ => {
+      this.application = null;
+    })
   }
 }

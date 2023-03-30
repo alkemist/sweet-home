@@ -5,8 +5,9 @@ import { DeviceThermostatAqaraComponent, DeviceThermostatMoesComponent } from '.
 import { DeviceOnOffPlugLidlComponent } from '../modules/devices/on-off';
 import { DeviceChromecastComponent, DeviceSonosComponent } from '../modules/devices/multimedia';
 import { DeviceTypeEnum } from './device.enum';
+import { MessageService } from 'primeng/api';
 
-type ComponentConstructor = (new (mP: MapBuilder, dS: DeviceService) => BaseDeviceComponent<string, string, string>);
+type ComponentConstructor = (new (mP: MapBuilder, dS: DeviceService, mS: MessageService) => BaseDeviceComponent<string, string, string>);
 
 export const ComponentClassByType: Record<DeviceTypeEnum, ComponentConstructor> = {
   [DeviceTypeEnum.ThermostatAqara]: DeviceThermostatAqaraComponent,

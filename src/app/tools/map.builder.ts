@@ -1,14 +1,14 @@
-import {ElementRef, Injectable, ViewContainerRef} from '@angular/core';
-import {ComponentClassByType, CoordinateInterface, DeviceModel, SizeInterface} from '@models';
+import { ElementRef, Injectable, ViewContainerRef } from '@angular/core';
+import { ComponentClassByType, CoordinateInterface, DeviceModel, SizeInterface } from '@models';
 import * as Hammer from 'hammerjs';
-import {BehaviorSubject, Subject} from 'rxjs';
-import {DocumentHelper} from './document.helper';
-import {MathHelper} from './math.helper';
-import {DeviceSupervisor} from './device.supervisor';
-import {SmartMapModel} from '../models/smart-map.model';
-import {BaseDeviceComponent} from '../modules/devices/base-device.component';
-import {SmartLoaderModel} from '../models/smart-loader.model';
-import {ObjectHelper} from './object.helper';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { DocumentHelper } from './document.helper';
+import { MathHelper } from './math.helper';
+import { DeviceSupervisor } from './device.supervisor';
+import { SmartMapModel } from '../models/smart-map.model';
+import { BaseDeviceComponent } from '../modules/devices/base-device.component';
+import { SmartLoaderModel } from '../models/smart-loader.model';
+import { ObjectHelper } from './object.helper';
 
 interface WheelEventCustom extends WheelEvent {
   wheelDelta: number;
@@ -23,20 +23,20 @@ interface MouseEventCustom extends MouseEvent {
   providedIn: 'root'
 })
 export class MapBuilder {
-  private _loaderManager = new SmartLoaderModel();
+  private _loaderManager = new SmartLoaderModel('queries');
 
   private _viewContainerRef?: ViewContainerRef;
-  private _containerSize: SizeInterface = {w: 0, h: 0};
-  private _mapSize: SizeInterface = {w: 0, h: 0};
+  private _containerSize: SizeInterface = { w: 0, h: 0 };
+  private _mapSize: SizeInterface = { w: 0, h: 0 };
   private _currentScale: number = 1;
   private _scale: number = 1;
   private _scaleMin: number = 1;
   private _scaleMax: number = 1;
-  private _range: CoordinateInterface = {x: 0, y: 0};
-  private _rangeMin: CoordinateInterface = {x: 0, y: 0};
-  private _rangeMax: CoordinateInterface = {x: 0, y: 0};
-  private _currentMapPosition: CoordinateInterface = {x: 0, y: 0};
-  private _mapPosition: CoordinateInterface = {x: 0, y: 0};
+  private _range: CoordinateInterface = { x: 0, y: 0 };
+  private _rangeMin: CoordinateInterface = { x: 0, y: 0 };
+  private _rangeMax: CoordinateInterface = { x: 0, y: 0 };
+  private _currentMapPosition: CoordinateInterface = { x: 0, y: 0 };
+  private _mapPosition: CoordinateInterface = { x: 0, y: 0 };
   private _traversableElements: Element[] = [];
   private _supervisors = new SmartMapModel<string, DeviceSupervisor>();
   private _hammerEnabled = true;
@@ -46,12 +46,18 @@ export class MapBuilder {
   constructor() {
   }
 
-  get globalLoader() {
-    return this._loaderManager.globalLoader;
+  private _deviceUpdated$ = new Subject<void>();
+
+  get deviceUpdated$() {
+    return this._deviceUpdated$.asObservable();
   }
 
-  get allLoaders() {
-    return this._loaderManager.allLoaders;
+  get globalLoader$() {
+    return this._loaderManager.globalLoader$;
+  }
+
+  get allLoaders$() {
+    return this._loaderManager.allLoaders$;
   }
 
   private _deviceMoved$ = new Subject<DeviceModel>();
@@ -94,24 +100,28 @@ export class MapBuilder {
     return this._viewContainerRef as ViewContainerRef;
   }
 
+  addUpdate() {
+    this._deviceUpdated$.next();
+  }
+
   reset() {
-    this._loaderManager = new SmartLoaderModel();
+    this._loaderManager = new SmartLoaderModel('queries');
 
     this._viewContainerRef = undefined;
     this._mapElement = undefined;
     this._pageElement = undefined;
     this._hammer = undefined;
-    this._containerSize = {w: 0, h: 0};
-    this._mapSize = {w: 0, h: 0};
+    this._containerSize = { w: 0, h: 0 };
+    this._mapSize = { w: 0, h: 0 };
     this._currentScale = 1;
     this._scale = 1;
     this._scaleMin = 1;
     this._scaleMax = 1;
-    this._range = {x: 0, y: 0};
-    this._rangeMin = {x: 0, y: 0};
-    this._rangeMax = {x: 0, y: 0};
-    this._currentMapPosition = {x: 0, y: 0};
-    this._mapPosition = {x: 0, y: 0};
+    this._range = { x: 0, y: 0 };
+    this._rangeMin = { x: 0, y: 0 };
+    this._rangeMax = { x: 0, y: 0 };
+    this._currentMapPosition = { x: 0, y: 0 };
+    this._mapPosition = { x: 0, y: 0 };
     this._traversableElements = [];
     this._supervisors = new SmartMapModel<string, DeviceSupervisor>();
     this._hammerEnabled = true;
@@ -132,8 +142,8 @@ export class MapBuilder {
 
   enableHammer(enable: boolean) {
     this._hammerEnabled = enable;
-    this.hammer.get('pinch').set({enable});
-    this.hammer.get('pan').set({enable, direction: Hammer.DIRECTION_ALL});
+    this.hammer.get('pinch').set({ enable });
+    this.hammer.get('pan').set({ enable, direction: Hammer.DIRECTION_ALL });
   }
 
   addLoader() {
@@ -247,8 +257,8 @@ export class MapBuilder {
 
   initHammer() {
     this._hammer = new Hammer(this.pageElement);
-    this.hammer.get('pinch').set({enable: true});
-    this.hammer.get('pan').set({enable: true, direction: Hammer.DIRECTION_ALL});
+    this.hammer.get('pinch').set({ enable: true });
+    this.hammer.get('pan').set({ enable: true, direction: Hammer.DIRECTION_ALL });
 
     this.hammer.on('pan', (event) => {
       //console.log('-- Hammer pan', event.deltaX, event.deltaY)
@@ -291,7 +301,7 @@ export class MapBuilder {
   }
 
   getDevices(): DeviceModel[] {
-    return [...this._supervisors.values()].map((supervisor) => supervisor.device);
+    return [ ...this._supervisors.values() ].map((supervisor) => supervisor.device);
   }
 
   setPlan(target: HTMLImageElement) {

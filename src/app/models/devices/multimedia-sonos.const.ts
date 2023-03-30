@@ -7,7 +7,6 @@ export type SonosGlobalCommandInfo = SonosCommandInfo | MultimediaCommandInfo;
 export type SonosCommandInfo =
   'state'
   | 'shuffle' | 'repeat'
-  | 'mute'
   | 'artist' | 'album' | 'title'
   ;
 
@@ -21,7 +20,7 @@ export type SonosCommandAction =
 
 export const wifiMultimediaSonosInfoCommandFilters: Commands<SonosGlobalCommandInfo> = {
   state: { logicalId: 'state' },
-  mute: { logicalId: 'mute_state' },
+  muted: { logicalId: 'mute_state' },
   volume: { logicalId: 'volume' },
   shuffle: { logicalId: 'shuffle_state' },
   repeat: { logicalId: 'repeat_state' },

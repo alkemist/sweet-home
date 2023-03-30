@@ -13,8 +13,9 @@ import {
 import { DeviceService } from '@services';
 import { MapBuilder } from '@tools';
 import { BaseComponent } from '../../../../../components/base.component';
-import { BehaviorSubject, delay, filter, Subject } from 'rxjs';
+import { BehaviorSubject, filter } from 'rxjs';
 import { FormControl } from '@angular/forms';
+import { SmartLoaderModel } from '../../../../../models/smart-loader.model';
 
 @Component({
   selector: 'app-map',
@@ -34,6 +35,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
   apiLoading = false;
   switchEditModeFormControl = new FormControl<boolean>(false);
   pollingDelay = 5000;
+  private pollingLoader = new SmartLoaderModel('polling');
 
   constructor(
     private mapBuilder: MapBuilder,
@@ -50,30 +52,42 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
       });
 
     this.sub = this.mapBuilder.loaded$.pipe(filter((loaded) => loaded)).subscribe(() => {
-      //console.log('-- Map loaded');
+      console.log('-- Map loaded');
 
       this.mapLoading = false;
       const components = this.mapBuilder.getComponents();
 
       // Polling when data is resolved
       const nextCall$ = new BehaviorSubject<boolean>(true);
-      const timer$ = new Subject<void>();
 
-      this.sub = timer$
+      this.sub = this.mapBuilder.globalLoader$.subscribe((globalLoader) => {
+        this.apiLoading = globalLoader;
+      })
+      // On a besoin de s'inscrire à l'évènement pour qu'il puisse fonctionner
+      this.sub = this.mapBuilder.allLoaders$.subscribe(_ => _);
+
+      this.sub = this.pollingLoader.globalLoader$
         .pipe(
-          delay(this.pollingDelay)
-        ).subscribe(() => {
-          // console.log('-- Ready for a new call');
+          // On attend que tous les loaders ont terminés
+          filter((next) => !next),
+        )
+        .subscribe(_ => {
+          //console.log('-- Ready for a new call');
           nextCall$.next(true);
-        });
+        })
+      // On a besoin de s'inscrire à l'évènement pour qu'il puisse fonctionner
+      this.sub = this.pollingLoader.allLoaders$.subscribe(_ => _);
 
-      this.sub = nextCall$.subscribe(() => {
-        const loader = this.mapBuilder.addLoader();
-        this.deviceService.updateComponents(components).then(_ => {
-          loader.finish();
-          timer$.next();
+      this.sub = nextCall$
+        .subscribe(async () => {
+          const callLoader = this.mapBuilder.addLoader();
+          this.deviceService.updateComponents(components).then(() => {
+            callLoader.finish();
+            // console.log('-- Call received and wait');
+            //this.timer$.next();
+            this.pollingLoader.addLoader(this.pollingDelay);
+          });
         });
-      });
     })
 
     this.sub = this.mapBuilder.deviceMoved$.subscribe((device) => {
@@ -84,12 +98,10 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
       })
     })
 
-    this.sub = this.mapBuilder.globalLoader.subscribe((globalLoader) => {
-      this.apiLoading = globalLoader;
+    this.sub = this.mapBuilder.deviceUpdated$.subscribe(_ => {
+      console.log('-- Device updated');
+      this.pollingLoader.addLoader(this.pollingDelay);
     })
-
-    this.sub = this.mapBuilder.allLoaders.subscribe(_ => {
-    });
   }
 
   @HostListener('window:resize', [ '$event' ])

@@ -21,14 +21,17 @@
 <p-overlayPanel #overlayPanel [appendTo]="content" [dismissable]="false">
   {{ name }}
 </p-overlayPanel>
-<p-dialog (onHide)="closeModal()" [(visible)]="modalOpened"
-          [header]="name" [resizable]="false"
-          appendTo="body"
-          position="bottom">
-  <p-inputNumber [formControl]="thermostatControl" [max]="30" [min]="10" [showButtons]="true" [step]="thermostatStep"
-                 buttonLayout="horizontal"
-                 decrementButtonClass="p-button-danger" decrementButtonIcon="pi pi-minus"
-                 incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus"
-                 inputId="horizontal" suffix="°">
-  </p-inputNumber>
+<p-dialog (onHide)="closeModal()" [(visible)]="modalOpened" [dismissableMask]="true" [draggable]="false"
+          [header]="name" [modal]="true" [resizable]="false"
+          appendTo="body" position="bottom"
+          styleClass="device-modal">
+  <div class="flex flex-column">
+    <p-inputNumber [formControl]="thermostatControl" [max]="30" [min]="10" [showButtons]="true" [step]="thermostatStep"
+                   buttonLayout="horizontal"
+                   class="flex-1"
+                   decrementButtonClass="p-button-danger" decrementButtonIcon="pi pi-minus"
+                   incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus"
+                   inputId="horizontal" suffix="°">
+    </p-inputNumber>
+  </div>
 </p-dialog>

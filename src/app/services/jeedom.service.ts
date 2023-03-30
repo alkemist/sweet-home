@@ -36,7 +36,6 @@ export class JeedomService {
           return Promise.resolve();
         }).catch((e) => {
           this.loggerService.error(new UnknownJeedomError(e));
-          console.info('/!\ CATCH fetch')
           throw e;
         });
       }

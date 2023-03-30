@@ -1,18 +1,33 @@
 <div #content (click)="openModal()" [pTooltip]="name"
-     [tooltipDisabled]="isEditMode || isDragging" class="flex flex-row gap-2"
+     [tooltipDisabled]="isEditMode || isDragging" class="flex flex-column gap-2"
      tooltipEvent="hover" tooltipPosition="top">
-  <div class="map-icon-value flex flex-row align-content-center gap-1">
-    <div class="icon">
-      <i class="fa fa-volume-up"></i>
+  <div class="flex flex-row gap-2">
+    <div class="map-icon-value flex flex-row align-content-center gap-1">
+      <div class="icon">
+        <i class="fa fa-volume-up"></i>
+      </div>
+      <div class="value">
+        {{ infoCommandValues.volume }}%
+      </div>
     </div>
-    <div class="value">
-      {{ infoCommandValues.volume }}%
+    <div *ngIf="state !== MultimediaState.stopped" class="flex flex-row align-content-center gap-1">
+      <div class="icon">
+        <i *ngIf="state === MultimediaState.playing" class="fa fa-play"></i>
+        <i *ngIf="state === MultimediaState.paused" class="fa fa-pause"></i>
+      </div>
+    </div>
+    <div *ngIf="infoCommandValues.muted" class="flex flex-row align-content-center gap-1">
+      <div class="icon">
+        <i class="fa fa-volume-mute"></i>
+      </div>
     </div>
   </div>
-  <div *ngIf="state !== MultimediaState.stopped" class="map-icon-value flex flex-row align-content-center gap-1">
+  <div *ngIf="application" class="map-icon-value flex flex-row align-content-center gap-1">
     <div class="icon">
-      <i *ngIf="state === MultimediaState.playing" class="fa fa-play"></i>
-      <i *ngIf="state === MultimediaState.paused" class="fa fa-pause"></i>
+      <i class="fa fa-television"></i>
+    </div>
+    <div class="value">
+      {{ application }}
     </div>
   </div>
 </div>
@@ -20,25 +35,36 @@
   {{ name }}
 </p-overlayPanel>
 <p-dialog (onHide)="closeModal()" [(visible)]="modalOpened"
-          [header]="name" [resizable]="false"
-          appendTo="body"
-          position="bottom">
+          [dismissableMask]="true" [header]="name" [modal]="true"
+          [resizable]="false" appendTo="body"
+          position="bottom" styleClass="device-modal">
   <div class="flex flex-column gap-5">
-    <div class="flex flex-row justify-content-center gap-3">
-      <p-button (click)="previous()" *ngIf="state !== MultimediaState.stopped" icon="pi pi-step-backward-alt"
+    <div *ngIf="application" class="application flex flex-row justify-content-between align-items-center">
+      <span class="application">{{ application }}</span>
+      <p-button (click)="unCast()" icon="pi pi-eject"
                 styleClass="p-button-rounded p-button-success p-button-text"></p-button>
-      <p-button (click)="back()" *ngIf="state !== MultimediaState.stopped" icon="pi pi-fast-backward"
+    </div>
+    <div *ngIf="state !== MultimediaState.stopped" class="flex flex-row justify-content-center gap-3">
+      <p-button (click)="previous()" icon="pi pi-step-backward-alt"
+                styleClass="p-button-rounded p-button-success p-button-text"></p-button>
+      <p-button (click)="back()" icon="pi pi-fast-backward"
                 styleClass="p-button-rounded p-button-success p-button-text"></p-button>
       <p-button (click)="play()" *ngIf="state !== MultimediaState.playing" icon="pi pi-play"
                 styleClass="p-button-rounded p-button-success"></p-button>
       <p-button (click)="pause()" *ngIf="state === MultimediaState.playing" icon="pi pi-pause"
                 styleClass="p-button-rounded p-button-success"></p-button>
-      <p-button (click)="next()" *ngIf="state !== MultimediaState.stopped" icon="pi pi-step-forward-alt"
+      <p-button (click)="stop()" [disabled]="stopDisabled" icon="pi pi-stop"
+                styleClass="p-button-rounded p-button-success p-button-text"></p-button>
+      <p-button (click)="next()" icon="pi pi-step-forward-alt"
                 styleClass="p-button-rounded p-button-success p-button-text"></p-button>
     </div>
     <div class="flex flex-column gap-3">
       <div class="flex justify-content-center ">{{ volumeControl.value }}%</div>
-      <p-slider [formControl]="volumeControl" [max]="volumeMax" [min]="0"></p-slider>
+      <div class="flex flex-row align-items-center gap-3">
+        <p-slider [formControl]="volumeControl" [max]="volumeMax" [min]="0"
+                  class="flex-1"></p-slider>
+        <p-toggleButton [formControl]="muteControl" offIcon="pi pi-check" onIcon="pi pi-ban"></p-toggleButton>
+      </div>
     </div>
   </div>
 </p-dialog>

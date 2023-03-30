@@ -87,8 +87,7 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
           resolve(false);
         }
       })
-        .catch((e) => {
-          console.info('/!\ CATCH updateComponents');
+        .catch(_ => {
           return resolve(false);
         })
     });

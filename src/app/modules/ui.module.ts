@@ -22,6 +22,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ValdemortModule } from 'ngx-valdemort';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { SliderModule } from 'primeng/slider';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 
 const modules = [
   ToolbarModule,
@@ -44,6 +45,7 @@ const modules = [
   InputSwitchModule,
   OverlayPanelModule,
   SliderModule,
+  ToggleButtonModule,
 
   ValdemortModule,
 ];

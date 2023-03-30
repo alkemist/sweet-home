@@ -16,6 +16,7 @@ import { DeviceService } from '@services';
 import { MapBuilder } from '@tools';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { UndefinedVarError } from '../../errors/undefined-var.error';
+import { MessageService } from 'primeng/api';
 
 @Directive()
 export abstract class BaseDeviceComponent<
@@ -37,7 +38,8 @@ export abstract class BaseDeviceComponent<
 
   public constructor(
     private mapBuilder: MapBuilder,
-    private deviceService: DeviceService
+    private deviceService: DeviceService,
+    protected messageService: MessageService,
   ) {
     super();
   }
@@ -105,18 +107,18 @@ export abstract class BaseDeviceComponent<
     // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
   }
 
+  protected execUpdateSlider(commandAction: A, commandValue: number) {
+    return this.execUpdateValue(
+      commandAction,
+      { slider: commandValue }
+    );
+  }
+
   protected execUpdateValue(commandAction: A, commandValue?: any) {
     return this.execCommand(
       this.actionCommandIds.get(commandAction),
       commandAction,
       commandValue
-    );
-  }
-
-  protected execUpdateSlider(commandAction: A, commandValue: number) {
-    return this.execUpdateValue(
-      commandAction,
-      { slider: commandValue }
     );
   }
 
@@ -127,6 +129,7 @@ export abstract class BaseDeviceComponent<
       this.deviceService.execCommand(commandId, commandName, commandValue).then((value) => {
         console.log(`-- [${ this.name }][${ commandName }] Exec action result`, value);
         loader.finish();
+        this.mapBuilder.addUpdate();
         resolve(commandValue);
       });
     })

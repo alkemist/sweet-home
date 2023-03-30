@@ -6,7 +6,6 @@ export type ChromecastGlobalCommandInfo = ChromecastCommandInfo | MultimediaComm
 
 export type ChromecastCommandInfo =
   'online'
-  | 'muted'
   | 'player'
   | 'status' | 'display'
   | 'title' | 'artist'
@@ -16,7 +15,7 @@ export type ChromecastExtendCommandAction = ChromecastCommandAction & Multimedia
 export type ChromecastGlobalCommandAction = ChromecastCommandAction | MultimediaCommandAction;
 
 export type ChromecastCommandAction =
-  'uncast' | 'backdrop' | 'back'
+  'backdrop' | 'back'
   ;
 
 export const MultimediaChromecastInfoCommandFilters: Commands<ChromecastGlobalCommandInfo> = {
@@ -31,7 +30,6 @@ export const MultimediaChromecastInfoCommandFilters: Commands<ChromecastGlobalCo
 };
 
 export const wifiMultimediaChromecastActionCommandFilters: Commands<ChromecastGlobalCommandAction> = {
-  uncast: { logicalId: 'quit_app' },
   backdrop: { logicalId: 'app=backdrop' },
   volume: { logicalId: 'volume_set' },
   mute: { logicalId: 'mute_on' },

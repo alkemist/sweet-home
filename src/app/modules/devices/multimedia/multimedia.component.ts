@@ -23,12 +23,14 @@ export abstract class DeviceMultimediaComponent<
   extends BaseDeviceComponent<IE, AE, I, A | MultimediaCommandAction, MultimediaParamValue> {
 
   volumeControl = new FormControl<number>(0);
+  muteControl = new FormControl<boolean>(true);
 
   MultimediaState = MultimediaState;
   state: MultimediaState = MultimediaState.stopped;
 
   protected override infoCommandValues: Record<MultimediaCommandInfo, string | number | boolean | null> = {
     volume: null,
+    muted: null,
   };
 
   get volumeMax() {
@@ -44,8 +46,18 @@ export abstract class DeviceMultimediaComponent<
       )
       .subscribe((volume) => {
         if (volume) {
-          this.setVolume(volume).then(_ => {
-            this.infoCommandValues.volume = volume;
+          void this.setVolume(volume);
+        }
+      })
+    this.sub = this.muteControl.valueChanges
+      .subscribe((mute) => {
+        if (mute !== null) {
+          void this.setMute(mute ? 'mute' : 'unmute').then(_ => {
+            if (mute) {
+              this.volumeControl.disable({ emitEvent: false });
+            } else {
+              this.volumeControl.enable({ emitEvent: false });
+            }
           })
         }
       })
@@ -61,6 +73,12 @@ export abstract class DeviceMultimediaComponent<
     })
   }
 
+  setMute(action: 'mute' | 'unmute'): Promise<void> {
+    return this.execUpdateValue(action).then(_ => {
+      this.infoCommandValues.muted = action === 'mute' ? 1 : 0;
+    })
+  }
+
   play(): Promise<void> {
     return this.execUpdateValue('play').then(_ => {
       this.state = MultimediaState.playing;
@@ -70,6 +88,12 @@ export abstract class DeviceMultimediaComponent<
   pause(): Promise<void> {
     return this.execUpdateValue('pause').then(_ => {
       this.state = MultimediaState.paused;
+    })
+  }
+
+  stop(): Promise<void> {
+    return this.execUpdateValue('stop').then(_ => {
+      this.state = MultimediaState.stopped;
     })
   }
 
@@ -85,6 +109,7 @@ export abstract class DeviceMultimediaComponent<
     super.updateInfoCommandValues(values);
     if (!this.modalOpened) {
       this.volumeControl.setValue(this.infoCommandValues.volume as number, { emitEvent: false });
+      this.muteControl.setValue(!!this.infoCommandValues.muted, { emitEvent: false });
     }
   }
 }

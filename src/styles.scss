@@ -145,9 +145,7 @@ p-dropdown.ng-touched.p-invalid > div {
 
 .mobile-hidden {
   display: initial;
-  @media screen and (max-width: $mobile-tablet-width) {
-    display: none !important;
-  }
+
 }
 
 .hide-label-mobile {
@@ -164,10 +162,23 @@ p-dropdown.ng-touched.p-invalid > div {
   }
 }
 
-.p-dialog {
-  .p-dialog-content {
-    padding-top: 5px;
 
+.p-dialog {
+  &.device-modal {
+    min-width: 300px;
+
+    @media screen and (max-width: $mobile-breakpoint-width) {
+      width: 100%;
+    }
+
+
+    .p-dialog-content {
+      padding-top: 5px;
+
+    }
+  }
+
+  .p-dialog-content {
     .p-card {
       margin-bottom: 0;
       margin-top: 10px;

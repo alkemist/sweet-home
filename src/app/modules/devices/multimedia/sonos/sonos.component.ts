@@ -23,12 +23,12 @@ export class DeviceSonosComponent
     SonosExtendCommandInfo, SonosExtendCommandAction,
     SonosCommandInfo, SonosCommandAction
   > {
-  showPlayer = true;
+  playerShowed = true;
 
   protected override infoCommandValues: Record<SonosGlobalCommandInfo, string | number | boolean | null> = {
     ...super.infoCommandValues,
     state: null, // "Lecture"
-    mute: null, // 0, 1
+    muted: null, // 0, 1
     shuffle: null, // 0, 1
     repeat: null, // 0, 1
     artist: null,
@@ -44,7 +44,7 @@ export class DeviceSonosComponent
     super.updateInfoCommandValues(values);
 
     if (this.infoCommandValues.title !== "Entrée de ligne") {
-      this.showPlayer = true;
+      this.playerShowed = true;
 
       if (this.infoCommandValues.state === "Lecture") {
         this.state = MultimediaState.playing;
@@ -52,7 +52,7 @@ export class DeviceSonosComponent
         this.state = MultimediaState.paused;
       }
     } else {
-      this.showPlayer = false;
+      this.playerShowed = false;
       this.state = MultimediaState.stopped;
     }
 
