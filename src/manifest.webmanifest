@@ -1,22 +1,29 @@
 {
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
   "name": "Sweet Home",
   "short_name": "Sweet Home",
+  "description": "",
+  "lang": "en",
   "theme_color": "#040d19",
   "background_color": "#040d19",
   "display": "standalone",
-  "scope": "./",
-  "start_url": "./",
+  "protocol_handlers": [
+    {
+      "protocol": "https",
+      "url": "/"
+    }
+  ],
   "icons": [
      {
           "src": "assets/icons/icon.svg",
-          "purpose": "maskable any",
           "sizes": "any",
           "type": "image/svg+xml"
       },
      {
           "src": "assets/icons/icon.svg",
-          "purpose": "maskable any",
-          "sizes": "48x48 72x72 96x96 128x128 256x256 512x512",
+          "sizes": "600x600",
           "type": "image/svg+xml"
       }
   ]
