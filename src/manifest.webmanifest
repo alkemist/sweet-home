@@ -9,12 +9,7 @@
   "theme_color": "#040d19",
   "background_color": "#040d19",
   "display": "standalone",
-  "protocol_handlers": [
-    {
-      "protocol": "https",
-      "url": "/"
-    }
-  ],
+  "protocol_handlers": [],
   "icons": [
      {
           "src": "assets/icons/icon.svg",
