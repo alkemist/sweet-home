@@ -47,7 +47,10 @@
               "stackdriver-errors-js",
               "json-rpc-2.0",
               "nosleep.js"
-            ]
+            ],
+            "serviceWorker": true,
+            "ngswConfigPath": "ngsw-config.json",
+            "webWorkerTsConfig": "tsconfig.worker.json"
           },
           "configurations": {
             "production": {

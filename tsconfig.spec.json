@@ -11,5 +11,9 @@
   "include": [
     "src/**/*.spec.ts",
     "src/**/*.d.ts"
+  ],
+  "exclude": [
+    "./out-tsc/worker",
+    "src/app/workers/*.worker.ts"
   ]
 }
