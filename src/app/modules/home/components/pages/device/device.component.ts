@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DeviceHelper, ObjectHelper, slugify } from '@tools';
+import { ObjectHelper, slugify } from '@tools';
 import { ConfirmationService, FilterService, MessageService } from 'primeng/api';
 import { AppService, DeviceService } from '@services';
 import { KeyValue } from '@angular/common';
@@ -17,9 +17,10 @@ import {
   JeedomRoomModel,
   KeyValueFormInterface,
   SmartArrayModel,
-  TypesByCategory
 } from '@models';
 import { BaseComponent } from '../../../../../components/base.component';
+import { TypesByCategory } from './device-types-by-category.const';
+import { deviceConfigurations } from '@devices';
 
 @Component({
   selector: 'app-device',
@@ -49,7 +50,8 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     }),
     infoCommandIds: new FormArray<FormGroup<KeyValueFormInterface<number>>>([]),
     actionCommandIds: new FormArray<FormGroup<KeyValueFormInterface<number>>>([]),
-    paramValues: new FormArray<FormGroup<KeyValueFormInterface<number | string>>>([]),
+    configurationValues: new FormArray<FormGroup<KeyValueFormInterface<string>>>([]),
+    parameterValues: new FormArray<FormGroup<KeyValueFormInterface<string>>>([]),
   })
   loading = true;
   error: string = '';
@@ -89,14 +91,15 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
 
         this.infoCommandIds.clear();
         this.actionCommandIds.clear();
+        this.configurationValues.clear();
 
-        const paramValues = new SmartArrayModel(this.paramValues.value as KeyValue<string, string | number>[]);
-        this.paramValues.clear();
-
+        const parameterValues = new SmartArrayModel(this.parameterValues.value as KeyValue<string, string>[]);
+        this.parameterValues.clear();
 
         const deviceCommands: Record<string, string>[] = jeedomDevice.commands
           .map(command => ObjectHelper.objectToRecord<string>(command));
-        const configurations = DeviceHelper.getConfigurations(this.connectivity.value, this.category.value, this.type.value)
+
+        const configurations = deviceConfigurations[this.connectivity.value]![this.category.value]![this.type.value];
 
         if (configurations) {
           Object.entries(configurations.infoCommandFilters).forEach(([ commandId, commandFilter ]) => {
@@ -119,8 +122,16 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
             }
           });
 
-          configurations.customParams.forEach((paramName) => {
-            this.addParamValue({ key: paramName, value: paramValues.get(paramName) ?? '' });
+          Object.entries(configurations.configurationFilters).forEach(([ configurationId, commandFilter ]) => {
+            const value = jeedomDevice.values[commandFilter];
+
+            if (value) {
+              this.addConfigurationValue({ key: configurationId, value: value })
+            }
+          });
+
+          configurations.customParameters.forEach((paramName) => {
+            this.addParameterValue({ key: paramName, value: parameterValues.get(paramName) ?? '' });
           })
         }
 
@@ -153,8 +164,12 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     return this.form.controls.position;
   }
 
-  get paramValues() {
-    return this.form.controls.paramValues;
+  get configurationValues() {
+    return this.form.controls.configurationValues;
+  }
+
+  get parameterValues() {
+    return this.form.controls.parameterValues;
   }
 
   get infoCommandIds() {
@@ -178,7 +193,8 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
 
           this.device.infoCommandIds.forEach(() => this.addInfoCommand());
           this.device.actionCommandIds.forEach(() => this.addActionCommand());
-          this.device.paramValues.forEach(() => this.addParamValue());
+          this.device.configurationValues.forEach(() => this.addConfigurationValue());
+          this.device.parameterValues.forEach(() => this.addParameterValue());
 
           this.form.setValue(this.device.toForm())
         } else {
@@ -189,8 +205,8 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
       }));
   }
 
-  addParamValue(keyValue?: KeyValue<string, string | number>) {
-    this.paramValues.push(
+  addParameterValue(keyValue?: KeyValue<string, string>) {
+    this.parameterValues.push(
       this.addCommandForm(keyValue)
     );
   }
@@ -203,6 +219,12 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
 
   addActionCommand(keyValue?: KeyValue<string, number>) {
     this.actionCommandIds.push(
+      this.addCommandForm(keyValue)
+    );
+  }
+
+  addConfigurationValue(keyValue?: KeyValue<string, string>) {
+    this.configurationValues.push(
       this.addCommandForm(keyValue)
     );
   }

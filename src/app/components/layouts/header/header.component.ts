@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RoutesRecognized } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { filter, first, map, Observable, Subject } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { AppService, DeviceService, LoggerService, UserService } from '@services';
 import { MenuItem } from 'primeng/api';
@@ -23,6 +23,7 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
   menuItems: MenuItem[] = MenuItems;
   services: Record<string, any> = {}
   noSleep = new NoSleep();
+  appIsVisible$ = new Subject<boolean>();
 
   constructor(
     titleService: Title,
@@ -43,11 +44,31 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
       map(_ => titleService.getTitle().replaceAll('-', '/'))
     );
 
-    this.sub = this.mapBuilder.loaded$.subscribe((ready) => {
+    document.addEventListener("visibilitychange", _ => {
+      //console.log('-- Visbility change', document.visibilityState)
+      this.appIsVisible$.next(document.visibilityState === 'visible')
+    });
+
+    this.mapBuilder.loaded$.subscribe((ready) => {
       if (ready && !this.noSleep.isEnabled) {
-        void this.noSleep.enable().catch((e) => {
-          this.loggerService.error(new NoSleepError(e));
-        })
+        //console.log('-- Wake lock activation')
+        if (document.visibilityState === 'visible') {
+          //console.log('-- App is visible, we active wake lock')
+          void this.noSleep.enable().catch((e) => {
+            this.loggerService.error(new NoSleepError(e));
+          })
+        } else {
+          //console.log('-- App hidded, wait for visible')
+          this.appIsVisible$.asObservable().pipe(
+            filter(isVisible => isVisible),
+            first()
+          ).subscribe(() => {
+            //console.log('-- App visible again, we active wake lock')
+            void this.noSleep.enable().catch((e) => {
+              this.loggerService.error(new NoSleepError(e));
+            });
+          })
+        }
       } else if (!ready && this.noSleep.isEnabled) {
         this.noSleep.disable();
       }

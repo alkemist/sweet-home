@@ -13,7 +13,8 @@ export interface DeviceBackInterface extends DocumentBackInterface {
   position?: CoordinateInterface,
   infoCommandIds?: Record<string, number>,
   actionCommandIds?: Record<string, number>
-  paramValues?: Record<string, number | string>
+  configurationValues?: Record<string, string>
+  parameterValues?: Record<string, string>
 }
 
 export interface DeviceFrontInterface extends DocumentFrontInterface {
@@ -24,7 +25,8 @@ export interface DeviceFrontInterface extends DocumentFrontInterface {
   position: CoordinateInterface,
   infoCommandIds: KeyValue<string, number>[],
   actionCommandIds: KeyValue<string, number>[],
-  paramValues: KeyValue<string, number | string>[],
+  configurationValues: KeyValue<string, string>[],
+  parameterValues: KeyValue<string, string>[],
 }
 
 export type DeviceStoredInterface = HasIdWithInterface<DeviceBackInterface>;

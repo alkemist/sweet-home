@@ -9,6 +9,7 @@ export class JeedomDeviceModel {
     private _name: string,
     private _type: JeedomDeviceType,
     private _commands: JeedomCommandInterface[],
+    private _values: Record<string, any>,
   ) {
     this._id = parseInt(_id, 10);
   }
@@ -27,5 +28,9 @@ export class JeedomDeviceModel {
 
   get commands() {
     return this._commands;
+  }
+
+  get values() {
+    return this._values;
   }
 }

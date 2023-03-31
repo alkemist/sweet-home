@@ -7,5 +7,3 @@ export type MultimediaMuteCommandAction = 'mute' | 'unmute';
 export type MultimediaParamValue = 'volumeMax';
 
 export const MultimediaParams = [ 'volumeMax' ];
-
-

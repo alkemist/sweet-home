@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
+import { JeedomCommandResultInterface } from '@models';
+import { DeviceMultimediaComponent, MultimediaState } from '../multimedia.component';
 import {
   ChromecastCommandAction,
   ChromecastCommandInfo,
   ChromecastExtendCommandAction,
   ChromecastExtendCommandInfo,
-  ChromecastGlobalCommandInfo,
-  JeedomCommandResultInterface
-} from '@models';
-import { DeviceMultimediaComponent, MultimediaState } from '../multimedia.component';
+  ChromecastGlobalCommandInfo
+} from './chromecast.const';
 
 
 @Component({
@@ -23,9 +23,6 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
   ChromecastExtendCommandInfo, ChromecastExtendCommandAction,
   ChromecastCommandInfo, ChromecastCommandAction
 > {
-  stopDisabled = false;
-  application: string | null = null;
-
   override infoCommandValues: Record<ChromecastGlobalCommandInfo, string | number | boolean | null> = {
     ...super.infoCommandValues,
     online: null, //0-1
@@ -52,6 +49,22 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
     // "Helynt, Koreskape, GameChops"
   };
 
+  get isBackdrop(): boolean {
+    return this.infoCommandValues.display === "Backdrop";
+  }
+
+  get application(): string {
+    const application = this.infoCommandValues.display ?? '';
+    if (this.isBackdrop) {
+      return '';
+    }
+    return application.toString();
+  }
+
+  get stopDisabled() {
+    return this.application === 'Netflix';
+  }
+
   override updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
     super.updateInfoCommandValues(values);
 
@@ -63,10 +76,6 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
       this.state = MultimediaState.stopped;
     }
 
-    this.stopDisabled = this.infoCommandValues.display === 'Netflix';
-    this.application = this.infoCommandValues.display && this.infoCommandValues.display !== "Backdrop" ?
-      this.infoCommandValues.display.toString() : null;
-
     //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
   }
 
@@ -76,7 +85,7 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
 
   unCast(): Promise<void> {
     return this.execUpdateValue('backdrop').then(_ => {
-      this.application = null;
+      this.infoCommandValues.display = 'Backdrop';
     })
   }
 }

@@ -1,2 +1,6 @@
 export * from './aqara/thermostat-aqara.component'
+export * from './aqara/thermostat-aqara.const'
 export * from './moes/thermostat-moes.component'
+export * from './moes/thermostat-moes.const'
+export * from './thermostat-zigbee-official.type'
+export * from './thermostat.const'

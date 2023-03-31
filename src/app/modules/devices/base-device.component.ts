@@ -22,7 +22,7 @@ import { MessageService } from 'primeng/api';
 export abstract class BaseDeviceComponent<
   IE extends string = string, AE extends string = string,
   I extends string = IE, A extends string = AE,
-  P extends string = string
+  C extends string = string, P extends string = string
 > extends BaseComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
 
   @HostBinding('class.draggable') draggable: boolean = false;
@@ -31,9 +31,11 @@ export abstract class BaseDeviceComponent<
   @Input() name: string = '';
   @Input() actionInfoIds = new SmartArrayModel<IE, number>();
   @Input() actionCommandIds = new SmartArrayModel<A, number>();
+  @Input() configurationValues = new SmartArrayModel<C, string>();
   @Output() loaded = new EventEmitter<boolean>();
+  @Input() parameterValues: Partial<Record<P, string | number | boolean | null>> = {};
+
   modalOpened: boolean = false;
-  @Input() paramValues: Partial<Record<P, string | number | boolean | null>> = {};
   protected infoCommandValues: Partial<Record<IE, string | number | boolean | null>> = {};
 
   public constructor(
@@ -122,16 +124,21 @@ export abstract class BaseDeviceComponent<
     );
   }
 
-  private execCommand(commandId: number, commandName: string, commandValue?: unknown) {
-    return new Promise<any>(resolve => {
+  protected execCommand(commandId: number, commandName: string, commandValue?: unknown) {
+    return new Promise<any>((resolve, reject) => {
       const loader = this.mapBuilder.addLoader();
-      // console.log(`-- [${ this.name }][${ commandName }] Exec action`, commandValue);
+      console.log(`-- [${ this.name }][${ commandName }] Exec action`, commandValue);
+
       this.deviceService.execCommand(commandId, commandName, commandValue).then((value) => {
         console.log(`-- [${ this.name }][${ commandName }] Exec action result`, value);
+
         loader.finish();
         this.mapBuilder.addUpdate();
         resolve(commandValue);
-      });
+      }).catch((e) => {
+        console.log(`-- [${ this.name }][${ commandName }] Exec action error`, e);
+        reject(e);
+      })
     })
   }
 }

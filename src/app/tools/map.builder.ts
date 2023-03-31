@@ -1,5 +1,5 @@
 import { ElementRef, Injectable, ViewContainerRef } from '@angular/core';
-import { ComponentClassByType, CoordinateInterface, DeviceModel, SizeInterface } from '@models';
+import { CoordinateInterface, DeviceModel, DeviceTypeEnum, SizeInterface } from '@models';
 import * as Hammer from 'hammerjs';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { DocumentHelper } from './document.helper';
@@ -9,15 +9,15 @@ import { SmartMapModel } from '../models/smart-map.model';
 import { BaseDeviceComponent } from '../modules/devices/base-device.component';
 import { SmartLoaderModel } from '../models/smart-loader.model';
 import { ObjectHelper } from './object.helper';
-
-interface WheelEventCustom extends WheelEvent {
-  wheelDelta: number;
-}
-
-interface MouseEventCustom extends MouseEvent {
-  toElement: Element;
-  relatedTarget: Element;
-}
+import { DeviceService } from '@services';
+import { MessageService } from 'primeng/api';
+import {
+  DeviceChromecastComponent,
+  DeviceOnOffPlugLidlComponent,
+  DeviceSonosComponent,
+  DeviceThermostatAqaraComponent,
+  DeviceThermostatMoesComponent
+} from '@devices';
 
 @Injectable({
   providedIn: 'root'
@@ -159,7 +159,8 @@ export class MapBuilder {
         componentInstance.name = device.name;
         componentInstance.actionInfoIds = device.infoCommandIds;
         componentInstance.actionCommandIds = device.actionCommandIds;
-        componentInstance.paramValues = device.paramValues.toRecord();
+        componentInstance.configurationValues = device.configurationValues;
+        componentInstance.parameterValues = device.parameterValues.toRecord();
 
         componentInstance.loaded.subscribe(() => {
           const supervisor = new DeviceSupervisor(componentRef, ObjectHelper.clone(device));
@@ -377,4 +378,23 @@ export class MapBuilder {
     this._mapPosition.x = this._currentMapPosition.x;
     this._mapPosition.y = this._currentMapPosition.y;
   }
+}
+
+interface WheelEventCustom extends WheelEvent {
+  wheelDelta: number;
+}
+
+interface MouseEventCustom extends MouseEvent {
+  toElement: Element;
+  relatedTarget: Element;
+}
+
+type ComponentConstructor = (new (mP: MapBuilder, dS: DeviceService, mS: MessageService) => BaseDeviceComponent);
+
+export const ComponentClassByType: Record<DeviceTypeEnum, ComponentConstructor> = {
+  [DeviceTypeEnum.ThermostatAqara]: DeviceThermostatAqaraComponent,
+  [DeviceTypeEnum.ThermostatMoes]: DeviceThermostatMoesComponent,
+  [DeviceTypeEnum.PlugLidl]: DeviceOnOffPlugLidlComponent,
+  [DeviceTypeEnum.Chromecast]: DeviceChromecastComponent,
+  [DeviceTypeEnum.Sonos]: DeviceSonosComponent,
 }

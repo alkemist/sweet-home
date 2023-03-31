@@ -1,2 +1,5 @@
 export * from './chromecast/chromecast.component'
+export * from './chromecast/chromecast.const'
 export * from './sonos/sonos.component'
+export * from './sonos/sonos.const'
+export * from './multimedia.const'

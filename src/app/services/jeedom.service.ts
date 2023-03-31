@@ -7,6 +7,7 @@ import { LoggerService } from './logger.service';
 import { JeedomApiError } from '../errors/jeedom-api.error';
 import { WrongApiKeyError } from '@errors';
 import { UnknownJeedomError } from '../errors/unknown-jeedom.error';
+import { JeedomRequestError } from '../errors/jeedom-request.error';
 
 @Injectable({
   providedIn: 'root'
@@ -26,13 +27,18 @@ export class JeedomService {
           body: JSON.stringify(jsonRPCRequest),
         }).then((response) => {
           if (response.status === 200) {
-            // Use client.receive when you received a JSON-RPC response.
             return response
               .json()
-              .then((jsonRPCResponse) => this.api.receive(jsonRPCResponse));
+              .then((jsonRPCResponse) => {
+                if (jsonRPCResponse.id === 99999) {
+                  this.loggerService.error(new JeedomApiError(jsonRPCResponse.error));
+                }
+
+                return this.api.receive(jsonRPCResponse)
+              })
           }
 
-          this.loggerService.error(new JeedomApiError(response));
+          this.loggerService.error(new JeedomRequestError(response));
           return Promise.resolve();
         }).catch((e) => {
           this.loggerService.error(new UnknownJeedomError(e));

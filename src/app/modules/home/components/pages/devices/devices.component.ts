@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceModel, DeviceTypeEnum, SmartArrayModel } from '@models';
 import { DeviceService } from '@services';
 import { BaseComponent } from '../../../../../components/base.component';
+import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceModel, DeviceTypeEnum, SmartArrayModel } from '@models';
 
 
 @Component({

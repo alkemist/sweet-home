@@ -12,5 +12,6 @@ export interface DeviceFormInterface extends DocumentFormInterface {
   position: FormGroup<CoordinateFormInterface>
   infoCommandIds: FormArray<FormGroup<KeyValueFormInterface<number>>>
   actionCommandIds: FormArray<FormGroup<KeyValueFormInterface<number>>>
-  paramValues: FormArray<FormGroup<KeyValueFormInterface<number | string>>>
+  configurationValues: FormArray<FormGroup<KeyValueFormInterface<string>>>
+  parameterValues: FormArray<FormGroup<KeyValueFormInterface<string>>>
 }

@@ -30,11 +30,17 @@
       "@errors": [
         "src/app/errors"
       ],
+      "@consts": [
+        "src/app/consts"
+      ],
       "@models": [
         "src/app/models"
       ],
       "@modules": [
         "src/app/modules"
+      ],
+      "@devices": [
+        "src/app/modules/devices"
       ],
       "@services": [
         "src/app/services"

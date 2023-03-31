@@ -29,7 +29,17 @@
           appendTo="body" position="bottom"
           styleClass="device-modal">
   <div class="flex flex-column gap-5">
-    <div *ngIf="playerShowed" class="flex flex-row justify-content-center gap-3">
+    <div *ngIf="hasTitle" class="flex justify-content-center align-items-center gap-5">
+      <span>{{ infoCommandValues.artist}}</span>
+      <span>/</span>
+      <span>{{ infoCommandValues.title}}</span>
+    </div>
+    <div *ngIf="hasTvSound" class="flex flex-row justify-content-center align-items-center gap-3">
+      <p-button [disabled]="true" icon="fa fa-television"
+                styleClass="p-button-rounded p-button-success"></p-button>
+    </div>
+    <div *ngIf="!hasTvSound" class="flex flex-row justify-content-center align-items-center gap-3">
+      <p-toggleButton [formControl]="repeatControl" offIcon="pi pi-refresh" onIcon="pi pi-refresh"></p-toggleButton>
       <p-button (click)="previous()" *ngIf="state !== MultimediaState.stopped" icon="pi pi-step-backward-alt"
                 styleClass="p-button-rounded p-button-success p-button-text"></p-button>
       <p-button (click)="play()" *ngIf="state !== MultimediaState.playing" icon="pi pi-play"
@@ -38,13 +48,15 @@
                 styleClass="p-button-rounded p-button-success"></p-button>
       <p-button (click)="next()" *ngIf="state !== MultimediaState.stopped" icon="pi pi-step-forward-alt"
                 styleClass="p-button-rounded p-button-success p-button-text"></p-button>
+      <p-toggleButton [formControl]="shuffleControl" offIcon="fa fa-exchange" onIcon="fa fa-exchange"></p-toggleButton>
     </div>
     <div class="flex flex-column gap-3">
       <div class="flex justify-content-center ">{{ volumeControl.value }}%</div>
       <div class="flex flex-row align-items-center gap-3">
         <p-slider [formControl]="volumeControl" [max]="volumeMax" [min]="0"
                   class="flex-1"></p-slider>
-        <p-toggleButton [formControl]="muteControl" offIcon="pi pi-check" onIcon="pi pi-ban"></p-toggleButton>
+        <p-toggleButton [formControl]="muteControl" offIcon="fa fa-volume-up"
+                        onIcon="fa fa-volume-mute"></p-toggleButton>
       </div>
     </div>
   </div>

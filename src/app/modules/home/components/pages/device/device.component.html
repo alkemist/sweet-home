@@ -144,11 +144,10 @@
           </div>
         </div>
 
-        <div *ngIf="paramValues.length > 0">
+        <div *ngIf="parameterValues.length > 0">
           <h5 i18n>Custom values</h5>
-          <div class="field-column flex-column gap-2" formArrayName="paramValues">
-            <div *ngIf="paramValues.controls.length === 0" i18n>No custom values</div>
-            <div *ngFor="let paramForm of paramValues.controls; let i = index" [formGroupName]="i"
+          <div class="field-column flex-column gap-2" formArrayName="parameterValues">
+            <div *ngFor="let paramForm of parameterValues.controls; let i = index" [formGroupName]="i"
                  class="flex field-row field-float">
               <div class="flex-column flex-1">
                 <div class="p-float-label">
@@ -169,6 +168,37 @@
                 <val-errors class="p-error" controlName="value">
                   <ng-template valError="required">
                     <ng-container i18n>Parameter value is required.</ng-container>
+                  </ng-template>
+                </val-errors>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="configurationValues.length > 0">
+          <h5 i18n>Configuration values</h5>
+          <div class="field-column flex-column gap-2" formArrayName="configurationValues">
+            <div *ngFor="let configForm of configurationValues.controls; let i = index" [formGroupName]="i"
+                 class="flex field-row field-float">
+              <div class="flex-column flex-1">
+                <div class="p-float-label">
+                  <input class="w-12" formControlName="key" pInputText type="text">
+                  <label i18n>Configuration name</label>
+                </div>
+                <val-errors class="p-error" controlName="key">
+                  <ng-template valError="required">
+                    <ng-container i18n>Configuration name is required.</ng-container>
+                  </ng-template>
+                </val-errors>
+              </div>
+              <div class="flex-column flex-1">
+                <div class="p-float-label flex">
+                  <input class="w-12" formControlName="value" pInputText>
+                  <label i18n>Configuration value</label>
+                </div>
+                <val-errors class="p-error" controlName="value">
+                  <ng-template valError="required">
+                    <ng-container i18n>Configuration value is required.</ng-container>
                   </ng-template>
                 </val-errors>
               </div>

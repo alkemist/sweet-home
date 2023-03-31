@@ -1,5 +1,5 @@
-import { Commands } from '../device-configurations.const';
-import { MultimediaCommandAction, MultimediaCommandInfo } from './multimedia';
+import { DeviceCommands } from '../../device-configurations.const';
+import { MultimediaCommandAction, MultimediaCommandInfo } from '../multimedia.const';
 
 export type ChromecastExtendCommandInfo = ChromecastCommandInfo & MultimediaCommandInfo;
 export type ChromecastGlobalCommandInfo = ChromecastCommandInfo | MultimediaCommandInfo;
@@ -18,7 +18,7 @@ export type ChromecastCommandAction =
   'backdrop' | 'back'
   ;
 
-export const MultimediaChromecastInfoCommandFilters: Commands<ChromecastGlobalCommandInfo> = {
+export const MultimediaChromecastInfoCommandFilters: DeviceCommands<ChromecastGlobalCommandInfo> = {
   online: { logicalId: 'online' },
   volume: { logicalId: 'volume_level' },
   muted: { logicalId: 'volume_muted' },
@@ -29,7 +29,7 @@ export const MultimediaChromecastInfoCommandFilters: Commands<ChromecastGlobalCo
   artist: { logicalId: 'artist' },
 };
 
-export const wifiMultimediaChromecastActionCommandFilters: Commands<ChromecastGlobalCommandAction> = {
+export const wifiMultimediaChromecastActionCommandFilters: DeviceCommands<ChromecastGlobalCommandAction> = {
   backdrop: { logicalId: 'app=backdrop' },
   volume: { logicalId: 'volume_set' },
   mute: { logicalId: 'mute_on' },

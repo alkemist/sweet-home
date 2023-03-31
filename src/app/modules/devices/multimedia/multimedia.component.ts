@@ -1,13 +1,9 @@
 import { Directive } from '@angular/core';
 import { BaseDeviceComponent } from '../base-device.component';
 import { FormControl } from '@angular/forms';
-import {
-  JeedomCommandResultInterface,
-  MultimediaCommandAction,
-  MultimediaCommandInfo,
-  MultimediaParamValue
-} from '@models';
 import { debounceTime } from 'rxjs';
+import { MultimediaCommandAction, MultimediaCommandInfo, MultimediaParamValue } from '@devices';
+import { JeedomCommandResultInterface } from '@models';
 
 export enum MultimediaState {
   playing,
@@ -18,9 +14,9 @@ export enum MultimediaState {
 @Directive()
 export abstract class DeviceMultimediaComponent<
   IE extends MultimediaCommandInfo, AE extends MultimediaCommandAction,
-  I extends string, A extends string
+  I extends string, A extends string, C extends string = string
 >
-  extends BaseDeviceComponent<IE, AE, I, A | MultimediaCommandAction, MultimediaParamValue> {
+  extends BaseDeviceComponent<IE, AE, I, A | MultimediaCommandAction, C, MultimediaParamValue> {
 
   volumeControl = new FormControl<number>(0);
   muteControl = new FormControl<boolean>(true);
@@ -34,7 +30,7 @@ export abstract class DeviceMultimediaComponent<
   };
 
   get volumeMax() {
-    return this.paramValues.volumeMax as number ?? 100;
+    return this.parameterValues.volumeMax as number ?? 100;
   }
 
   override ngOnInit() {
@@ -107,9 +103,8 @@ export abstract class DeviceMultimediaComponent<
 
   override updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
     super.updateInfoCommandValues(values);
-    if (!this.modalOpened) {
-      this.volumeControl.setValue(this.infoCommandValues.volume as number, { emitEvent: false });
-      this.muteControl.setValue(!!this.infoCommandValues.muted, { emitEvent: false });
-    }
+
+    this.volumeControl.setValue(this.infoCommandValues.volume as number, { emitEvent: false });
+    this.muteControl.setValue(!!this.infoCommandValues.muted, { emitEvent: false });
   }
 }

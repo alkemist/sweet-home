@@ -52,7 +52,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
       });
 
     this.sub = this.mapBuilder.loaded$.pipe(filter((loaded) => loaded)).subscribe(() => {
-      console.log('-- Map loaded');
+      // console.log('-- Map loaded');
 
       this.mapLoading = false;
       const components = this.mapBuilder.getComponents();

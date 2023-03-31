@@ -1,6 +1,6 @@
 import { JeedomCommandInterface } from './jeedom-command.interface';
 
-export type JeedomDeviceType = "zigbee"
+export type JeedomDeviceType = "zigbee" | "sonos3"
 
 export interface JeedomDeviceInterface {
   id: string

@@ -1,29 +1,32 @@
-import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum } from './device.enum';
+import { zigbeeOfficialOnOffActionCommandFilters, zigbeeOfficialOnOffInfoCommandFilters } from './on-off';
 import {
   MultimediaChromecastInfoCommandFilters,
   MultimediaParams,
   wifiMultimediaChromecastActionCommandFilters,
   wifiMultimediaSonosActionCommandFilters,
-  wifiMultimediaSonosInfoCommandFilters,
-  zigbeeOfficialOnOffActionCommandFilters,
-  zigbeeOfficialOnOffInfoCommandFilters,
+  wifiMultimediaSonosConfigurationFilters,
+  wifiMultimediaSonosInfoCommandFilters
+} from './multimedia';
+import {
   zigbeeOfficialThermostatActionCommandFilters,
   zigbeeOfficialThermostatAqaraInfoCommandFilters,
   zigbeeOfficialThermostatInfoCommandFilters,
   zigbeeOfficialThermostatMoesInfoCommandFilters
-} from './devices';
-import { PartialRecord } from './partial-record.type';
+} from './thermostat';
+import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum, PartialRecord } from '@models';
 
 export interface DeviceDefinitions {
   infoCommandFilters?: Record<string, Record<string, string>>,
   actionCommandFilters?: Record<string, Record<string, string>>,
+  configurationFilters?: Record<string, string>,
   customParams?: string[]
 }
 
 export interface DeviceConfigurations {
   infoCommandFilters: Record<string, Record<string, string>>,
   actionCommandFilters: Record<string, Record<string, string>>,
-  customParams: string[]
+  configurationFilters: Record<string, string>,
+  customParameters: string[]
 }
 
 export type DeviceDefinitionsBy<U extends string> = PartialRecord<U, DeviceDefinitions>;
@@ -34,7 +37,8 @@ export type GlobalDeviceDefinitions<T extends string, U extends string, V extend
   Record<T, PartialRecord<U, DeviceDefinitionsBy<V>>>;
 export type GlobalDeviceConfigurations<T extends string, U extends string, V extends string> =
   Record<T, PartialRecord<U, DeviceConfigurationBy<V>>>;
-export type Commands<E extends string> = Record<E, Record<string, string>>;
+export type DeviceCommands<E extends string> = Record<E, Record<string, string>>;
+export type DeviceConfiguration<E extends string> = Record<E, string>;
 
 export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinitions<DeviceConnectivityEnum, DeviceCategoryEnum> =
   {
@@ -76,6 +80,7 @@ export const deviceDefinitionsByConnectivityCategoryType:
       [DeviceTypeEnum.Sonos]: {
         infoCommandFilters: wifiMultimediaSonosInfoCommandFilters,
         actionCommandFilters: wifiMultimediaSonosActionCommandFilters,
+        configurationFilters: wifiMultimediaSonosConfigurationFilters
       },
     }
   },
@@ -125,7 +130,11 @@ const mergeDefinitions = ()
                     ...parent?.actionCommandFilters,
                     ...deviceConfigurationByTypes.actionCommandFilters,
                   },
-                  customParams: [
+                  configurationFilters: {
+                    ...parent?.configurationFilters,
+                    ...deviceConfigurationByTypes.configurationFilters,
+                  },
+                  customParameters: [
                     ...parent?.customParams ?? [],
                     ...deviceConfigurationByTypes.customParams ?? [],
                   ],
@@ -142,6 +151,7 @@ const mergeDefinitions = ()
     }
     , {} as GlobalDeviceConfigurations<DeviceConnectivityEnum, DeviceCategoryEnum, DeviceTypeEnum>);
 };
+
 export const deviceConfigurations: GlobalDeviceConfigurations<DeviceConnectivityEnum, DeviceCategoryEnum, DeviceTypeEnum>
   = mergeDefinitions();
 

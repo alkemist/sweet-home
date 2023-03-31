@@ -54,6 +54,7 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
                         device.name,
                         device.eqType_name,
                         device.cmds,
+                        device
                       );
                     })
                 )
