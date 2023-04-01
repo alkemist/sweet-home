@@ -1,4 +1,5 @@
 export * from './array.helper';
+export * from './date.helper';
 export * from './device.supervisor';
 export * from './document.helper';
 export * from './enum.helper';

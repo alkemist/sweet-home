@@ -18,6 +18,9 @@ module.exports = {
       'FIREBASE_PROJECT_ID',
       'FIREBASE_STORAGE_BUCKET',
       'GOOGLE_CLOUD_OPERATIONS_API_KEY',
+      'SPOTIFY_CLIENT_ID',
+      'SPOTIFY_CLIENT_SECRET',
+      'SPOTIFY_USER_ID'
     ])
   ]
 }

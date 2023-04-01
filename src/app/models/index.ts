@@ -1,3 +1,4 @@
+export * from './spotify'
 export * from './coordinate.interface'
 export * from './coordinate-form.interface'
 export * from './device.enum'

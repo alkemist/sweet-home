@@ -16,6 +16,8 @@ import { BaseComponent } from '../../../../../components/base.component';
 import { BehaviorSubject, filter } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { SmartLoaderModel } from '../../../../../models/smart-loader.model';
+import { SpotifyService } from '../../../../../services/spotify.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-map',
@@ -38,8 +40,10 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
   private pollingLoader = new SmartLoaderModel('polling');
 
   constructor(
+    private router: Router,
     private mapBuilder: MapBuilder,
     private deviceService: DeviceService,
+    private spotifyService: SpotifyService,
     private changeDetectorRef: ChangeDetectorRef
   ) {
     super();

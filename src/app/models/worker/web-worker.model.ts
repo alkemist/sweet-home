@@ -1,4 +1,4 @@
-import {InitializationMessage, WorkerMessage} from "./worker-message.model";
+import { InitializationMessage, WorkerMessage } from "./worker-message.model";
 
 export class WebWorker {
   _scope?: DedicatedWorkerGlobalScope;
@@ -11,7 +11,7 @@ export class WebWorker {
 
     switch (message.type) {
       case "init":
-        console.log("-- [Web Worker] Initialization");
+        // console.log("-- [Web Worker] Initialization");
         postMessage(new InitializationMessage())
         break;
 

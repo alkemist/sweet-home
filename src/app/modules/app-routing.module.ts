@@ -8,7 +8,7 @@ import {
   TitleStrategy,
   UrlTree
 } from '@angular/router';
-import { LoginComponent } from '@components';
+import { AuthorizeComponent } from '@components';
 import { AppService, UserService } from '@services';
 import { map, Observable } from 'rxjs';
 
@@ -38,8 +38,14 @@ const routes: Routes = [
   {
     path: 'login',
     canActivate: [ logginInGuard ],
-    component: LoginComponent,
+    component: AuthorizeComponent,
     title: 'Login',
+  },
+  {
+    path: 'authorize',
+    canActivate: [ loggedInGuard ],
+    component: AuthorizeComponent,
+    title: 'Authorization',
   },
   {
     path: 'home',

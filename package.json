@@ -25,6 +25,7 @@
     "@ngxs/storage-plugin": "^3.7.6",
     "@ngxs/store": "^3.7.6",
     "add": "^2.0.6",
+    "buffer": "^6.0.3",
     "dotenv": "^16.0.3",
     "firebase": "^9.17.1",
     "fork-awesome": "^1.2.0",

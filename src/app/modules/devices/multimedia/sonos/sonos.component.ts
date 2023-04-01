@@ -87,6 +87,6 @@ export class DeviceSonosComponent
     this.shuffleControl.setValue(this.infoCommandValues.shuffle as boolean, { emitEvent: false });
     this.repeatControl.setValue(this.infoCommandValues.repeat as boolean, { emitEvent: false });
 
-    console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
+    // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
   }
 }

@@ -2,12 +2,19 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, filter, map, Observable, of } from 'rxjs';
 import { FirestoreService } from './firestore.service';
 import { UserInterface, UserModel } from '@models';
-import { InvalidEmailError, OfflineError, TooManyRequestError, WrongApiKeyError, WrongPasswordError } from '@errors';
+import {
+  InvalidEmailError,
+  OfflineError,
+  TooManyRequestError,
+  UserHasNotTokenError,
+  UserNotExistError,
+  WrongApiKeyError,
+  WrongPasswordError
+} from '@errors';
 import { LoggerService } from './logger.service';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
 import { MessageService } from 'primeng/api';
-import { UserNotLoggedError } from '../errors/user-not-logged.error';
-import { UserNotExistError } from '../errors/user-not-exist.error';
+import { UserHasNotCodeError } from '../errors/user-has-not-code.error';
 
 
 @Injectable({
@@ -18,6 +25,7 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
   private _isLoggedIn: BehaviorSubject<boolean | null>;
   private _user: UserModel | null = null;
   private _token: string = '';
+  private _code: string = '';
 
   constructor(messageService: MessageService, loggerService: LoggerService) {
     super(messageService, loggerService, 'user', $localize`User`, UserModel);
@@ -45,10 +53,18 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
 
   getUserToken(): string {
     if (!this._user) {
-      this.loggerService.error(new UserNotLoggedError());
+      this.loggerService.error(new UserHasNotTokenError());
     }
 
     return this._token
+  }
+
+  getUserCode(): string {
+    if (!this._user) {
+      this.loggerService.error(new UserHasNotCodeError());
+    }
+
+    return this._code;
   }
 
   login(email: string, password: string): Promise<void> {
@@ -79,6 +95,14 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
     return signOut(this.auth);
   }
 
+  editCode(code: string) {
+    if (this._user) {
+      this._user.code = code;
+      return this.updateOne(this._user);
+    }
+    return Promise.reject();
+  }
+
   private getUser(userFirebase: User) {
     return this.findOneById(userFirebase.uid).then((dataUser) => {
       if (!dataUser) {
@@ -89,6 +113,7 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
 
       this._user = new UserModel(dataUser);
       this._token = dataUser.token;
+      this._code = dataUser.code;
       this._isLoggedIn.next(true);
     });
   }
