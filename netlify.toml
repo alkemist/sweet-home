@@ -16,6 +16,7 @@ for = "/*"
 [headers.values]
 Access-Control-Allow-Origin = "*"
 Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept, cache-control, pragma, expires"
+Access-Control-Allow-Credentials = "true"
 
 [[redirects]]
 from = "/sonos-auth"
