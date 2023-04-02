@@ -12,11 +12,6 @@ port = 4242
 #    schedule = "@weekly"
 
 [[redirects]]
-from = "/"
-to = "/index.html"
-status = 200
-
-[[redirects]]
 from = "/sonos-auth"
 to = "https://api.sonos.com/login/v3/oauth/access"
 status = 200
@@ -27,3 +22,8 @@ from = "/sonos-api/*"
 to = "https://api.ws.sonos.com/control/api/v1/:splat"
 status = 200
 force = true
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
