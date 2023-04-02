@@ -31,7 +31,7 @@ export abstract class OauthApiService {
     this.messageService.add({
       severity: 'warn',
       life: 3600,
-      detail: $localize`We need authorization`
+      detail: $localize`Redirect for authorization request`
     });
 
     const redirectUri = `${ this.document.location.origin }/authorize/${ this.appKey }`

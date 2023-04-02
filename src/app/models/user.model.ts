@@ -1,6 +1,6 @@
 import { UserInterface, UserStoredInterface } from './user.interface';
 import { DocumentModel } from './document.model';
-import {OauthTokensModel} from "./oauth-tokens.model";
+import { OauthTokensModel } from "./oauth-tokens.model";
 
 
 export class UserModel extends DocumentModel {
@@ -10,8 +10,8 @@ export class UserModel extends DocumentModel {
     super(user);
     this._email = user.email ?? '';
     this._jeedom = user.jeedom ?? '';
-    this._spotify = new OauthTokensModel(user.spotify);
-    this._sonos = new OauthTokensModel(user.sonos);
+    this._spotify = new OauthTokensModel(user.spotify ?? {});
+    this._sonos = new OauthTokensModel(user.sonos ?? {});
   }
 
   protected _jeedom: string;
