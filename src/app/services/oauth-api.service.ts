@@ -88,7 +88,7 @@ export abstract class OauthApiService {
   protected requestToken(tokenType: 'authorization_code' | 'refresh_token', authorizationCode?: string) {
     return new Promise<OauthTokenModel>((resolve) => {
 
-      console.log(`-- [${ this.appKey }] request token "${ tokenType }"`);
+      //console.log(`-- [${ this.appKey }] request token "${ tokenType }"`);
 
       let body = `grant_type=${ tokenType }`;
 
@@ -115,7 +115,7 @@ export abstract class OauthApiService {
         .subscribe((result: any) => {
           const response = result as ApiAccessToken;
 
-          console.log(`-- [${ this.appKey }] request token "${ tokenType }" response`, response);
+          //console.log(`-- [${ this.appKey }] request token "${ tokenType }" response`, response);
 
           const accessToken = new OauthTokenModel({
             token: response.access_token,
