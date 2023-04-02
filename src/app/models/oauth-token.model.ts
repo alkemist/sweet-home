@@ -28,7 +28,8 @@ export class OauthTokenModel {
 
   toHeaders(contentType?: string) {
     const headers: Record<string, string> = {
-      'Authorization': `${ this._tokenType } ${ this._token }`
+      'Authorization': `${ this._tokenType } ${ this._token }`,
+      'Access-Control-Allow-Origin': '*'
     }
 
     if (contentType) {
