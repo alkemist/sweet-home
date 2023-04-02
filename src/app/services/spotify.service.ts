@@ -4,7 +4,7 @@ import { LoggerService } from './logger.service';
 import { UserService } from './user.service';
 import { DOCUMENT } from '@angular/common';
 import { MessageService } from 'primeng/api';
-import { OauthApiService } from './oauthApiService';
+import { OauthApiService } from './oauth-api.service';
 
 
 @Injectable({

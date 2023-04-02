@@ -8,6 +8,7 @@ module.exports = {
       'APP_NAME',
       'APP_VERSION',
       'APP_DEBUG',
+      'APP_NETLIFY',
       'APP_AUTO_LOGIN',
       'APP_AUTO_PASSWORD',
       'JEEDOM_HOST',

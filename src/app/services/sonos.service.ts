@@ -4,7 +4,7 @@ import { LoggerService } from './logger.service';
 import { UserService } from './user.service';
 import { MessageService } from 'primeng/api';
 import { DOCUMENT } from '@angular/common';
-import { OauthApiService } from './oauthApiService';
+import { OauthApiService } from './oauth-api.service';
 
 
 @Injectable({
@@ -12,8 +12,8 @@ import { OauthApiService } from './oauthApiService';
 })
 export class SonosService extends OauthApiService {
   authorizeUrl: string = `https://api.sonos.com/login/v3/oauth`;
-  tokenUrl: string = "/sonos-auth";//`https://api.sonos.com/login/v3/oauth/access`;
-  apiUrl: string = "/sonos-api/"; // `https://api.ws.sonos.com/control/api/v1/`;
+  tokenUrl: string = !process.env['APP_NETLIFY'] ? "/sonos-auth" : `https://api.sonos.com/login/v3/oauth/access`;
+  apiUrl: string = !process.env['APP_NETLIFY'] ? "/sonos-api/" : `https://api.ws.sonos.com/control/api/v1/`;
 
   scope: string = 'playback-control-all';
 

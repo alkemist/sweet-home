@@ -7,6 +7,17 @@ port = 4242
 #    schedule = "@weekly"
 
 [[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
+
+[[headers]]
+# Define which paths this specific [[headers]] block will cover.
+for = "/*"
+[headers.values]
+Access-Control-Allow-Origin = "*"
+
+[[redirects]]
 from = "/sonos-auth"
 to = "https://api.sonos.com/login/v3/oauth/access"
 status = 200
