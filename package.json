@@ -5,10 +5,11 @@
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --disable-host-check",
     "serve": "ng serve --host 0.0.0.0 --disable-host-check --no-live-reload",
-    "build": "ng build  --configuration production --base-href ./",
+    "build": "ng build  --configuration production --base-href /",
     "watch": "ng build --configuration development --watch",
     "test": "ng test",
     "reset": "rm -rf node_modules && rm yarn.lock && yarn install",
+    "netlify": "netlify dev",
     "server": "sudo http-server dist/sweet-home --https --port 443 -S -C ~/cert.pem -K ~/key.pem -o --cors.origin https://dev.my-sweet-home.netlify.app/ --cors.credentials"
   },
   "private": true,
