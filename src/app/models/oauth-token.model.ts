@@ -29,7 +29,8 @@ export class OauthTokenModel {
   toHeaders(contentType?: string) {
     const headers: Record<string, string> = {
       'Authorization': `${ this._tokenType } ${ this._token }`,
-      'Access-Control-Allow-Origin': '*'
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, cache-control, pragma, expires'
     }
 
     if (contentType) {
