@@ -68,7 +68,7 @@ export abstract class OauthApiService {
     const accessToken = this.userService.getToken(this.appKey).getAccessToken();
     const refreshToken = this.userService.getToken(this.appKey).getRefreshToken();
 
-    console.log(`-- [${ this.appKey }] current access token`, accessToken);
+    //console.log(`-- [${ this.appKey }] current access token`, accessToken);
 
     if (!accessToken) {
       if (!refreshToken) {
@@ -93,7 +93,7 @@ export abstract class OauthApiService {
       let body = `grant_type=${ tokenType }`;
 
       if (tokenType === 'authorization_code') {
-        console.log(`-- [${ this.appKey }] authorization code "${ authorizationCode }"`);
+        //console.log(`-- [${ this.appKey }] authorization code "${ authorizationCode }"`);
 
         body += `&code=${ authorizationCode }`
           + `&redirect_uri=${ this.document.location.origin }/authorize/${ this.appKey }`;

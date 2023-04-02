@@ -114,7 +114,7 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
       }
 
       this._user = new UserModel(dataUser);
-      console.log('-- Logged with', dataUser);
+      // console.log('-- Logged with', dataUser);
       this._isLoggedIn.next(true);
     });
   }
