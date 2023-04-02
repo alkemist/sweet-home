@@ -4,10 +4,7 @@ import { UserService } from './user.service';
 import { JeedomCommandResultInterface } from '@models';
 import { JeedomRoomInterface } from '../models/jeedom-room.interface';
 import { LoggerService } from './logger.service';
-import { JeedomApiError } from '../errors/jeedom-api.error';
-import { WrongApiKeyError } from '@errors';
-import { UnknownJeedomError } from '../errors/unknown-jeedom.error';
-import { JeedomRequestError } from '../errors/jeedom-request.error';
+import { JeedomApiError, JeedomRequestError, UnknownJeedomError, UserHasNotTokenError } from '@errors';
 
 @Injectable({
   providedIn: 'root'
@@ -63,10 +60,10 @@ export class JeedomService {
   }
 
   private request(method: string, params: Record<string, any> = {}): PromiseLike<any> {
-    const apikey = this.userService.getUserToken();
+    const apikey = this.userService.getToken('jeedom');
     if (!apikey) {
-      this.loggerService.error(new WrongApiKeyError());
-      return Promise.resolve();
+      this.loggerService.error(new UserHasNotTokenError('jeedom'));
+      throw new UserHasNotTokenError('jeedom');
     }
 
     return this.api.request(method, {

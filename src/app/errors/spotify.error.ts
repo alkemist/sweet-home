@@ -1,7 +1,7 @@
-import { BaseError } from './base.error';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ApiError } from './api.error';
 
-export class SpotifyError extends BaseError {
+export class SpotifyError extends ApiError {
   override type = 'Spotify';
 
   constructor(override message: string, error: HttpErrorResponse, params?: any) {

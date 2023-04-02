@@ -20,7 +20,9 @@ module.exports = {
       'GOOGLE_CLOUD_OPERATIONS_API_KEY',
       'SPOTIFY_CLIENT_ID',
       'SPOTIFY_CLIENT_SECRET',
-      'SPOTIFY_USER_ID'
+      'SPOTIFY_USER_ID',
+      'SONOS_KEY',
+      'SONOS_SECRET',
     ])
   ]
 }

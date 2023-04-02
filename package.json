@@ -8,7 +8,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "reset": "rm -rf node_modules && rm yarn.lock && yarn install"
+    "reset": "rm -rf node_modules && rm yarn.lock && yarn install",
+    "server": "sudo http-server dist/sweet-home --port 443 -S -C ~/cert.pem -K ~/key.pem -o"
   },
   "private": true,
   "dependencies": {
@@ -21,9 +22,9 @@
     "@angular/platform-browser-dynamic": "^15.1.0",
     "@angular/router": "^15.1.0",
     "@angular/service-worker": "^15.1.0",
-    "@ngxs/logger-plugin": "^3.7.6",
-    "@ngxs/storage-plugin": "^3.7.6",
-    "@ngxs/store": "^3.7.6",
+    "@ngxs/logger-plugin": "^3.8.0",
+    "@ngxs/storage-plugin": "^3.8.0",
+    "@ngxs/store": "^3.8.0",
     "add": "^2.0.6",
     "buffer": "^6.0.3",
     "dotenv": "^16.0.3",
@@ -49,7 +50,7 @@
     "@angular/compiler-cli": "^15.1.0",
     "@angular/localize": "^15.1.5",
     "@netlify/functions": "^1.0.0",
-    "@ngxs/devtools-plugin": "^3.7.6",
+    "@ngxs/devtools-plugin": "^3.8.0",
     "@types/hammerjs": "^2.0.41",
     "@types/jest": "^27.4.0",
     "@types/node": "^18.14.0",

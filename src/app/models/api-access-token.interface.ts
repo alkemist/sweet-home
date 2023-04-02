@@ -1,4 +1,4 @@
-export interface SpotifyAccessToken {
+export interface ApiAccessToken {
   access_token: string,
   refresh_token: string,
   scope: string,

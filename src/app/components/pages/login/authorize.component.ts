@@ -1,7 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '@services';
+import { AppKey, LoggerService, UserService } from '@services';
 import { BaseComponent } from '../../base.component';
+import { combineLatest } from 'rxjs';
+import { MessageService } from 'primeng/api';
+import { UnknownTokenError } from '@errors';
 
 @Component({
   selector: 'app-authorize',
@@ -12,19 +15,34 @@ import { BaseComponent } from '../../base.component';
   }
 })
 export class AuthorizeComponent extends BaseComponent implements OnInit, OnDestroy {
-  constructor(private userService: UserService, private route: ActivatedRoute, private router: Router) {
+  constructor(
+    private userService: UserService,
+    private loggerService: LoggerService,
+    protected messageService: MessageService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
     super();
   }
 
   ngOnInit(): void {
-    this.sub = this.route.queryParams
-      .subscribe((params) => {
-        if (params['code']) {
-          this.userService.editCode(params['code']).then(() => {
-            void this.router.navigate([ '../', 'home' ], { relativeTo: this.route })
+    this.sub = combineLatest([
+      this.route.params,
+      this.route.queryParams,
+    ])
+      .subscribe((mixedData) => {
+        const [ { type }, { code } ] = mixedData as [ { type: AppKey }, { code: string } ];
+
+        if (type && code) {
+          this.userService.updateCode(type, code).then(() => {
+            void this.router.navigate([ '../../', 'home' ], { relativeTo: this.route })
           })
         } else {
-          //void this.router.navigate([ '../' ], { relativeTo: this.route })
+          this.messageService.add({
+            severity: 'error',
+            detail: $localize`Unknown type or token`
+          });
+          this.loggerService.error(new UnknownTokenError(type))
         }
       })
   }

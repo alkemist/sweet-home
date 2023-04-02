@@ -6,7 +6,6 @@ import {
   InvalidEmailError,
   OfflineError,
   TooManyRequestError,
-  UserHasNotTokenError,
   UserNotExistError,
   WrongApiKeyError,
   WrongPasswordError
@@ -14,8 +13,9 @@ import {
 import { LoggerService } from './logger.service';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
 import { MessageService } from 'primeng/api';
-import { UserHasNotCodeError } from '../errors/user-has-not-code.error';
 
+export type AppKey = 'sonos' | 'spotify';
+export type ApiAppKey = 'jeedom' | AppKey;
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +23,6 @@ import { UserHasNotCodeError } from '../errors/user-has-not-code.error';
 export class UserService extends FirestoreService<UserInterface, UserModel> {
   private auth = getAuth();
   private _isLoggedIn: BehaviorSubject<boolean | null>;
-  private _user: UserModel | null = null;
-  private _token: string = '';
-  private _code: string = '';
 
   constructor(messageService: MessageService, loggerService: LoggerService) {
     super(messageService, loggerService, 'user', $localize`User`, UserModel);
@@ -40,6 +37,12 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
     });
   }
 
+  private _user: UserModel | null = null;
+
+  get user() {
+    return this._user as UserModel;
+  }
+
   isLoggedIn(): Observable<boolean> {
     if (this._user) {
       return of(true);
@@ -51,20 +54,8 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
     );
   }
 
-  getUserToken(): string {
-    if (!this._user) {
-      this.loggerService.error(new UserHasNotTokenError());
-    }
-
-    return this._token
-  }
-
-  getUserCode(): string {
-    if (!this._user) {
-      this.loggerService.error(new UserHasNotCodeError());
-    }
-
-    return this._code;
+  getToken(type: ApiAppKey): string {
+    return this.user[type];
   }
 
   login(email: string, password: string): Promise<void> {
@@ -95,9 +86,9 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
     return signOut(this.auth);
   }
 
-  editCode(code: string) {
+  updateCode(type: AppKey, code: string) {
     if (this._user) {
-      this._user.code = code;
+      this._user[type] = code;
       return this.updateOne(this._user);
     }
     return Promise.reject();
@@ -112,8 +103,7 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
       }
 
       this._user = new UserModel(dataUser);
-      this._token = dataUser.token;
-      this._code = dataUser.code;
+      console.log('-- Logged with', dataUser);
       this._isLoggedIn.next(true);
     });
   }

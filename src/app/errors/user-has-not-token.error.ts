@@ -1,5 +1,8 @@
 import { UserError } from './user.error';
 
 export class UserHasNotTokenError extends UserError {
-  override message = 'User has not token';
+  constructor(type: string) {
+    super();
+    this.message = `User has no code "${ type }"`;
+  }
 }

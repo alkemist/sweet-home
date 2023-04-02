@@ -11,6 +11,7 @@ import {
 import { AuthorizeComponent } from '@components';
 import { AppService, UserService } from '@services';
 import { map, Observable } from 'rxjs';
+import { LoginComponent } from '../components/pages/authorize/login.component';
 
 const logginInGuard: CanActivateFn = (): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree => {
   const userService = inject(UserService);
@@ -38,11 +39,11 @@ const routes: Routes = [
   {
     path: 'login',
     canActivate: [ logginInGuard ],
-    component: AuthorizeComponent,
+    component: LoginComponent,
     title: 'Login',
   },
   {
-    path: 'authorize',
+    path: 'authorize/:type',
     canActivate: [ loggedInGuard ],
     component: AuthorizeComponent,
     title: 'Authorization',
