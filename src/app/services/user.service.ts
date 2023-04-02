@@ -13,9 +13,10 @@ import {
 import { LoggerService } from './logger.service';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
 import { MessageService } from 'primeng/api';
+import {OauthTokenInterface, OauthTokenModel} from "../models/oauth-token.model";
+import {OauthTokensModel} from "../models/oauth-tokens.model";
 
 export type AppKey = 'sonos' | 'spotify';
-export type ApiAppKey = 'jeedom' | AppKey;
 
 @Injectable({
   providedIn: 'root'
@@ -54,8 +55,12 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
     );
   }
 
-  getToken(type: ApiAppKey): string {
-    return this.user[type];
+  getJeedomApiKey(): string {
+    return this.user.jeedom;
+  }
+
+  getToken(appKey: AppKey): OauthTokensModel {
+    return this.user[appKey];
   }
 
   login(email: string, password: string): Promise<void> {
@@ -86,9 +91,25 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
     return signOut(this.auth);
   }
 
-  updateCode(type: AppKey, code: string) {
+  updateCode(type: AppKey, authorizationCode: string) {
     if (this._user) {
-      this._user[type] = code;
+      this._user[type].authorizationCode = authorizationCode;
+      return this.updateOne(this._user);
+    }
+    return Promise.reject();
+  }
+
+  updateRefreshToken(type: AppKey, oauthToken: OauthTokenInterface) {
+    if (this._user) {
+      this._user[type].refreshToken = oauthToken;
+      return this.updateOne(this._user);
+    }
+    return Promise.reject();
+  }
+
+  updateAccessToken(type: AppKey, oauthToken: OauthTokenInterface) {
+    if (this._user) {
+      this._user[type].accessToken = oauthToken;
       return this.updateOne(this._user);
     }
     return Promise.reject();

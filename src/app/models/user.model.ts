@@ -1,5 +1,6 @@
 import { UserInterface, UserStoredInterface } from './user.interface';
 import { DocumentModel } from './document.model';
+import {OauthTokensModel} from "./oauth-tokens.model";
 
 
 export class UserModel extends DocumentModel {
@@ -9,8 +10,8 @@ export class UserModel extends DocumentModel {
     super(user);
     this._email = user.email ?? '';
     this._jeedom = user.jeedom ?? '';
-    this._spotify = user.spotify ?? '';
-    this._sonos = user.sonos ?? '';
+    this._spotify = new OauthTokensModel(user.spotify);
+    this._sonos = new OauthTokensModel(user.sonos);
   }
 
   protected _jeedom: string;
@@ -19,24 +20,24 @@ export class UserModel extends DocumentModel {
     return this._jeedom;
   }
 
-  protected _sonos: string;
+  protected _sonos: OauthTokensModel;
 
   get sonos() {
     return this._sonos;
   }
 
-  set sonos(code: string) {
-    this._sonos = code;
+  set sonos(oauthToken: OauthTokensModel) {
+    this._sonos = oauthToken;
   }
 
-  protected _spotify: string;
+  protected _spotify: OauthTokensModel;
 
   get spotify() {
     return this._spotify;
   }
 
-  set spotify(code: string) {
-    this._spotify = code;
+  set spotify(oauthToken: OauthTokensModel) {
+    this._spotify = oauthToken;
   }
 
   override toFirestore(): UserInterface {
@@ -44,8 +45,8 @@ export class UserModel extends DocumentModel {
       ...super.toFirestore(),
       email: this._email,
       jeedom: this._jeedom,
-      spotify: this._spotify,
-      sonos: this._sonos,
+      spotify: this._spotify.toFirestore(),
+      sonos: this._sonos.toFirestore(),
     }
   }
 }
