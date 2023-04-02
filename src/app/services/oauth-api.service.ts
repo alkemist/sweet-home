@@ -52,7 +52,8 @@ export abstract class OauthApiService {
     if (accessToken) {
       return new Promise<unknown>(async (resolve) => {
         (await this.http.get(`${ this.apiUrl }${ url }`, {
-          headers: accessToken.toHeaders()
+          headers: accessToken.toHeaders('application/json'),
+          withCredentials: true
         }))
           .pipe(
             first(),
