@@ -17,5 +17,3 @@ from = "/sonos-api/*"
 to = "https://api.ws.sonos.com/control/api/v1"
 status = 200
 force = true
-
-[[redirects]]
