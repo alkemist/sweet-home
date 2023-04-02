@@ -29,9 +29,9 @@ export class OauthTokenModel {
   toHeaders(contentType?: string) {
     const headers: Record<string, string> = {
       'Authorization': `${ this._tokenType } ${ this._token }`,
-      'Access-Control-Allow-Origin': 'https://my-sweet-home.netlify.app/',
-      'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, cache-control, pragma, expires',
-      'Access-Control-Allow-Credentials': 'true'
+      //'Access-Control-Allow-Origin': 'https://my-sweet-home.netlify.app/',
+      //'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, cache-control, pragma, expires',
+      //'Access-Control-Allow-Credentials': 'true'
     }
 
     if (contentType) {
