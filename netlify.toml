@@ -11,18 +11,10 @@ port = 4242
 #[functions."backup"]
 #    schedule = "@weekly"
 
-#[[headers]]
-#for = "/*"
-#[headers.values]
-#Access-Control-Allow-Origin = "https://my-sweet-home.netlify.app/"
-#Access-Control-Allow-Methods = "GET,PUT,POST,DELETE,OPTIONS"
-#Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept, cache-control, pragma, expires"
-#Access-Control-Allow-Credentials = "true"
-
-#[[redirects]]
-#from = "/*"
-#to = "/index.html"
-#status = 200
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
 
 [[redirects]]
 from = "/sonos-auth"
