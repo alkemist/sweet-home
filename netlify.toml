@@ -27,11 +27,11 @@ port = 4242
 [[redirects]]
 from = "/sonos-auth"
 to = "https://api.sonos.com/login/v3/oauth/access"
-status = 302
+status = 200
 force = true
 
 [[redirects]]
 from = "/sonos-api/*"
 to = "https://api.ws.sonos.com/control/api/v1/:splat"
-status = 302
+status = 200
 force = true
