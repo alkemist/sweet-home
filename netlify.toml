@@ -19,10 +19,10 @@ port = 4242
 #Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept, cache-control, pragma, expires"
 #Access-Control-Allow-Credentials = "true"
 
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
+#[[redirects]]
+#from = "/*"
+#to = "/index.html"
+#status = 200
 
 [[redirects]]
 from = "/sonos-auth"
