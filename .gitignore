@@ -46,3 +46,6 @@ Thumbs.db
 src/environments/
 src/environments/*
 src/environments/environment.ts
+
+# Local Netlify folder
+.netlify
