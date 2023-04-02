@@ -1,0 +1,18 @@
+{
+  "/sonos-auth": {
+    "target": "https://api.sonos.com/login/v3/oauth/access",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/sonos-auth": ""
+    }
+  },
+  "/sonos-api/*": {
+    "target": "https://api.ws.sonos.com/control/api/v1/",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/sonos-api": ""
+    }
+  }
+}

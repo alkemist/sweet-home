@@ -62,8 +62,8 @@ export class JeedomService {
   private request(method: string, params: Record<string, any> = {}): PromiseLike<any> {
     const apikey = this.userService.getJeedomApiKey();
     if (!apikey) {
-      this.loggerService.error(new UserHasNotTokenError('jeedom'));
-      throw new UserHasNotTokenError('jeedom');
+      this.loggerService.error(new UserHasNotTokenError());
+      throw new UserHasNotTokenError();
     }
 
     return this.api.request(method, {

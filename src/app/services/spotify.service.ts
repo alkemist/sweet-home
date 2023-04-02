@@ -66,7 +66,6 @@ export class SpotifyService extends ApiService {
             }
           }
 
-          const error = new SpotifyApiError(url, params, err);
           this.loggerService.error(error)
           return throwError(() => error);
         }),

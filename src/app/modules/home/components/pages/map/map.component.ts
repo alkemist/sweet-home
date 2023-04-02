@@ -18,6 +18,7 @@ import { FormControl } from '@angular/forms';
 import { SmartLoaderModel } from '../../../../../models/smart-loader.model';
 import { SpotifyService } from '../../../../../services/spotify.service';
 import { Router } from '@angular/router';
+import { SonosService } from '../../../../../services/sonos.service';
 
 @Component({
   selector: 'app-map',
@@ -44,6 +45,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     private mapBuilder: MapBuilder,
     private deviceService: DeviceService,
     private spotifyService: SpotifyService,
+    private sonosService: SonosService,
     private changeDetectorRef: ChangeDetectorRef
   ) {
     super();
@@ -106,6 +108,13 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
       console.log('-- Device updated');
       this.pollingLoader.addLoader(this.pollingDelay);
     })
+
+    this.spotifyService.buildGetQuery(`users/${ process.env['SPOTIFY_USER_ID'] }/playlists`)
+      .then((result) => console.log('result spotify', result))
+
+    this.sonosService.buildGetQuery('households')
+      .then((result) => console.log('result sonos', result));
+
   }
 
   @HostListener('window:resize', [ '$event' ])

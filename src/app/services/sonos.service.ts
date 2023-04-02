@@ -12,8 +12,8 @@ import { ApiService } from './api.service';
 })
 export class SonosService extends ApiService {
   authorizeUrl: string = `https://api.sonos.com/login/v3/oauth`;
-  tokenUrl: string = `https://api.sonos.com/login/v3/oauth/access`;
-  apiUrl: string = `https://api.ws.sonos.com/control/v1`;
+  tokenUrl: string = "/sonos-auth";//`https://api.sonos.com/login/v3/oauth/access`;
+  apiUrl: string = "/sonos-api/"; // `https://api.ws.sonos.com/control/api/v1/`;
 
   scope: string = 'playback-control-all';
 

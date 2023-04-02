@@ -46,7 +46,8 @@
               "process",
               "stackdriver-errors-js",
               "json-rpc-2.0",
-              "nosleep.js"
+              "nosleep.js",
+              "buffer"
             ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json",
@@ -90,7 +91,8 @@
             }
           },
           "options": {
-            "browserTarget": "sweet-home:build"
+            "browserTarget": "sweet-home:build",
+            "proxyConfig": "./proxy.conf.json"
           },
           "defaultConfiguration": "development"
         },

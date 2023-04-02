@@ -1,19 +1,15 @@
-import {OauthTokenInterface, OauthTokenModel} from "./oauth-token.model";
+import { OauthTokenInterface, OauthTokenModel } from "./oauth-token.model";
 
 export interface OauthTokensInterface {
-  authorizationCode?: string,
-  refreshToken?: OauthTokenInterface,
-  accessToken?: OauthTokenInterface,
+  refreshToken?: OauthTokenInterface | null,
+  accessToken?: OauthTokenInterface | null,
 }
 
 export class OauthTokensModel {
-  private _authorizationCode?: string;
   private _refreshToken?: OauthTokenModel;
   private _accessToken?: OauthTokenModel;
 
   constructor(json: OauthTokensInterface) {
-    this._authorizationCode = json.authorizationCode;
-
     if (json.refreshToken) {
       this._refreshToken = new OauthTokenModel(json.refreshToken)
     }
@@ -23,35 +19,32 @@ export class OauthTokensModel {
     }
   }
 
-  get authorizationCode() {
-    return this._authorizationCode;
+  setRefreshToken(token: OauthTokenModel) {
+    this._refreshToken = token;
   }
 
-  set authorizationCode(authorizationCode: string) {
-    this._authorizationCode = authorizationCode;
+  setAccessToken(token: OauthTokenModel) {
+    this._accessToken = token;
   }
 
-  get refreshToken() {
+  getRefreshToken(): OauthTokenModel | undefined {
+    if (this._refreshToken && !this._refreshToken.isValid()) {
+      return undefined;
+    }
     return this._refreshToken;
   }
 
-  set refreshToken(token: OauthTokenInterface) {
-    this._refreshToken = new OauthTokenModel(token);
-  }
-
-  get accessToken() {
+  getAccessToken(): OauthTokenModel | undefined {
+    if (this._accessToken && !this._accessToken.isValid()) {
+      return undefined;
+    }
     return this._accessToken;
-  }
-
-  set accessToken(token: OauthTokenInterface) {
-    this._accessToken = new OauthTokenModel(token);
   }
 
   toFirestore(): OauthTokensInterface {
     return {
-      authorizationCode: this._authorizationCode,
-      refreshToken: this._refreshToken?.toFirestore(),
-      accessToken: this._accessToken?.toFirestore(),
+      refreshToken: this._refreshToken?.toFirestore() ?? null,
+      accessToken: this._accessToken?.toFirestore() ?? null,
     }
   }
 }

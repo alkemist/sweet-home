@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, filter, map, Observable, of } from 'rxjs';
 import { FirestoreService } from './firestore.service';
-import { UserInterface, UserModel } from '@models';
+import { OauthTokenModel, OauthTokensModel, UserInterface, UserModel } from '@models';
 import {
   InvalidEmailError,
   OfflineError,
@@ -13,8 +13,6 @@ import {
 import { LoggerService } from './logger.service';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
 import { MessageService } from 'primeng/api';
-import {OauthTokenInterface, OauthTokenModel} from "../models/oauth-token.model";
-import {OauthTokensModel} from "../models/oauth-tokens.model";
 
 export type AppKey = 'sonos' | 'spotify';
 
@@ -91,25 +89,17 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
     return signOut(this.auth);
   }
 
-  updateCode(type: AppKey, authorizationCode: string) {
+  updateRefreshToken(type: AppKey, oauthToken: OauthTokenModel) {
     if (this._user) {
-      this._user[type].authorizationCode = authorizationCode;
+      this._user[type].setRefreshToken(oauthToken);
       return this.updateOne(this._user);
     }
     return Promise.reject();
   }
 
-  updateRefreshToken(type: AppKey, oauthToken: OauthTokenInterface) {
+  updateAccessToken(type: AppKey, oauthToken: OauthTokenModel) {
     if (this._user) {
-      this._user[type].refreshToken = oauthToken;
-      return this.updateOne(this._user);
-    }
-    return Promise.reject();
-  }
-
-  updateAccessToken(type: AppKey, oauthToken: OauthTokenInterface) {
-    if (this._user) {
-      this._user[type].accessToken = oauthToken;
+      this._user[type].setAccessToken(oauthToken);
       return this.updateOne(this._user);
     }
     return Promise.reject();

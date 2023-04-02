@@ -1,9 +1,9 @@
 import { BaseError } from './base.error';
-import { ApiAppKey } from '@services';
+import { AppKey } from '@services';
 import { HttpErrorResponse } from '@angular/common/http';
 
 export class ApiError extends BaseError {
-  constructor(apiKey: ApiAppKey, httpError: HttpErrorResponse) {
+  constructor(apiKey: AppKey, httpError: HttpErrorResponse) {
     super();
     this.type = `Api ${ apiKey }`;
 

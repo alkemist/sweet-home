@@ -1,10 +1,9 @@
-import { ApiAppKey, UserService } from './user.service';
+import { AppKey, UserService } from './user.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { LoggerService } from './logger.service';
 import { MessageService } from 'primeng/api';
-import { ApiHelper, DateHelper } from '@tools';
+import { ApiAccessToken, OauthTokenModel } from '@models';
 import { catchError, first, throwError } from 'rxjs';
-import { ApiAccessToken } from '@models';
 import { ApiError } from '@errors';
 
 export abstract class ApiService {
@@ -17,14 +16,8 @@ export abstract class ApiService {
   protected abstract clientId: string;
   protected abstract clientSecret: string;
 
-  protected accessToken: string = '';
-  protected refreshToken: string = '';
-  protected tokenType: string = '';
-  protected expireSeconds: number = 0;
-  protected lastAuth: number = 0;
-
   protected constructor(
-    protected appKey: ApiAppKey,
+    protected appKey: AppKey,
     protected http: HttpClient,
     protected loggerService: LoggerService,
     protected userService: UserService,
@@ -36,75 +29,84 @@ export abstract class ApiService {
 
   updateAutorization() {
     this.messageService.add({
-      severity: 'warning',
+      severity: 'warn',
+      life: 3600,
       detail: $localize`We need authorization`
     });
+
+    const redirectUri = `${ this.document.location.origin }/authorize/${ this.appKey }`
 
     setTimeout(() => {
       this.document.location.href = `${ this.authorizeUrl }?`
         + `client_id=${ this.clientId }`
         + `&response_type=code`
         + `&scope=${ this.scope }`
-        + `&redirect_uri=${ this.document.location.origin }/authorize/${ this.appKey }`
+        + `&redirect_uri=${ redirectUri }`
         + `&state=${ new Date().getTime() }`;
-    }, 5000)
+    }, 1000)
   }
 
   async buildGetQuery(url: string) {
     const accessToken = await this.getAccessToken();
 
-    return new Promise<unknown>(async (resolve) => {
-      (await this.http.get(`${ this.apiUrl }${ url }`, {
-        headers: ApiHelper.buildHeaders(this.tokenType, accessToken)
-      }))
-        .pipe(
-          first(),
-          catchError((err) => this.handleError(err)),
-        )
-        .subscribe((result) => resolve(result))
-    });
+    if (accessToken) {
+      return new Promise<unknown>(async (resolve) => {
+        (await this.http.get(`${ this.apiUrl }${ url }`, {
+          headers: accessToken.toHeaders()
+        }))
+          .pipe(
+            first(),
+            catchError((err) => this.handleError(err)),
+          )
+          .subscribe((result) => resolve(result))
+      });
+    }
+    return Promise.resolve();
   }
 
-  async getAccessToken(): Promise<string> {
-    const needToken = !this.accessToken || !this.refreshToken
-      || ((this.lastAuth + this.expireSeconds) < DateHelper.seconds())
+  async getAccessToken(): Promise<OauthTokenModel | null> {
+    const accessToken = this.userService.getToken(this.appKey).getAccessToken();
+    const refreshToken = this.userService.getToken(this.appKey).getRefreshToken();
 
-    if (needToken) {
-      return await this.requestToken(this.refreshToken ? 'refresh_token' : 'authorization_code');
+    console.log(`-- [${ this.appKey }] current access token`, accessToken);
+
+    if (!accessToken) {
+      if (!refreshToken) {
+        this.updateAutorization();
+        return Promise.resolve(null);
+      }
+      return await this.requestToken('refresh_token');
     }
 
-    return Promise.resolve(this.accessToken);
+    return Promise.resolve(accessToken);
   }
 
-  protected requestToken(tokenType: 'authorization_code' | 'refresh_token') {
-    return new Promise<string>((resolve) => {
+  updateRefreshToken(authorizationCode: string): Promise<OauthTokenModel> {
+    return this.requestToken('authorization_code', authorizationCode);
+  }
+
+  protected requestToken(tokenType: 'authorization_code' | 'refresh_token', authorizationCode?: string) {
+    return new Promise<OauthTokenModel>((resolve) => {
 
       console.log(`-- [${ this.appKey }] request token "${ tokenType }"`);
 
       let body = `grant_type=${ tokenType }`;
 
       if (tokenType === 'authorization_code') {
-        const code = this.userService.getToken(this.appKey);
-        if (!code) {
-          this.updateAutorization();
-        }
+        console.log(`-- [${ this.appKey }] authorization code "${ authorizationCode }"`);
 
-        body += `&code=${ code }`
+        body += `&code=${ authorizationCode }`
           + `&redirect_uri=${ this.document.location.origin }/authorize/${ this.appKey }`;
       } else if (tokenType === 'refresh_token') {
-        body += `&refresh_token=${ this.refreshToken }`
+        const refreshToken = this.userService.getToken(this.appKey).getRefreshToken();
+        body += `&refresh_token=${ refreshToken?.token }`
       }
 
       const requestToken = Buffer.from(this.clientId + ':' + this.clientSecret).toString('base64');
-      this.lastAuth = DateHelper.seconds();
 
       return this.http.post(this.tokenUrl, body, {
-        headers: ApiHelper.buildHeaders(
-          'Basic',
-          requestToken,
-          'application/x-www-form-urlencoded',
-          this.appKey === 'sonos'
-        )
+        headers: new OauthTokenModel({ token: requestToken, token_type: 'Basic' })
+          .toHeaders('application/x-www-form-urlencoded')
       })
         .pipe(
           first(),
@@ -115,15 +117,22 @@ export abstract class ApiService {
 
           console.log(`-- [${ this.appKey }] request token "${ tokenType }" response`, response);
 
-          this.accessToken = response.access_token;
-          this.tokenType = response.token_type;
-          this.expireSeconds = response.expires_in;
+          const accessToken = new OauthTokenModel({
+            token: response.access_token,
+            expires_in: response.expires_in,
+            token_type: response.token_type,
+          })
 
           if (tokenType === 'authorization_code') {
-            this.refreshToken = response.refresh_token;
+            void this.userService.updateRefreshToken(this.appKey, new OauthTokenModel({
+              token: response.refresh_token,
+              token_type: response.token_type,
+            }))
           }
 
-          resolve(this.accessToken);
+          void this.userService.updateAccessToken(this.appKey, accessToken);
+
+          resolve(accessToken);
         })
     })
   }

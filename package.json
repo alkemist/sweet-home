@@ -9,7 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "reset": "rm -rf node_modules && rm yarn.lock && yarn install",
-    "server": "sudo http-server dist/sweet-home --port 443 -S -C ~/cert.pem -K ~/key.pem -o"
+    "server": "sudo http-server dist/sweet-home --https --port 443 -S -C ~/cert.pem -K ~/key.pem -o --cors.origin https://dev.my-sweet-home.netlify.app/ --cors.credentials"
   },
   "private": true,
   "dependencies": {

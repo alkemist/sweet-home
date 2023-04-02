@@ -5,6 +5,8 @@ import { BaseComponent } from '../../base.component';
 import { combineLatest } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { UnknownTokenError } from '@errors';
+import { SpotifyService } from '../../../services/spotify.service';
+import { SonosService } from '../../../services/sonos.service';
 
 @Component({
   selector: 'app-authorize',
@@ -19,6 +21,8 @@ export class AuthorizeComponent extends BaseComponent implements OnInit, OnDestr
     private userService: UserService,
     private loggerService: LoggerService,
     protected messageService: MessageService,
+    protected spotifyService: SpotifyService,
+    protected sonosService: SonosService,
     private route: ActivatedRoute,
     private router: Router
   ) {
@@ -30,11 +34,12 @@ export class AuthorizeComponent extends BaseComponent implements OnInit, OnDestr
       this.route.params,
       this.route.queryParams,
     ])
-      .subscribe((mixedData) => {
+      .subscribe(async (mixedData) => {
         const [ { type }, { code } ] = mixedData as [ { type: AppKey }, { code: string } ];
 
         if (type && code) {
-          this.userService.updateCode(type, code).then(() => {
+          this.updateToken(type, code).then(() => {
+            // console.log(`-- [${ type }] Refresh token updated`);
             void this.router.navigate([ '../../', 'home' ], { relativeTo: this.route })
           })
         } else {
@@ -45,5 +50,13 @@ export class AuthorizeComponent extends BaseComponent implements OnInit, OnDestr
           this.loggerService.error(new UnknownTokenError(type))
         }
       })
+  }
+
+  updateToken(type: AppKey, authorizationCode: string) {
+    if (type === 'spotify') {
+      return this.spotifyService.updateRefreshToken(authorizationCode)
+    } else {
+      return this.sonosService.updateRefreshToken(authorizationCode)
+    }
   }
 }

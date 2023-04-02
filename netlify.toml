@@ -1,0 +1,11 @@
+[[redirects]]
+  from = "/sonos-auth"
+  to = "https://api.sonos.com/login/v3/oauth/access"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/sonos-api"
+  to = "https://api.ws.sonos.com/control/api/v1"
+  status = 200
+  force = true
