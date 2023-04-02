@@ -7,10 +7,13 @@ export class ApiError extends BaseError {
     super();
     this.type = `Api ${ apiKey }`;
 
-    // status: 0, statusText: "Unknown Error", error is ProgressEvent,
-    //            message: "Http failure response for https://api.sonos.com/login/v3/oauth/access: 0 Unknown Error"
-    this.message = httpError.message;
+    if (httpError.error && httpError.error.errorCode && httpError.error.reason) {
+      // "ERROR_UNSUPPORTED_COMMAND" => "Command not found"
+      this.message = `${ httpError.error.errorCode } : ${ httpError.error.reason }`;
+    } else {
+      this.message = httpError.message;
+    }
 
-    console.log(httpError);
+    console.error(httpError);
   }
 }
