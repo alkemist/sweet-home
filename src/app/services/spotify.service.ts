@@ -4,13 +4,13 @@ import { LoggerService } from './logger.service';
 import { UserService } from './user.service';
 import { DOCUMENT } from '@angular/common';
 import { MessageService } from 'primeng/api';
-import { ApiService } from './api.service';
+import { OauthApiService } from './oauthApiService';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class SpotifyService extends ApiService {
+export class SpotifyService extends OauthApiService {
   authorizeUrl: string = `https://accounts.spotify.com/authorize`;
   tokenUrl: string = `https://accounts.spotify.com/api/token`;
   apiUrl: string = `https://api.spotify.com/v1/`;

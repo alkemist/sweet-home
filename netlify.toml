@@ -1,11 +1,19 @@
-[[redirects]]
-  from = "/sonos-auth"
-  to = "https://api.sonos.com/login/v3/oauth/access"
-  status = 200
-  force = true
+[dev]
+functionsPort = 1234
+targetPort = 4020
+port = 4242
+
+#[functions."backup"]
+#    schedule = "@weekly"
 
 [[redirects]]
-  from = "/sonos-api"
-  to = "https://api.ws.sonos.com/control/api/v1"
-  status = 200
-  force = true
+from = "/sonos-auth"
+to = "https://api.sonos.com/login/v3/oauth/access"
+status = 200
+force = true
+
+[[redirects]]
+from = "/sonos-api/*"
+to = "https://api.ws.sonos.com/control/api/v1"
+status = 200
+force = true

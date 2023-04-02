@@ -6,7 +6,7 @@ import { ApiAccessToken, OauthTokenModel } from '@models';
 import { catchError, first, throwError } from 'rxjs';
 import { ApiError } from '@errors';
 
-export abstract class ApiService {
+export abstract class OauthApiService {
   protected abstract authorizeUrl: string;
   protected abstract tokenUrl: string;
   protected abstract apiUrl: string;
