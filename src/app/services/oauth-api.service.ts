@@ -64,6 +64,42 @@ export abstract class OauthApiService {
     return Promise.resolve();
   }
 
+  async buildPostQuery(url: string, params?: any) {
+    const accessToken = await this.getAccessToken();
+
+    if (accessToken) {
+      return new Promise<unknown>(async (resolve) => {
+        (await this.http.post(`${ this.apiUrl }${ url }`, params, {
+          headers: accessToken.toHeaders('application/json'),
+        }))
+          .pipe(
+            first(),
+            catchError((err) => this.handleError(err)),
+          )
+          .subscribe((result) => resolve(result))
+      });
+    }
+    return Promise.resolve();
+  }
+
+  async buildPutQuery(url: string, params?: any) {
+    const accessToken = await this.getAccessToken();
+
+    if (accessToken) {
+      return new Promise<unknown>(async (resolve) => {
+        (await this.http.put(`${ this.apiUrl }${ url }`, params, {
+          headers: accessToken.toHeaders(),
+        }))
+          .pipe(
+            first(),
+            catchError((err) => this.handleError(err)),
+          )
+          .subscribe((result) => resolve(result))
+      });
+    }
+    return Promise.resolve();
+  }
+
   async getAccessToken(): Promise<OauthTokenModel | null> {
     const accessToken = this.userService.getToken(this.appKey).getAccessToken();
     const refreshToken = this.userService.getToken(this.appKey).getRefreshToken();

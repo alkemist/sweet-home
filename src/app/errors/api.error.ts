@@ -7,9 +7,13 @@ export class ApiError extends BaseError {
     super();
     this.type = `Api ${ apiKey }`;
 
-    if (httpError.error && httpError.error.errorCode && httpError.error.reason) {
-      // "ERROR_UNSUPPORTED_COMMAND" => "Command not found"
-      this.message = `${ httpError.error.errorCode } : ${ httpError.error.reason }`;
+    if (typeof httpError.error === 'string') {
+      this.message = `${ httpError.statusText } : ${ httpError.error }`;
+    } else if (httpError.error && httpError.error.errorCode) {
+      this.message = `${ httpError.error.errorCode }`;
+      if (httpError.error.reason) {
+        this.message += `: ${ httpError.error.reason }`;
+      }
     } else {
       this.message = httpError.message;
     }
