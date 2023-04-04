@@ -19,11 +19,12 @@ export class LoggerService {
     }
   }
 
-  error<T>(error: BaseError) {
+  error<T>(error: BaseError): BaseError {
     if (!process.env['APP_DEBUG']) {
       this.errorHandler.report(error);
     } else {
       console.error(`-- Error [${ error.type }]`, error.message, ':', error.context);
     }
+    return error;
   }
 }

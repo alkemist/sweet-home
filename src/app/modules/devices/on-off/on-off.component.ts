@@ -2,9 +2,7 @@ import { Directive } from '@angular/core';
 import { BaseDeviceComponent } from '../base-device.component';
 import { JeedomCommandResultInterface } from '@models';
 import { FormControl } from '@angular/forms';
-
-export type OnOffCommandInfo = 'state';
-export type OnOffCommandAction = 'on' | 'off' | 'toggle';
+import { OnOffCommandAction, OnOffCommandInfo } from '@devices';
 
 @Directive()
 export abstract class DeviceOnOffComponent extends BaseDeviceComponent<OnOffCommandInfo, OnOffCommandAction> {

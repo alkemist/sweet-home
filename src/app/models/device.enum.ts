@@ -6,18 +6,17 @@ export enum DeviceConnectivityEnum {
 
 export enum DeviceCategoryEnum {
   Thermostat = 'thermostat',
+  Thermometer = 'thermometer',
   OnOff = 'on-off',
-  Multimedia = 'multimedia'
-  //Thermometer = 'thermometer',
+  Multimedia = 'multimedia',
 }
 
 export enum DeviceTypeEnum {
-  ThermostatAqara = 'thermostat-aqara',
-  ThermostatMoes = 'thermostat-moes',
-  PlugLidl = 'plug-lidle',
+  Aqara = 'aqara',
+  Moes = 'moes',
+  Lidl = 'lidle',
   Chromecast = 'chromecast',
   Sonos = 'sonos',
-  //ThermometerAqara = 'thermometer-aqara'
 }
 
 

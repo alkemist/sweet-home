@@ -1,5 +1,5 @@
 import { ElementRef, Injectable, ViewContainerRef } from '@angular/core';
-import { CoordinateInterface, DeviceModel, DeviceTypeEnum, SizeInterface } from '@models';
+import { CoordinateInterface, DeviceCategoryEnum, DeviceModel, DeviceTypeEnum, SizeInterface } from '@models';
 import * as Hammer from 'hammerjs';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { DocumentHelper } from './document.helper';
@@ -9,15 +9,17 @@ import { SmartMapModel } from '../models/smart-map.model';
 import { BaseDeviceComponent } from '../modules/devices/base-device.component';
 import { SmartLoaderModel } from '../models/smart-loader.model';
 import { ObjectHelper } from './object.helper';
-import { DeviceService } from '@services';
+import { DeviceService, LoggerService } from '@services';
 import { MessageService } from 'primeng/api';
 import {
   DeviceChromecastComponent,
-  DeviceOnOffPlugLidlComponent,
+  DeviceOnOffLidlComponent,
   DeviceSonosComponent,
+  DeviceThermometerAqaraComponent,
   DeviceThermostatAqaraComponent,
   DeviceThermostatMoesComponent
 } from '@devices';
+import { UnexpectedError } from '@errors';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +45,7 @@ export class MapBuilder {
   private _isEditMode = false;
   private _isDragging = false;
 
-  constructor() {
+  constructor(protected loggerService: LoggerService) {
   }
 
   private _deviceUpdated$ = new Subject<void>();
@@ -152,27 +154,34 @@ export class MapBuilder {
 
   build(devices: DeviceModel[]) {
     devices.forEach((device) => {
-      if (device.type) {
-        const componentRef = this.viewContainer.createComponent(ComponentClassByType[device.type]);
-        const componentInstance = componentRef.instance;
-        componentInstance.setPosition(device.position);
-        componentInstance.name = device.name;
-        componentInstance.actionInfoIds = device.infoCommandIds;
-        componentInstance.actionCommandIds = device.actionCommandIds;
-        componentInstance.configurationValues = device.configurationValues;
-        componentInstance.parameterValues = device.parameterValues.toRecord();
-
-        componentInstance.loaded.subscribe(() => {
-          const supervisor = new DeviceSupervisor(componentRef, ObjectHelper.clone(device));
-
-          supervisor.moved$.subscribe(() => {
-            this._deviceMoved$.next(supervisor.device);
-          });
-
-          this._supervisors.set(device.id, supervisor);
-          this.checkDevicesStatus(devices.length);
-        });
+      if (!device.category || !device.type) {
+        throw this.loggerService.error(new UnexpectedError("Device without category or type", device))
       }
+
+      const componentConstructor = ComponentClassByType[device.category][device.type];
+      if (!componentConstructor) {
+        throw this.loggerService.error(new UnexpectedError("Unknown component constructor", device))
+      }
+
+      const componentRef = this.viewContainer.createComponent(componentConstructor);
+      const componentInstance = componentRef.instance;
+      componentInstance.setPosition(device.position);
+      componentInstance.name = device.name;
+      componentInstance.actionInfoIds = device.infoCommandIds;
+      componentInstance.actionCommandIds = device.actionCommandIds;
+      componentInstance.configurationValues = device.configurationValues;
+      componentInstance.parameterValues = device.parameterValues.toRecord();
+
+      componentInstance.loaded.subscribe(() => {
+        const supervisor = new DeviceSupervisor(componentRef, ObjectHelper.clone(device));
+
+        supervisor.moved$.subscribe(() => {
+          this._deviceMoved$.next(supervisor.device);
+        });
+
+        this._supervisors.set(device.id, supervisor);
+        this.checkDevicesStatus(devices.length);
+      });
     })
   }
 
@@ -389,12 +398,21 @@ interface MouseEventCustom extends MouseEvent {
   relatedTarget: Element;
 }
 
-type ComponentConstructor = (new (mP: MapBuilder, dS: DeviceService, mS: MessageService) => BaseDeviceComponent);
+type DeviceComponentConstructor = (new (mP: MapBuilder, dS: DeviceService, mS: MessageService) => BaseDeviceComponent);
 
-export const ComponentClassByType: Record<DeviceTypeEnum, ComponentConstructor> = {
-  [DeviceTypeEnum.ThermostatAqara]: DeviceThermostatAqaraComponent,
-  [DeviceTypeEnum.ThermostatMoes]: DeviceThermostatMoesComponent,
-  [DeviceTypeEnum.PlugLidl]: DeviceOnOffPlugLidlComponent,
-  [DeviceTypeEnum.Chromecast]: DeviceChromecastComponent,
-  [DeviceTypeEnum.Sonos]: DeviceSonosComponent,
+export const ComponentClassByType: Record<DeviceCategoryEnum, Partial<Record<DeviceTypeEnum, DeviceComponentConstructor>>> = {
+  [DeviceCategoryEnum.Thermostat]: {
+    [DeviceTypeEnum.Aqara]: DeviceThermostatAqaraComponent,
+    [DeviceTypeEnum.Moes]: DeviceThermostatMoesComponent,
+  },
+  [DeviceCategoryEnum.Thermometer]: {
+    [DeviceTypeEnum.Aqara]: DeviceThermometerAqaraComponent,
+  },
+  [DeviceCategoryEnum.OnOff]: {
+    [DeviceTypeEnum.Lidl]: DeviceOnOffLidlComponent,
+  },
+  [DeviceCategoryEnum.Multimedia]: {
+    [DeviceTypeEnum.Chromecast]: DeviceChromecastComponent,
+    [DeviceTypeEnum.Sonos]: DeviceSonosComponent,
+  }
 }

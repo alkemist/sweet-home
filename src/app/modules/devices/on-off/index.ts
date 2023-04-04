@@ -1,3 +1,3 @@
-export * from './plug-lidl/on-off-plug-lidl.component'
+export * from './lidl/on-off-lidl.component'
 export * from './on-off.type'
-export * from './on-off-sigbee-official.const'
+export * from './on-off-zigbee-official.const'

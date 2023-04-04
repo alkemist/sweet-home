@@ -63,13 +63,13 @@ export class DeviceSupervisor {
       const position: CoordinateInterface = {
         x: MathHelper.clamp(
           MathHelper.round(this._currentPosition.x + (event.deltaX / this._scale)),
-          10,
-          MathHelper.round(this._mapSize.w - this._deviceSize.w - 10)
+          2,
+          MathHelper.round(this._mapSize.w - this._deviceSize.w - 2)
         ),
         y: MathHelper.clamp(
           MathHelper.round(this._currentPosition.y + (event.deltaY / this._scale)),
-          10,
-          MathHelper.round(this._mapSize.h - this._deviceSize.h - 10)
+          2,
+          MathHelper.round(this._mapSize.h - this._deviceSize.h - 2)
         ),
       }
 

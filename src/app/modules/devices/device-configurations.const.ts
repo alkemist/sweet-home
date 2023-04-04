@@ -14,6 +14,7 @@ import {
   zigbeeOfficialThermostatMoesInfoCommandFilters
 } from './thermostat';
 import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum, PartialRecord } from '@models';
+import { zigbeeOfficialThermometerInfoCommandFilters } from './thermometer';
 
 export interface DeviceDefinitions {
   infoCommandFilters?: Record<string, Record<string, string>>,
@@ -52,6 +53,9 @@ export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinition
         infoCommandFilters: zigbeeOfficialThermostatInfoCommandFilters,
         actionCommandFilters: zigbeeOfficialThermostatActionCommandFilters,
       },
+      [DeviceCategoryEnum.Thermometer]: {
+        infoCommandFilters: zigbeeOfficialThermometerInfoCommandFilters,
+      },
       [DeviceCategoryEnum.OnOff]: {
         infoCommandFilters: zigbeeOfficialOnOffInfoCommandFilters,
         actionCommandFilters: zigbeeOfficialOnOffActionCommandFilters,
@@ -86,24 +90,27 @@ export const deviceDefinitionsByConnectivityCategoryType:
   },
   [DeviceConnectivityEnum.ZigbeeOfficial]: {
     [DeviceCategoryEnum.Thermostat]: {
-      [DeviceTypeEnum.ThermostatAqara]: {
+      [DeviceTypeEnum.Aqara]: {
         infoCommandFilters: zigbeeOfficialThermostatAqaraInfoCommandFilters,
       },
-      [DeviceTypeEnum.ThermostatMoes]: {
+      [DeviceTypeEnum.Moes]: {
         infoCommandFilters: zigbeeOfficialThermostatMoesInfoCommandFilters,
       },
     },
+    [DeviceCategoryEnum.Thermometer]: {
+      [DeviceTypeEnum.Aqara]: {}
+    },
     [DeviceCategoryEnum.OnOff]: {
-      [DeviceTypeEnum.PlugLidl]: {}
+      [DeviceTypeEnum.Lidl]: {}
     }
   },
   [DeviceConnectivityEnum.ZigbeeLinker]: {
     [DeviceCategoryEnum.Thermostat]: {
-      [DeviceTypeEnum.ThermostatAqara]: {
+      [DeviceTypeEnum.Aqara]: {
         infoCommandFilters: {},
         actionCommandFilters: {},
       },
-      [DeviceTypeEnum.ThermostatMoes]: {
+      [DeviceTypeEnum.Moes]: {
         infoCommandFilters: {},
         actionCommandFilters: {},
       },

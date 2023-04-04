@@ -1,7 +1,7 @@
 <div #content (click)="openModal()" [pTooltip]="name"
      [tooltipDisabled]="isEditMode || isDragging" class="flex flex-column gap-2"
      tooltipEvent="hover" tooltipPosition="top">
-  <div class="map-icon-value flex flex-row align-content-center gap-1">
+  <div *ngIf="infoCommandValues.room" class="map-icon-value flex flex-row align-content-center gap-1">
     <div class="icon">
       <i class="fa fa-thermometer-half"></i>
     </div>
@@ -9,7 +9,7 @@
       {{ infoCommandValues.room }}°
     </div>
   </div>
-  <div class="map-icon-value flex flex-row align-content-center gap-1">
+  <div *ngIf="infoCommandValues.thermostat" class="map-icon-value flex flex-row align-content-center gap-1">
     <div class="icon">
       <i class="fa fa-cog"></i>
     </div>

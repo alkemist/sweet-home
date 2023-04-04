@@ -2,17 +2,17 @@ import { DeviceCategoryEnum, DeviceTypeEnum } from '@models';
 
 export const TypesByCategory: Record<DeviceCategoryEnum, DeviceTypeEnum[]> = {
   [DeviceCategoryEnum.Thermostat]: [
-    DeviceTypeEnum.ThermostatMoes,
-    DeviceTypeEnum.ThermostatAqara,
+    DeviceTypeEnum.Moes,
+    DeviceTypeEnum.Aqara,
   ],
   [DeviceCategoryEnum.OnOff]: [
-    DeviceTypeEnum.PlugLidl
+    DeviceTypeEnum.Lidl
   ],
   [DeviceCategoryEnum.Multimedia]: [
     DeviceTypeEnum.Chromecast,
     DeviceTypeEnum.Sonos,
   ],
-  /*[DeviceCategoryEnum.Thermometer]: [
-    DeviceTypeEnum.ThermometerAqara
-  ]*/
+  [DeviceCategoryEnum.Thermometer]: [
+    DeviceTypeEnum.Aqara,
+  ]
 }
