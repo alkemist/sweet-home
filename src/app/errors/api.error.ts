@@ -18,6 +18,6 @@ export class ApiError extends BaseError {
       this.message = httpError.message;
     }
 
-    console.error(httpError);
+    this.context = httpError;
   }
 }

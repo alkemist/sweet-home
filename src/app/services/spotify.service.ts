@@ -30,6 +30,10 @@ export class SpotifyService extends OauthApiService {
     super('spotify', http, loggerService, userService, messageService, document);
   }
 
+  async test() {
+    const playlists = await this.buildGetQuery(`users/${ process.env['SPOTIFY_USER_ID'] }/playlists`);
+    console.log('-- [spotify] playlists', playlists)
+  }
 
   /*async playPlaylist() {
     (await this.buildQuery(`me/player/pause`)).subscribe((result) => console.log(result))

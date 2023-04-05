@@ -16,6 +16,7 @@ export * from './quota-exceeded.error';
 export * from './script.error';
 export * from './too-many-request.error';
 export * from './undefined-var.error';
+export * from './unexpected.error';
 export * from './unknown-command-id.error';
 export * from './unknown-jeedom.error';
 export * from './unknown-token.error';

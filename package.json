@@ -40,7 +40,10 @@
     "primeng": "^15.2.0",
     "rxjs": "~7.8.0",
     "stackdriver-errors-js": "^0.12.0",
+    "stream": "^0.0.2",
+    "timers-browserify": "^2.0.12",
     "tslib": "^2.3.0",
+    "xml2js": "^0.4.23",
     "yarn": "^1.22.19",
     "zone.js": "~0.12.0"
   },
@@ -55,6 +58,7 @@
     "@types/hammerjs": "^2.0.41",
     "@types/jest": "^27.4.0",
     "@types/node": "^18.14.0",
+    "@types/xml2js": "^0.4.11",
     "jest": "^27.5.1",
     "jest-extended": "^2.0.0",
     "jest-preset-angular": "^11.1.1",

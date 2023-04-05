@@ -109,12 +109,14 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
       this.pollingLoader.addLoader(this.pollingDelay);
     })
 
-    /*this.spotifyService.buildGetQuery(`users/${ process.env['SPOTIFY_USER_ID'] }/playlists`)
-      .then((result) => console.log('result spotify', result))
+    //void this.spotifyService.test();
+    //void this.sonosService.test();
 
-    this.sonosService.buildGetQuery('households')
-      .then((result) => console.log('result sonos', result));*/
-
+    /*const xml = "<root>Hello xml2js!</root>";
+    parseString(xml, { trim: true }, function (err, result) {
+      console.log(err);
+      console.log(result);
+    })*/
   }
 
   @HostListener('window:resize', [ '$event' ])

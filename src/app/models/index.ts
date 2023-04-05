@@ -1,4 +1,5 @@
 export * from './spotify'
+export * from './sonos'
 export * from './api-access-token.interface';
 export * from './coordinate.interface'
 export * from './coordinate-form.interface'

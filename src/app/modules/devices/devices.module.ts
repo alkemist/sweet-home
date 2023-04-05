@@ -15,7 +15,7 @@ import { DeviceThermometerAqaraComponent } from './thermometer';
     DeviceSonosComponent
   ],
   imports: [
-    SharingModule
+    SharingModule,
   ]
 })
 export class DevicesModule {

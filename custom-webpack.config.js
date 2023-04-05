@@ -25,5 +25,8 @@ module.exports = {
       'SONOS_KEY',
       'SONOS_SECRET',
     ])
-  ]
+  ],
+  resolve: {
+    fallback: {"timers": require.resolve('timers-browserify')}
+  },
 }
