@@ -1,0 +1,58 @@
+<div #content (click)="openModal()" [pTooltip]="name"
+     [tooltipDisabled]="isEditMode || isDragging" class="flex flex-column gap-2"
+     tooltipEvent="hover" tooltipPosition="top">
+  <div *ngIf="infoCommandValues.room" class="map-icon-value flex flex-row align-content-center gap-1">
+    <div class="icon">
+      <i class="fa fa-thermometer-half"></i>
+    </div>
+    <div class="value">
+      {{ infoCommandValues.room }}°
+    </div>
+  </div>
+  <div *ngIf="infoCommandValues.thermostat" class="map-icon-value flex flex-row align-content-center gap-1">
+    <div class="icon">
+      <i class="fa fa-cog"></i>
+    </div>
+    <div class="value">
+      {{ infoCommandValues.thermostat }}°
+    </div>
+  </div>
+  <div *ngIf="!isEditMode && hasLowBattery" class="flex flex-row align-content-center gap-2 color-danger icon-big">
+    <i class="fa fa-exclamation-triangle"></i><i class="fa fa-battery-empty"></i>
+  </div>
+</div>
+<p-overlayPanel #overlayPanel [appendTo]="content" [dismissable]="false">
+  <div class="flex flex-column gap-2">
+    <h4>{{ name }}</h4>
+    <div class="map-icon-value flex flex-row align-content-center gap-1">
+      <div class="icon">
+        <i [ngClass]="[batteryIcon]" class="fa"></i>
+      </div>
+      <div class="value">
+        {{ infoCommandValues.battery }} %
+      </div>
+    </div>
+    <div *ngIf="infoCommandValues.signal" class="map-icon-value flex flex-row align-content-center gap-1">
+      <div class="icon">
+        <i class="fa  fa-signal"></i>
+      </div>
+      <div class="value">
+        {{ signalPercent }} %
+      </div>
+    </div>
+  </div>
+</p-overlayPanel>
+<p-dialog (onHide)="closeModal()" [(visible)]="modalOpened" [dismissableMask]="true" [draggable]="false"
+          [header]="name" [modal]="true" [resizable]="false"
+          appendTo="body" position="bottom"
+          styleClass="device-modal">
+  <div class="flex flex-column">
+    <p-inputNumber [formControl]="thermostatControl" [max]="30" [min]="10" [showButtons]="true" [step]="thermostatStep"
+                   buttonLayout="horizontal"
+                   class="flex-1"
+                   decrementButtonClass="p-button-danger" decrementButtonIcon="pi pi-minus"
+                   incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus"
+                   inputId="horizontal" suffix="°">
+    </p-inputNumber>
+  </div>
+</p-dialog>

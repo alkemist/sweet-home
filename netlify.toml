@@ -24,6 +24,12 @@ status = 200
 force = true
 
 [[redirects]]
+from = "/sonos-beam/*"
+to = "http://192.168.0.61:1400/:splat"
+status = 200
+force = true
+
+[[redirects]]
 from = "/*"
 to = "/index.html"
 status = 200

@@ -1,9 +1,12 @@
 import { NgModule } from '@angular/core';
-import { DeviceThermostatAqaraComponent, DeviceThermostatMoesComponent } from './thermostat';
+import {
+  DeviceOnOffLidlComponent,
+  DeviceThermometerAqaraComponent,
+  DeviceThermostatAqaraComponent,
+  DeviceThermostatMoesComponent
+} from './zigbee';
 import { SharingModule } from '../sharing.module';
-import { DeviceOnOffLidlComponent } from './on-off';
-import { DeviceChromecastComponent, DeviceSonosComponent } from './multimedia';
-import { DeviceThermometerAqaraComponent } from './thermometer';
+import { DeviceChromecastComponent, DeviceSonosComponent } from './wifi';
 
 @NgModule({
   declarations: [

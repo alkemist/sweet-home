@@ -1,4 +1,18 @@
-import { zigbeeOfficialOnOffActionCommandFilters, zigbeeOfficialOnOffInfoCommandFilters } from './on-off';
+import {
+  OnOffParams,
+  zigbeeLinkerOnOffActionCommandFilters,
+  zigbeeLinkerOnOffInfoCommandFilters,
+  zigbeeLinkerThermometerInfoCommandFilters,
+  zigbeeLinkerThermostatActionCommandFilters,
+  zigbeeLinkerThermostatInfoCommandFilters,
+  zigbeeOfficialOnOffActionCommandFilters,
+  zigbeeOfficialOnOffInfoCommandFilters,
+  zigbeeOfficialThermometerInfoCommandFilters,
+  zigbeeOfficialThermostatActionCommandFilters,
+  zigbeeOfficialThermostatAqaraInfoCommandFilters,
+  zigbeeOfficialThermostatInfoCommandFilters,
+  zigbeeOfficialThermostatMoesInfoCommandFilters
+} from './zigbee';
 import {
   MultimediaChromecastInfoCommandFilters,
   MultimediaParams,
@@ -6,15 +20,8 @@ import {
   wifiMultimediaSonosActionCommandFilters,
   wifiMultimediaSonosConfigurationFilters,
   wifiMultimediaSonosInfoCommandFilters
-} from './multimedia';
-import {
-  zigbeeOfficialThermostatActionCommandFilters,
-  zigbeeOfficialThermostatAqaraInfoCommandFilters,
-  zigbeeOfficialThermostatInfoCommandFilters,
-  zigbeeOfficialThermostatMoesInfoCommandFilters
-} from './thermostat';
+} from './wifi';
 import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum, PartialRecord } from '@models';
-import { zigbeeOfficialThermometerInfoCommandFilters } from './thermometer';
 
 export interface DeviceDefinitions {
   infoCommandFilters?: Record<string, Record<string, string>>,
@@ -63,12 +70,16 @@ export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinition
     },
     [DeviceConnectivityEnum.ZigbeeLinker]: {
       [DeviceCategoryEnum.Thermostat]: {
-        infoCommandFilters: {},
-        actionCommandFilters: {},
+        infoCommandFilters: zigbeeLinkerThermostatInfoCommandFilters,
+        actionCommandFilters: zigbeeLinkerThermostatActionCommandFilters,
+      },
+      [DeviceCategoryEnum.Thermometer]: {
+        infoCommandFilters: zigbeeLinkerThermometerInfoCommandFilters,
       },
       [DeviceCategoryEnum.OnOff]: {
-        infoCommandFilters: {},
-        actionCommandFilters: {},
+        infoCommandFilters: zigbeeLinkerOnOffInfoCommandFilters,
+        actionCommandFilters: zigbeeLinkerOnOffActionCommandFilters,
+        customParams: OnOffParams,
       },
     }
   };
@@ -114,6 +125,12 @@ export const deviceDefinitionsByConnectivityCategoryType:
         infoCommandFilters: {},
         actionCommandFilters: {},
       },
+    },
+    [DeviceCategoryEnum.Thermometer]: {
+      [DeviceTypeEnum.Aqara]: {}
+    },
+    [DeviceCategoryEnum.OnOff]: {
+      [DeviceTypeEnum.Lidl]: {}
     }
   }
 }

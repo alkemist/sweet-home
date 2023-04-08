@@ -14,6 +14,7 @@ export * from './no-sleep.error';
 export * from './offline.error';
 export * from './quota-exceeded.error';
 export * from './script.error';
+export * from './soap.error';
 export * from './too-many-request.error';
 export * from './undefined-var.error';
 export * from './unexpected.error';

@@ -15,7 +15,7 @@ import { BaseComponent } from '../../components/base.component';
 import { DeviceService } from '@services';
 import { MapBuilder } from '@tools';
 import { OverlayPanel } from 'primeng/overlaypanel';
-import { UndefinedVarError } from '../../errors/undefined-var.error';
+import { UndefinedVarError } from '@errors';
 import { MessageService } from 'primeng/api';
 
 @Directive()

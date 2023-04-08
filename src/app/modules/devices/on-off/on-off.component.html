@@ -1,9 +1,0 @@
-<div #content (click)="toggle()" [class.on]="!!infoCommandValues.state" [pTooltip]="name"
-     [tooltipDisabled]="isEditMode || isDragging"
-     class="flex flex-row justify-content-center" id="content"
-     tooltipEvent="hover" tooltipPosition="top">
-  <i class="fa fa-bolt"></i>
-</div>
-<p-overlayPanel #overlayPanel [appendTo]="content" [dismissable]="false">
-  {{ name }}
-</p-overlayPanel>

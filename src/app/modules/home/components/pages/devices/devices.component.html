@@ -9,6 +9,7 @@
         <th i18n>Connectivity</th>
         <th i18n>Category</th>
         <th i18n>Type</th>
+        <th i18n>Jeedom ID</th>
         <th>
         </th>
       </tr>
@@ -32,6 +33,7 @@
               </p-multiSelect>
             </ng-template>
           </p-columnFilter>
+        </th>
         <th>
           <p-columnFilter [showMatchModes]="false" [showMenu]="false" [showOperator]="false" display="row"
                           field="category" matchMode="in">
@@ -59,6 +61,13 @@
           </p-columnFilter>
         </th>
         <th>
+          <p-columnFilter field="jeedomId" matchMode="contains">
+            <ng-template let-filter="filterCallback" let-value pTemplate="filter">
+              <input (ngModelChange)="filter($event)" [ngModel]="value" pInputText/>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th>
           <a [routerLink]="['add']"
              class="p-button-rounded p-button-success p-button-text"
              icon="pi pi-plus"
@@ -80,6 +89,9 @@
         </td>
         <td>
           {{device.typeLabel}}
+        </td>
+        <td>
+          {{device.jeedomId}}
         </td>
         <td class="align-right">
           <a [routerLink]="[device.slug]"

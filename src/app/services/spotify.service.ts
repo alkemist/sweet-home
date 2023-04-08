@@ -11,14 +11,14 @@ import { OauthApiService } from './oauth-api.service';
   providedIn: 'root'
 })
 export class SpotifyService extends OauthApiService {
-  authorizeUrl: string = `https://accounts.spotify.com/authorize`;
-  tokenUrl: string = `https://accounts.spotify.com/api/token`;
-  apiUrl: string = `https://api.spotify.com/v1/`;
+  protected authorizeUrl: string = `https://accounts.spotify.com/authorize`;
+  protected tokenUrl: string = `https://accounts.spotify.com/api/token`;
+  protected apiUrl: string = `https://api.spotify.com/v1/`;
 
-  scope: string = "user-modify-playback-state%20playlist-read-private";
+  protected scope: string = "user-modify-playback-state%20playlist-read-private";
 
-  clientId = process.env['SPOTIFY_CLIENT_ID'] as string;
-  clientSecret = process.env['SPOTIFY_CLIENT_SECRET'] as string;
+  protected clientId = process.env['SPOTIFY_CLIENT_ID'] as string;
+  protected clientSecret = process.env['SPOTIFY_CLIENT_SECRET'] as string;
 
   constructor(
     http: HttpClient,

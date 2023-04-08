@@ -110,13 +110,8 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     })
 
     //void this.spotifyService.test();
-    //void this.sonosService.test();
-
-    /*const xml = "<root>Hello xml2js!</root>";
-    parseString(xml, { trim: true }, function (err, result) {
-      console.log(err);
-      console.log(result);
-    })*/
+    //void this.sonosService.test1();
+    //void this.sonosService.test2();
   }
 
   @HostListener('window:resize', [ '$event' ])
