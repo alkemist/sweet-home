@@ -55,7 +55,7 @@
     <div class="flex flex-column gap-3">
       <div class="flex justify-content-center ">{{ volumeControl.value }}%</div>
       <div class="flex flex-row align-items-center gap-3">
-        <p-slider [formControl]="volumeControl" [max]="volumeMax" [min]="0"
+        <p-slider [formControl]="volumeControl" [max]="parameterValues.volumeMax" [min]="0"
                   class="flex-1"></p-slider>
         <p-toggleButton [formControl]="muteControl" offIcon="fa fa-volume-up"
                         onIcon="fa fa-volume-mute"></p-toggleButton>

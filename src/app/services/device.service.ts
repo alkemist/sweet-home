@@ -15,7 +15,7 @@ import { LoggerService } from './logger.service';
 import { DataStoreService } from './data-store.service';
 import { MessageService } from 'primeng/api';
 import { BaseDeviceComponent } from '../modules/devices/base-device.component';
-import { UnknownCommandIdError } from '../errors/unknown-command-id.error';
+import { UnknownCommandIdError } from '@errors';
 
 
 @Injectable({
@@ -80,7 +80,7 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
 
         if (values) {
           components.forEach((component) => {
-            component.updateInfoCommandValues(values);
+            component.updateGlobalInfoCommandValues(values);
             resolve(true);
           })
         } else {

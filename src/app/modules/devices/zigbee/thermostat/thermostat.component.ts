@@ -1,21 +1,26 @@
 import { Directive } from '@angular/core';
-import { JeedomCommandResultInterface } from '@models';
 import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs';
 import { ThermostatCommandAction, ThermostatExtendCommandInfo, ThermostatGlobalCommandInfo } from '@devices';
-import { ZigbeeBatteryComponent } from '../zigbee-battery-component.directive';
+import { ZigbeeBatteryCommandValues, ZigbeeBatteryComponent } from '../zigbee-battery-component.directive';
+import { MathHelper } from '@tools';
+
+interface ThermostatCommandValues extends ZigbeeBatteryCommandValues {
+  thermostat: number,
+  room: number,
+}
 
 @Directive()
 export abstract class DeviceThermostatComponent
-  extends ZigbeeBatteryComponent<ThermostatExtendCommandInfo, ThermostatCommandAction> {
+  extends ZigbeeBatteryComponent<ThermostatExtendCommandInfo, ThermostatCommandAction,
+    ThermostatExtendCommandInfo, ThermostatCommandValues> {
 
   thermostatControl = new FormControl<number>(0);
   thermostatStep = 0.5;
-  protected override infoCommandValues: Record<ThermostatGlobalCommandInfo, number | null> = {
-    thermostat: null,
-    room: null,
-    battery: null,
-    signal: null,
+  protected override infoCommandValues: ThermostatCommandValues = {
+    ...super.infoCommandValues,
+    thermostat: 0,
+    room: 0,
   };
 
   override closeModal() {
@@ -43,14 +48,18 @@ export abstract class DeviceThermostatComponent
   setThermostat(value: number) {
     // console.log(`-- [${this.name}] Set thermostat`, value);
     this.execUpdateSlider('thermostat', value).then(_ => {
-      this.infoCommandValues['thermostat'] = value;
+      this.infoCommandValues.thermostat = value;
     })
   }
 
-  override updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
+  override updateInfoCommandValues(values: Record<ThermostatGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
+
+    this.infoCommandValues.thermostat = MathHelper.round(values.thermostat as number, 2);
+    this.infoCommandValues.room = MathHelper.round(values.room as number, 2);
+
     if (!this.modalOpened) {
-      this.thermostatControl.setValue(this.infoCommandValues.thermostat as number, { emitEvent: false });
+      this.thermostatControl.setValue(this.infoCommandValues.thermostat, { emitEvent: false });
     }
 
     //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);

@@ -1,5 +1,5 @@
 import { DeviceCommands, DeviceConfiguration } from '../../../device-configurations.const';
-import { MultimediaCommandAction, MultimediaCommandInfo } from '../multimedia.const';
+import { MultimediaCommandAction, MultimediaCommandInfo, MultimediaParamValue } from '../multimedia.const';
 
 export type SonosExtendCommandInfo = SonosCommandInfo & MultimediaCommandInfo;
 export type SonosGlobalCommandInfo = SonosCommandInfo | MultimediaCommandInfo;
@@ -18,9 +18,12 @@ export type SonosCommandAction =
   | 'favourite' | 'playlist' | 'radio'
   ;
 
-export type SonosConfiguration =
+export type SonosParamValue =
   'ip'
   ;
+
+export type SonosExtendParamValue = SonosParamValue & MultimediaParamValue;
+export type SonosGlobalParamValue = SonosParamValue | MultimediaParamValue;
 
 export const wifiMultimediaSonosInfoCommandFilters: DeviceCommands<SonosGlobalCommandInfo> = {
   state: { logicalId: 'state' },
@@ -49,6 +52,6 @@ export const wifiMultimediaSonosActionCommandFilters: DeviceCommands<SonosGlobal
   radio: { logicalId: 'play_radio' },
 };
 
-export const wifiMultimediaSonosConfigurationFilters: DeviceConfiguration<SonosConfiguration> = {
+export const wifiMultimediaSonosConfigurationFilters: DeviceConfiguration<SonosParamValue> = {
   ip: "logicalId"
 }

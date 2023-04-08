@@ -171,7 +171,7 @@ export class MapBuilder {
       componentInstance.actionInfoIds = device.infoCommandIds;
       componentInstance.actionCommandIds = device.actionCommandIds;
       componentInstance.configurationValues = device.configurationValues;
-      componentInstance.parameterValues = device.parameterValues.toRecord();
+      componentInstance.setParameterValues(device.parameterValues.toRecord());
 
       componentInstance.loaded.subscribe(() => {
         const supervisor = new DeviceSupervisor(componentRef, ObjectHelper.clone(device));

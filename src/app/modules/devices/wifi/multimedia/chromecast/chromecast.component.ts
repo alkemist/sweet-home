@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { JeedomCommandResultInterface } from '@models';
-import { DeviceMultimediaComponent, MultimediaState } from '../multimedia.component';
+import { DeviceMultimediaComponent, MultimediaCommandValues, MultimediaState } from '../multimedia.component';
 import {
   ChromecastCommandAction,
   ChromecastCommandInfo,
@@ -9,6 +8,14 @@ import {
   ChromecastGlobalCommandInfo
 } from './chromecast.const';
 
+interface ChromecastCommandValues extends MultimediaCommandValues {
+  online: boolean,
+  player: string,
+  status: string,
+  display: string,
+  title: string,
+  artist: string,
+}
 
 @Component({
   selector: 'app-device-chromecast',
@@ -21,30 +28,31 @@ import {
 })
 export class DeviceChromecastComponent extends DeviceMultimediaComponent<
   ChromecastExtendCommandInfo, ChromecastExtendCommandAction,
+  ChromecastExtendCommandInfo,
+  ChromecastCommandValues,
   ChromecastCommandInfo, ChromecastCommandAction
 > {
-  override infoCommandValues: Record<ChromecastGlobalCommandInfo, string | number | boolean | null> = {
+  override infoCommandValues: ChromecastCommandValues = {
     ...super.infoCommandValues,
-    online: null, //0-1
-    muted: null, //0-1
-    player: null, //"UNKNOWN", "PLAYING" (si en cours), "IDLE" ???
-    status: null, //"&nbsp;",
+    online: false, //0-1
+    player: "", //"UNKNOWN", "PLAYING" (si en cours), "IDLE" ???
+    status: "", //"&nbsp;",
     // "Netflix", "Diffusion: Netflix" (si en cours),
     // "Diffusion: Azalea Town" (si en cours, mais pas à jour)
     // "YouTube"
     // "Casting Prime Video"
-    display: null, //
+    display: "", //
     // "Netflix",
     // "Spotify"
     // "Youtube"
     // "Prime Video"
     // "Backdrop"
-    title: null, //"",
+    title: "", //"",
     // "Netflix"
     // "Green Hills" (titre en cours)
     // "RÉSUMÉ : MY HERO ACADEMIA : SAISON 5" (titre en cours)
     // "Les Épreuves de Vasselheim"
-    artist: null,
+    artist: "",
     //
     // "Helynt, Koreskape, GameChops"
   };
@@ -65,8 +73,20 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
     return this.application === 'Netflix';
   }
 
-  override updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
+  back(): Promise<void> {
+    return this.execUpdateValue('back');
+  }
+
+  unCast(): Promise<void> {
+    return this.execUpdateValue('backdrop').then(_ => {
+      this.infoCommandValues.display = 'Backdrop';
+    })
+  }
+
+  override updateInfoCommandValues(values: Record<ChromecastGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
+
+    this.infoCommandValues.online = values.online === 1;
 
     if (this.infoCommandValues.player === "PLAYING") {
       this.state = MultimediaState.playing;
@@ -77,15 +97,5 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
     }
 
     //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
-  }
-
-  back(): Promise<void> {
-    return this.execUpdateValue('back');
-  }
-
-  unCast(): Promise<void> {
-    return this.execUpdateValue('backdrop').then(_ => {
-      this.infoCommandValues.display = 'Backdrop';
-    })
   }
 }

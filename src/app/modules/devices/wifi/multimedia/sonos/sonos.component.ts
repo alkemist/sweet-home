@@ -1,15 +1,23 @@
 import { Component } from '@angular/core';
-import { JeedomCommandResultInterface, } from '@models';
-import { DeviceMultimediaComponent, MultimediaState } from '../multimedia.component';
+import { DeviceMultimediaComponent, MultimediaCommandValues, MultimediaState } from '../multimedia.component';
 import {
   SonosCommandAction,
   SonosCommandInfo,
-  SonosConfiguration,
   SonosExtendCommandAction,
   SonosExtendCommandInfo,
-  SonosGlobalCommandInfo
+  SonosGlobalCommandInfo,
+  SonosParamValue
 } from './sonos.const';
 import { FormControl } from '@angular/forms';
+
+interface SonosCommandValues extends MultimediaCommandValues {
+  state: string,
+  shuffle: boolean,
+  repeat: boolean,
+  artist: string,
+  album: string,
+  title: string,
+}
 
 @Component({
   selector: 'app-device-sonos',
@@ -23,20 +31,21 @@ import { FormControl } from '@angular/forms';
 export class DeviceSonosComponent
   extends DeviceMultimediaComponent<
     SonosExtendCommandInfo, SonosExtendCommandAction,
-    SonosCommandInfo, SonosCommandAction,
-    SonosConfiguration
+    SonosExtendCommandInfo,
+    SonosCommandValues,
+    SonosCommandInfo, SonosCommandAction, SonosParamValue
   > {
   shuffleControl = new FormControl<boolean>(true);
   repeatControl = new FormControl<boolean>(true);
 
-  protected override infoCommandValues: Record<SonosGlobalCommandInfo, string | number | boolean | null> = {
+  protected override infoCommandValues: SonosCommandValues = {
     ...super.infoCommandValues,
-    state: null,
-    shuffle: null,
-    repeat: null,
-    artist: null,
-    album: null,
-    title: null,
+    state: "",
+    shuffle: false,
+    repeat: false,
+    artist: "",
+    album: "",
+    title: "",
   };
 
   get hasTitle() {
@@ -69,8 +78,11 @@ export class DeviceSonosComponent
       })
   }
 
-  override updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
+  override updateInfoCommandValues(values: Record<SonosGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
+
+    this.infoCommandValues.shuffle = values.shuffle === 1;
+    this.infoCommandValues.repeat = values.repeat === 1;
 
     if (!this.hasTvSound) {
       if (this.infoCommandValues.state === "Lecture") {
@@ -84,8 +96,8 @@ export class DeviceSonosComponent
       this.state = MultimediaState.stopped;
     }
 
-    this.shuffleControl.setValue(this.infoCommandValues.shuffle as boolean, { emitEvent: false });
-    this.repeatControl.setValue(this.infoCommandValues.repeat as boolean, { emitEvent: false });
+    this.shuffleControl.setValue(this.infoCommandValues.shuffle, { emitEvent: false });
+    this.repeatControl.setValue(this.infoCommandValues.repeat, { emitEvent: false });
 
     // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
   }

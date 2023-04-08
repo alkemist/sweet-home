@@ -13,31 +13,35 @@ import {
 import { CoordinateInterface, JeedomCommandResultInterface, SmartArrayModel } from '@models';
 import { BaseComponent } from '../../components/base.component';
 import { DeviceService } from '@services';
-import { MapBuilder } from '@tools';
+import { MapBuilder, ObjectHelper } from '@tools';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { UndefinedVarError } from '@errors';
 import { MessageService } from 'primeng/api';
 
 @Directive()
 export abstract class BaseDeviceComponent<
-  IE extends string = string, AE extends string = string,
+  IE extends string = string,
+  AE extends string = string,
+  IG extends string = string,
+  IV extends Record<IG, string | number | boolean | null> = Record<IG, string | number | boolean | null>,
   I extends string = IE, A extends string = AE,
-  C extends string = string, P extends string = string
+  C extends string = string,
+  P extends string = string,
+  PV extends Record<P, string | number | boolean | null> = Record<P, string | number | boolean | null>,
 > extends BaseComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
 
   @HostBinding('class.draggable') draggable: boolean = false;
   @HostBinding('style.left') x = '0px';
   @HostBinding('style.top') y = '0px';
   @Input() name: string = '';
-  @Input() actionInfoIds = new SmartArrayModel<IE, number>();
+  @Input() actionInfoIds = new SmartArrayModel<IG, number>();
   @Input() actionCommandIds = new SmartArrayModel<A, number>();
   @Input() configurationValues = new SmartArrayModel<C, string>();
   @Output() loaded = new EventEmitter<boolean>();
-  @Input() parameterValues: Partial<Record<P, string | number | boolean | null>> = {};
-
   modalOpened: boolean = false;
   initialized: boolean = false;
-  protected infoCommandValues: Partial<Record<IE, string | number | boolean | null>> = {};
+  protected infoCommandValues: IV = {} as IV;
+  protected parameterValues: PV = {} as PV
 
   public constructor(
     private mapBuilder: MapBuilder,
@@ -63,6 +67,10 @@ export abstract class BaseDeviceComponent<
 
   get isDragging() {
     return this.mapBuilder.isDraggging();
+  }
+
+  setParameterValues(values: Record<P, string | undefined>): void {
+    this.parameterValues = values as PV;
   }
 
   ngOnInit() {
@@ -96,23 +104,27 @@ export abstract class BaseDeviceComponent<
     this.y = position.y + 'px';
   }
 
-  updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
+  updateGlobalInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
     if (!this.initialized) {
       this.initialized = true;
     }
 
     //console.log(`-- [${ this.name }] Update info command values`, values);
 
-    const infoCommandValues: Partial<Record<IE, string | number | boolean | null>> = {};
-    this.infoCommandValues = this.actionInfoIds.reduce((result, current) => {
-      result[current.key] = values[current.value]
+    const infoCommandValues: Record<IG, string | number | boolean | null> = this.actionInfoIds.reduce((result, current) => {
+      result[current.key as IG] = (values[current.value]
         ? values[current.value].value
-        : this.infoCommandValues[current.key] ?? null;
+        : this.infoCommandValues[current.key] ?? null);
       return result;
-    }, infoCommandValues);
+    }, {} as Record<IG, string | number | boolean | null>);
 
     // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
+
+    this.infoCommandValues = ObjectHelper.clone(infoCommandValues as IV);
+    this.updateInfoCommandValues(infoCommandValues);
   }
+
+  abstract updateInfoCommandValues(values: Record<IG, string | number | boolean | null>): void
 
   protected execUpdateSlider(commandAction: A, commandValue: number) {
     return this.execUpdateValue(
@@ -132,7 +144,7 @@ export abstract class BaseDeviceComponent<
   protected execCommand(commandId: number, commandName: string, commandValue?: unknown) {
     return new Promise<any>((resolve, reject) => {
       const loader = this.mapBuilder.addLoader();
-      console.log(`-- [${ this.name }][${ commandName }] Exec action`, commandValue);
+      console.log(`-- [${ this.name }][${ commandName }] Exec action`, commandValue ? 'with' : '', commandValue ?? '');
 
       this.deviceService.execCommand(commandId, commandName, commandValue).then((value) => {
         console.log(`-- [${ this.name }][${ commandName }] Exec action result`, value);

@@ -1,22 +1,28 @@
 import { Directive } from '@angular/core';
-import { JeedomCommandResultInterface } from '@models';
 import { FormControl } from '@angular/forms';
 import { OnOffCommandAction, OnOffExtendCommandInfo, OnOffGlobalCommandInfo, OnOffParamValue } from '@devices';
-import { ZigbeeComponent } from '../zigbee-component.directive';
+import { ZigbeeCommandValues, ZigbeeComponent } from '../zigbee-component.directive';
+
+interface ZigbeeOnOffCommandValues extends ZigbeeCommandValues {
+  state: boolean,
+}
+
+interface ZigbeeOnOffParameterValues extends Record<OnOffParamValue | string, string | number | boolean | null> {
+  security: boolean,
+  icon: string
+}
 
 @Directive()
 export abstract class DeviceOnOffComponent
-  extends ZigbeeComponent<OnOffExtendCommandInfo, OnOffCommandAction, string, string, string, OnOffParamValue> {
-  override infoCommandValues: Record<OnOffGlobalCommandInfo, number | null> = {
-    state: null,
-    signal: null,
+  extends ZigbeeComponent<
+    OnOffExtendCommandInfo, OnOffCommandAction, OnOffExtendCommandInfo, ZigbeeOnOffCommandValues, string, string, string,
+    OnOffParamValue, ZigbeeOnOffParameterValues> {
+  override infoCommandValues: ZigbeeOnOffCommandValues = {
+    ...super.infoCommandValues,
+    state: false,
   };
 
-  onOffControl = new FormControl<number>(0);
-
-  get hasSecurity() {
-    return !!this.parameterValues.security && this.parameterValues.security !== '0';
-  }
+  onOffControl = new FormControl<boolean>(false);
 
   get stateClass() {
     return this.infoCommandValues.state ? 'color-light' : 'color-disabled';
@@ -26,9 +32,14 @@ export abstract class DeviceOnOffComponent
     return this.parameterValues.icon ?? 'fa-bolt';
   }
 
+  override setParameterValues(values: Record<OnOffParamValue, string | undefined>) {
+    super.setParameterValues(values);
+    this.parameterValues.security = parseInt(values.security ?? '') === 1;
+    this.parameterValues.icon = values.icon ?? 'fa-bolt';
+  };
+
   override ngOnInit() {
     super.ngOnInit();
-
 
     this.sub = this.onOffControl.valueChanges
       .subscribe((onOff) => {
@@ -39,7 +50,7 @@ export abstract class DeviceOnOffComponent
   }
 
   toggle() {
-    if (this.hasSecurity) {
+    if (this.parameterValues.security) {
       this.openModal();
       return;
     }
@@ -52,12 +63,17 @@ export abstract class DeviceOnOffComponent
 
   execToggle() {
     this.execUpdateValue('toggle').then(_ => {
-      this.infoCommandValues['state'] = this.infoCommandValues['state'] === 0 ? 1 : 0;
+      this.infoCommandValues['state'] = !this.infoCommandValues['state'];
     })
   }
 
-  override updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
+  override updateInfoCommandValues(values: Record<OnOffGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
-    this.onOffControl.setValue(this.infoCommandValues.state as number, { emitEvent: false });
+
+    this.infoCommandValues.state = values.state === 1;
+
+    this.onOffControl.setValue(this.infoCommandValues.state, { emitEvent: false });
+
+    // console.log(`-- [${ this.name }] Updated info command values`, values, this.infoCommandValues);
   }
 }

@@ -3,7 +3,6 @@ import { BaseDeviceComponent } from '../../base-device.component';
 import { FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs';
 import { MultimediaCommandAction, MultimediaCommandInfo, MultimediaParamValue } from '@devices';
-import { JeedomCommandResultInterface } from '@models';
 
 export enum MultimediaState {
   playing,
@@ -11,27 +10,46 @@ export enum MultimediaState {
   stopped
 }
 
+export interface MultimediaCommandValues extends Record<MultimediaCommandInfo | string, string | number | boolean | null> {
+  volume: number,
+  muted: boolean,
+}
+
+export interface MultimediaParameterValues extends Record<MultimediaParamValue | string, string | number | boolean | null> {
+  volumeMax: number,
+}
+
+
 @Directive()
 export abstract class DeviceMultimediaComponent<
   IE extends MultimediaCommandInfo, AE extends MultimediaCommandAction,
-  I extends string, A extends string, C extends string = string
+  IG extends MultimediaCommandInfo,
+  IV extends MultimediaCommandValues = MultimediaCommandValues,
+  I extends string = string, A extends string = string, C extends string = string,
+  P extends MultimediaParamValue = MultimediaParamValue,
+  PV extends MultimediaParameterValues = MultimediaParameterValues,
 >
-  extends BaseDeviceComponent<IE, AE, I, A | MultimediaCommandAction, C, MultimediaParamValue> {
+  extends BaseDeviceComponent<IE, AE, IG, IV, I, A | MultimediaCommandAction, C, P, PV> {
 
   volumeControl = new FormControl<number>(0);
-  muteControl = new FormControl<boolean>(true);
+  muteControl = new FormControl<boolean>(false);
 
   MultimediaState = MultimediaState;
   state: MultimediaState = MultimediaState.stopped;
 
-  protected override infoCommandValues: Record<MultimediaCommandInfo, string | number | boolean | null> = {
-    volume: null,
-    muted: null,
-  };
+  protected override infoCommandValues: IV = {
+    volume: 0,
+    muted: false,
+  } as IV;
 
   get volumeMax() {
-    return this.parameterValues.volumeMax as number ?? 100;
+    return this.parameterValues.volumeMax;
   }
+
+  override setParameterValues(values: Record<MultimediaParamValue, string | undefined>) {
+    super.setParameterValues(values);
+    this.parameterValues.volumeMax = parseInt(values.volumeMax ?? '') ?? 100;
+  };
 
   override ngOnInit() {
     super.ngOnInit();
@@ -71,7 +89,7 @@ export abstract class DeviceMultimediaComponent<
 
   setMute(action: 'mute' | 'unmute'): Promise<void> {
     return this.execUpdateValue(action).then(_ => {
-      this.infoCommandValues.muted = action === 'mute' ? 1 : 0;
+      this.infoCommandValues.muted = action === 'mute';
     })
   }
 
@@ -101,10 +119,13 @@ export abstract class DeviceMultimediaComponent<
     return this.execUpdateValue('next');
   }
 
-  override updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
-    super.updateInfoCommandValues(values);
+  override updateInfoCommandValues(values: Record<MultimediaCommandInfo, string | number | boolean | null>) {
+    this.infoCommandValues.volume = values.volume as number;
+    this.infoCommandValues.muted = values.muted === 1;
 
-    this.volumeControl.setValue(this.infoCommandValues.volume as number, { emitEvent: false });
-    this.muteControl.setValue(!!this.infoCommandValues.muted, { emitEvent: false });
+    this.volumeControl.setValue(this.infoCommandValues.volume, { emitEvent: false });
+    this.muteControl.setValue(this.infoCommandValues.muted, { emitEvent: false });
+
+    // console.log(`-- [${ this.name }] Updated info command values`, values, this.infoCommandValues);
   }
 }

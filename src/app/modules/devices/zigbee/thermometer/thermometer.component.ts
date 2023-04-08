@@ -1,25 +1,29 @@
 import { Directive } from '@angular/core';
-import { JeedomCommandResultInterface } from '@models';
 import { ThermometerExtendCommandInfo, ThermometerGlobalCommandInfo } from '@devices';
-import { ZigbeeBatteryComponent } from '../zigbee-battery-component.directive';
+import { ZigbeeBatteryCommandValues, ZigbeeBatteryComponent } from '../zigbee-battery-component.directive';
 import { MathHelper } from '@tools';
 
+interface ThermometerCommandValues extends ZigbeeBatteryCommandValues {
+  temperature: number,
+  humidity: number,
+  pression: number,
+}
+
 @Directive()
-export abstract class DeviceThermometerComponent extends ZigbeeBatteryComponent<ThermometerExtendCommandInfo> {
-  override infoCommandValues: Record<ThermometerGlobalCommandInfo, number | null> = {
-    temperature: null,
-    humidity: null,
-    pression: null,
-    battery: null,
-    signal: null,
+export abstract class DeviceThermometerComponent extends ZigbeeBatteryComponent<ThermometerExtendCommandInfo, string, ThermometerExtendCommandInfo, ThermometerCommandValues> {
+  override infoCommandValues: ThermometerCommandValues = {
+    ...super.infoCommandValues,
+    temperature: 0,
+    humidity: 0,
+    pression: 0,
   };
 
-  override updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
+  override updateInfoCommandValues(values: Record<ThermometerGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
 
-    this.infoCommandValues.temperature = MathHelper.round(this.infoCommandValues.temperature ?? 0, 1);
-    this.infoCommandValues.humidity = MathHelper.round(this.infoCommandValues.humidity ?? 0, 0);
-    this.infoCommandValues.pression = MathHelper.round(this.infoCommandValues.pression ?? 0, 0);
+    this.infoCommandValues.temperature = MathHelper.round(values.temperature as number, 1);
+    this.infoCommandValues.humidity = MathHelper.round(values.humidity as number, 0);
+    this.infoCommandValues.pression = MathHelper.round(values.pression as number, 0);
 
     //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
   }
