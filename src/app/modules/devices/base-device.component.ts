@@ -36,6 +36,7 @@ export abstract class BaseDeviceComponent<
   @Input() parameterValues: Partial<Record<P, string | number | boolean | null>> = {};
 
   modalOpened: boolean = false;
+  initialized: boolean = false;
   protected infoCommandValues: Partial<Record<IE, string | number | boolean | null>> = {};
 
   public constructor(
@@ -96,6 +97,10 @@ export abstract class BaseDeviceComponent<
   }
 
   updateInfoCommandValues(values: Record<number, JeedomCommandResultInterface>) {
+    if (!this.initialized) {
+      this.initialized = true;
+    }
+
     //console.log(`-- [${ this.name }] Update info command values`, values);
 
     const infoCommandValues: Partial<Record<IE, string | number | boolean | null>> = {};

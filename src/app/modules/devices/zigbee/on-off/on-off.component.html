@@ -1,8 +1,10 @@
 <div #content (click)="toggle()" [pTooltip]="name"
      [tooltipDisabled]="isEditMode || isDragging"
-     class="flex flex-row justify-content-center" id="content"
+     id="content"
      tooltipEvent="hover" tooltipPosition="top">
-  <i [ngClass]="[stateClass, iconClass]" class="fa icon-big"></i>
+  <div *ngIf="initialized" class="flex flex-row justify-content-center">
+    <i [ngClass]="[stateClass, iconClass]" class="fa icon-big"></i>
+  </div>
 </div>
 <p-overlayPanel #overlayPanel [appendTo]="content" [dismissable]="false">
   <div class="flex flex-column gap-2">
