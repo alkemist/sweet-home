@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import {
   DeviceOnOffLidlComponent,
+  DeviceOnOffMoesComponent,
   DeviceThermometerAqaraComponent,
   DeviceThermostatAqaraComponent,
   DeviceThermostatMoesComponent
@@ -14,6 +15,7 @@ import { DeviceChromecastComponent, DeviceSonosComponent } from './wifi';
     DeviceThermostatMoesComponent,
     DeviceThermometerAqaraComponent,
     DeviceOnOffLidlComponent,
+    DeviceOnOffMoesComponent,
     DeviceChromecastComponent,
     DeviceSonosComponent
   ],

@@ -14,6 +14,7 @@ import { MessageService } from 'primeng/api';
 import {
   DeviceChromecastComponent,
   DeviceOnOffLidlComponent,
+  DeviceOnOffMoesComponent,
   DeviceSonosComponent,
   DeviceThermometerAqaraComponent,
   DeviceThermostatAqaraComponent,
@@ -410,6 +411,7 @@ export const ComponentClassByType: Record<DeviceCategoryEnum, Partial<Record<Dev
   },
   [DeviceCategoryEnum.OnOff]: {
     [DeviceTypeEnum.Lidl]: DeviceOnOffLidlComponent,
+    [DeviceTypeEnum.Moes]: DeviceOnOffMoesComponent,
   },
   [DeviceCategoryEnum.Multimedia]: {
     [DeviceTypeEnum.Chromecast]: DeviceChromecastComponent,

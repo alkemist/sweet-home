@@ -24,4 +24,4 @@ export const zigbeeLinkerOnOffActionCommandFilters: DeviceCommands<OnOffCommandA
   toggle: { logicalId: 'state___TOGGLE' },
 };
 
-export const OnOffParams = [ 'security' ];
+export const OnOffParams = [ 'security', 'icon' ];

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ObjectHelper, slugify } from '@tools';
+import { ComponentClassByType, ObjectHelper, slugify } from '@tools';
 import { ConfirmationService, FilterService, MessageService } from 'primeng/api';
 import { AppService, DeviceService } from '@services';
 import { KeyValue } from '@angular/common';
@@ -19,7 +19,6 @@ import {
   SmartArrayModel,
 } from '@models';
 import { BaseComponent } from '../../../../../components/base.component';
-import { TypesByCategory } from './device-types-by-category.const';
 import { deviceConfigurations } from '@devices';
 
 @Component({
@@ -70,8 +69,8 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
   ) {
     super();
     this.sub = this.category.valueChanges.subscribe((category) => {
-      if (category !== null && TypesByCategory[category]) {
-        this.deviceTypes = TypesByCategory[category].map((key) => {
+      if (category !== null && ComponentClassByType[category]) {
+        this.deviceTypes = Object.keys(ComponentClassByType[category]).map((key) => {
           return {
             key,
             value: this.deviceTypesIterable.get(key)

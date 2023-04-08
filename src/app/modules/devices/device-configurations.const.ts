@@ -22,6 +22,7 @@ import {
   wifiMultimediaSonosInfoCommandFilters
 } from './wifi';
 import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum, PartialRecord } from '@models';
+import { zigbeeLinkerOnOffMoesActionCommandFilters } from './zigbee/on-off/moes/on-off-moes.const';
 
 export interface DeviceDefinitions {
   infoCommandFilters?: Record<string, Record<string, string>>,
@@ -112,7 +113,8 @@ export const deviceDefinitionsByConnectivityCategoryType:
       [DeviceTypeEnum.Aqara]: {}
     },
     [DeviceCategoryEnum.OnOff]: {
-      [DeviceTypeEnum.Lidl]: {}
+      [DeviceTypeEnum.Lidl]: {},
+      [DeviceTypeEnum.Moes]: {}
     }
   },
   [DeviceConnectivityEnum.ZigbeeLinker]: {
@@ -130,7 +132,10 @@ export const deviceDefinitionsByConnectivityCategoryType:
       [DeviceTypeEnum.Aqara]: {}
     },
     [DeviceCategoryEnum.OnOff]: {
-      [DeviceTypeEnum.Lidl]: {}
+      [DeviceTypeEnum.Lidl]: {},
+      [DeviceTypeEnum.Moes]: {
+        actionCommandFilters: zigbeeLinkerOnOffMoesActionCommandFilters
+      }
     }
   }
 }

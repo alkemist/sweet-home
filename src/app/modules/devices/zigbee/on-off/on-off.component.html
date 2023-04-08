@@ -2,14 +2,14 @@
      [tooltipDisabled]="isEditMode || isDragging"
      class="flex flex-row justify-content-center" id="content"
      tooltipEvent="hover" tooltipPosition="top">
-  <i [ngClass]="stateClass" class="fa fa-bolt icon-big"></i>
+  <i [ngClass]="[stateClass, iconClass]" class="fa icon-big"></i>
 </div>
 <p-overlayPanel #overlayPanel [appendTo]="content" [dismissable]="false">
   <div class="flex flex-column gap-2">
     <h4>{{ name }}</h4>
     <div *ngIf="infoCommandValues.signal" class="map-icon-value flex flex-row align-content-center gap-1">
       <div class="icon">
-        <i class="fa  fa-signal"></i>
+        <i class="fa fa-signal"></i>
       </div>
       <div class="value">
         {{ signalPercent }} %

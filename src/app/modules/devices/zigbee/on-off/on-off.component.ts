@@ -22,6 +22,10 @@ export abstract class DeviceOnOffComponent
     return this.infoCommandValues.state ? 'color-light' : 'color-disabled';
   }
 
+  get iconClass() {
+    return this.parameterValues.icon ?? 'fa-bolt';
+  }
+
   override ngOnInit() {
     super.ngOnInit();
 
