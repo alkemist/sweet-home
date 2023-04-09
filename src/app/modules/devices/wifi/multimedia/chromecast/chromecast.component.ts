@@ -73,6 +73,12 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
     return this.application === 'Netflix';
   }
 
+  override ngOnInit() {
+    super.ngOnInit();
+
+    console.log(this.parameterValues);
+  }
+
   back(): Promise<void> {
     return this.execUpdateValue('back');
   }
@@ -96,6 +102,6 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
       this.state = MultimediaState.stopped;
     }
 
-    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
+    console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues,);
   }
 }

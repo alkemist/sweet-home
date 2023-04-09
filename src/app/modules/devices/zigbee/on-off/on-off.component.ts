@@ -34,7 +34,7 @@ export abstract class DeviceOnOffComponent
 
   override setParameterValues(values: Record<OnOffParamValue, string | undefined>) {
     super.setParameterValues(values);
-    this.parameterValues.security = parseInt(values.security ?? '') === 1;
+    this.parameterValues.security = parseInt(values.security ?? '0') === 1;
     this.parameterValues.icon = values.icon ?? 'fa-bolt';
   };
 

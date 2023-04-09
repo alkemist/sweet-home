@@ -48,7 +48,7 @@ export abstract class DeviceMultimediaComponent<
 
   override setParameterValues(values: Record<MultimediaParamValue, string | undefined>) {
     super.setParameterValues(values);
-    this.parameterValues.volumeMax = parseInt(values.volumeMax ?? '') ?? 100;
+    this.parameterValues.volumeMax = parseInt(values.volumeMax ?? '100');
   };
 
   override ngOnInit() {
@@ -120,7 +120,7 @@ export abstract class DeviceMultimediaComponent<
   }
 
   override updateInfoCommandValues(values: Record<MultimediaCommandInfo, string | number | boolean | null>) {
-    this.infoCommandValues.volume = values.volume as number;
+    this.infoCommandValues.volume = values.volume as number ?? 0;
     this.infoCommandValues.muted = values.muted === 1;
 
     this.volumeControl.setValue(this.infoCommandValues.volume, { emitEvent: false });
