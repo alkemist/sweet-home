@@ -211,6 +211,10 @@ export class MapBuilder {
     this.updateRange();
     this.updateCurrentPosition(this._mapPosition)
     this.updateMap(this._currentMapPosition.x, this._currentMapPosition.y, this._scale);
+
+    if (this._ready$.value && this._isEditMode) {
+      this.switchEditMode(false);
+    }
   }
 
   updateCurrentPosition(position: CoordinateInterface) {

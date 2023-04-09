@@ -116,6 +116,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
 
   @HostListener('window:resize', [ '$event' ])
   onResize() {
+    this.switchEditModeFormControl.setValue(false, { emitEvent: false });
     this.mapBuilder.onResize();
   }
 

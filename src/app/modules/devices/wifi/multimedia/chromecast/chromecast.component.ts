@@ -75,8 +75,6 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
 
   override ngOnInit() {
     super.ngOnInit();
-
-    console.log(this.parameterValues);
   }
 
   back(): Promise<void> {
@@ -102,6 +100,6 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
       this.state = MultimediaState.stopped;
     }
 
-    console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues,);
+    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues,);
   }
 }
