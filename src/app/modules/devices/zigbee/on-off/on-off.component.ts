@@ -15,7 +15,9 @@ interface ZigbeeOnOffParameterValues extends Record<OnOffParamValue | string, st
 @Directive()
 export abstract class DeviceOnOffComponent
   extends ZigbeeComponent<
-    OnOffExtendCommandInfo, OnOffCommandAction, OnOffExtendCommandInfo, ZigbeeOnOffCommandValues, string, string, string,
+    OnOffExtendCommandInfo, OnOffCommandAction,
+    ZigbeeOnOffCommandValues,
+    string, string, string,
     OnOffParamValue, ZigbeeOnOffParameterValues> {
   override infoCommandValues: ZigbeeOnOffCommandValues = {
     ...super.infoCommandValues,

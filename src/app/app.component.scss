@@ -7,7 +7,7 @@
   &__content {
     height: calc(100% - #{$header-desktop-height});
 
-    @media screen and (max-width: $mobile-breakpoint-width) {
+    @media screen and (max-width: $tablet-breakpoint-width) {
       height: calc(100% - #{$header-mobile-height});
     }
   }

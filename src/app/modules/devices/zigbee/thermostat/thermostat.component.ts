@@ -12,8 +12,7 @@ interface ThermostatCommandValues extends ZigbeeBatteryCommandValues {
 
 @Directive()
 export abstract class DeviceThermostatComponent
-  extends ZigbeeBatteryComponent<ThermostatExtendCommandInfo, ThermostatCommandAction,
-    ThermostatExtendCommandInfo, ThermostatCommandValues> {
+  extends ZigbeeBatteryComponent<ThermostatExtendCommandInfo, ThermostatCommandAction, ThermostatCommandValues> {
 
   thermostatControl = new FormControl<number>(0);
   thermostatStep = 0.5;

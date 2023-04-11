@@ -22,8 +22,7 @@ import { MessageService } from 'primeng/api';
 export abstract class BaseDeviceComponent<
   IE extends string = string,
   AE extends string = string,
-  IG extends string = string,
-  IV extends Record<IG, string | number | boolean | null> = Record<IG, string | number | boolean | null>,
+  IV extends Record<IE, string | number | boolean | null> = Record<IE, string | number | boolean | null>,
   I extends string = IE, A extends string = AE,
   C extends string = string,
   P extends string = string,
@@ -34,7 +33,7 @@ export abstract class BaseDeviceComponent<
   @HostBinding('style.left') x = '0px';
   @HostBinding('style.top') y = '0px';
   @Input() name: string = '';
-  @Input() actionInfoIds = new SmartArrayModel<IG, number>();
+  @Input() actionInfoIds = new SmartArrayModel<IE, number>();
   @Input() actionCommandIds = new SmartArrayModel<A, number>();
   @Input() configurationValues = new SmartArrayModel<C, string>();
   @Output() loaded = new EventEmitter<boolean>();
@@ -111,12 +110,12 @@ export abstract class BaseDeviceComponent<
 
     //console.log(`-- [${ this.name }] Update info command values`, values);
 
-    const infoCommandValues: Record<IG, string | number | boolean | null> = this.actionInfoIds.reduce((result, current) => {
-      result[current.key as IG] = (values[current.value]
+    const infoCommandValues: Record<IE, string | number | boolean | null> = this.actionInfoIds.reduce((result, current) => {
+      result[current.key as IE] = (values[current.value]
         ? values[current.value].value
         : this.infoCommandValues[current.key] ?? null);
       return result;
-    }, {} as Record<IG, string | number | boolean | null>);
+    }, {} as Record<IE, string | number | boolean | null>);
 
     // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
 
@@ -124,7 +123,7 @@ export abstract class BaseDeviceComponent<
     this.updateInfoCommandValues(infoCommandValues);
   }
 
-  abstract updateInfoCommandValues(values: Record<IG, string | number | boolean | null>): void
+  abstract updateInfoCommandValues(values: Record<IE, string | number | boolean | null>): void
 
   protected execUpdateSlider(commandAction: A, commandValue: number) {
     return this.execUpdateValue(

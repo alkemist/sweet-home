@@ -32,9 +32,9 @@
           styleClass="device-modal">
   <div class="flex flex-column gap-5">
     <div *ngIf="hasTitle" class="flex justify-content-center align-items-center gap-5">
-      <span>{{ infoCommandValues.artist}}</span>
+      <span class="text-center">{{ infoCommandValues.artist}}</span>
       <span>/</span>
-      <span>{{ infoCommandValues.title}}</span>
+      <span class="text-center">{{ infoCommandValues.title}}</span>
     </div>
     <div *ngIf="hasTvSound" class="flex flex-row justify-content-center align-items-center gap-3">
       <p-button [disabled]="true" icon="fa fa-television"

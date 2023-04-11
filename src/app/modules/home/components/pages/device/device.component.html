@@ -17,7 +17,7 @@
       </ng-template>
 
       <h5 i18n>Informations principales</h5>
-      <div class="field-row field-float flex flex-row gap-2">
+      <div class="field-row mobile-column field-float flex flex-row gap-2">
         <div class="flex-column col-4">
           <div class="p-float-label flex">
             <p-dropdown [autoDisplayFirst]="false"
@@ -71,7 +71,7 @@
       </div>
 
       <div *ngIf="type.value">
-        <div class="field-row field-float flex flex-row gap-2">
+        <div class="field-row mobile-column field-float flex flex-row gap-2">
           <div class="flex-column col-4">
             <div class="p-float-label">
               <input class="w-12" formControlName="name" id="name" pInputText type="text">
@@ -88,11 +88,11 @@
           </div>
           <div class="flex-column col-4">
             <div class="p-float-label flex">
-              <p-autoComplete (completeMethod)="filterJeedomDevices($event)" [dropdown]="true"
+              <p-autoComplete (completeMethod)="filterJeedomDevices($event)"
                               [formControl]="importDeviceControl"
                               [group]="true" [suggestions]="filteredJeedomRooms" class="w-12"
                               field="name" optionGroupChildren="devices" optionGroupLabel="name"></p-autoComplete>
-              <label i18n>Import via jeedom</label>
+              <label i18n>Import</label>
             </div>
           </div>
           <div class="flex-column col-4">

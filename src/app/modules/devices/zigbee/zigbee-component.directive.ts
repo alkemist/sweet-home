@@ -11,13 +11,12 @@ export interface ZigbeeCommandValues extends Record<ZigbeeCommandInfo | string, 
 @Directive()
 export abstract class ZigbeeComponent<
   IE extends ZigbeeCommandInfo = ZigbeeCommandInfo, AE extends string = string,
-  IG extends ZigbeeCommandInfo = ZigbeeCommandInfo,
   IV extends ZigbeeCommandValues = ZigbeeCommandValues,
   I extends string = IE, A extends string = AE,
   C extends string = string,
   P extends string = string,
   PV extends Record<P, string | number | boolean | null> = Record<P, string | number | boolean | null>,
-> extends BaseDeviceComponent <IE, AE, IG, IV, I, A, C, P, PV>
+> extends BaseDeviceComponent <IE, AE, IV, I, A, C, P, PV>
   implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
 
   protected override infoCommandValues: IV = {

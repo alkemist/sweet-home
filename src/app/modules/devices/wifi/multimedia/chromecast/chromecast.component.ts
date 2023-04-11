@@ -28,7 +28,6 @@ interface ChromecastCommandValues extends MultimediaCommandValues {
 })
 export class DeviceChromecastComponent extends DeviceMultimediaComponent<
   ChromecastExtendCommandInfo, ChromecastExtendCommandAction,
-  ChromecastExtendCommandInfo,
   ChromecastCommandValues,
   ChromecastCommandInfo, ChromecastCommandAction
 > {

@@ -136,20 +136,26 @@ p-dropdown.ng-touched.p-invalid > div {
   }
 }
 
-.mobile-showed {
-  display: initial;
-  @media screen and (max-width: $mobile-tablet-width) {
+.tablet-showed {
+  @media screen and (max-width: $tablet-breakpoint-width) {
     display: block;
   }
 }
 
 .mobile-hidden {
-  display: initial;
+  @media screen and (max-width: $mobile-breakpoint-width) {
+    display: none;
+  }
+}
 
+.tablet-hidden {
+  @media screen and (max-width: $tablet-breakpoint-width) {
+    display: none;
+  }
 }
 
 .hide-label-mobile {
-  @media screen and (max-width: $mobile-tablet-width) {
+  @media screen and (max-width: $tablet-breakpoint-width) {
     .p-button-label {
       display: none;
     }
@@ -215,3 +221,18 @@ p-dropdown.ng-touched.p-invalid > div {
   box-shadow: 0 0 0 1px #d0d0d0;
   background: rgba(0, 0, 0, 0.6);
 }
+
+@media screen and (max-width: $mobile-breakpoint-width) {
+  .field-row.mobile-column {
+    flex-direction: column !important;
+
+    & > .flex-column {
+      width: 100%;
+
+      & > .p-float-label {
+        margin-top: 10px;
+      }
+    }
+  }
+}
+

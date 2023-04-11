@@ -14,13 +14,12 @@ export interface ZigbeeBatteryCommandValues extends ZigbeeCommandValues {
 @Directive()
 export abstract class ZigbeeBatteryComponent<
   IE extends ZigbeeBatteryExtendCommandInfo = ZigbeeBatteryExtendCommandInfo, AE extends string = string,
-  IG extends ZigbeeBatteryGlobalCommandInfo = ZigbeeBatteryGlobalCommandInfo,
   IV extends ZigbeeBatteryCommandValues = ZigbeeBatteryCommandValues,
   I extends string = IE, A extends string = AE,
   C extends string = string,
   P extends string = string,
   PV extends Record<P, string | number | boolean | null> = Record<P, string | number | boolean | null>,
-> extends ZigbeeComponent <IE, AE, IE, IV, I, A, C, P, PV>
+> extends ZigbeeComponent <IE, AE, IV, I, A, C, P, PV>
   implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
 
   batteryLowMin = 20;

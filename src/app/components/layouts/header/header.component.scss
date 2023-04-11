@@ -4,7 +4,7 @@
 #topToolbar ::ng-deep .p-toolbar {
   height: $header-desktop-height;
 
-  @media screen and (max-width: $mobile-breakpoint-width) {
+  @media screen and (max-width: $tablet-breakpoint-width) {
     height: $header-mobile-height;
     padding: 0.5rem;
   }
@@ -22,7 +22,7 @@
   color: var(--text-color);
   font-size: $font-size-m;
 
-  @media screen and (max-width: $mobile-breakpoint-width) {
+  @media screen and (max-width: $tablet-breakpoint-width) {
     font-size: $font-size-s;
   }
 }

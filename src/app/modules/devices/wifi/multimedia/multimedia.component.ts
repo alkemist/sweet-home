@@ -23,13 +23,12 @@ export interface MultimediaParameterValues extends Record<MultimediaParamValue |
 @Directive()
 export abstract class DeviceMultimediaComponent<
   IE extends MultimediaCommandInfo, AE extends MultimediaCommandAction,
-  IG extends MultimediaCommandInfo,
   IV extends MultimediaCommandValues = MultimediaCommandValues,
   I extends string = string, A extends string = string, C extends string = string,
   P extends MultimediaParamValue = MultimediaParamValue,
   PV extends MultimediaParameterValues = MultimediaParameterValues,
 >
-  extends BaseDeviceComponent<IE, AE, IG, IV, I, A | MultimediaCommandAction, C, P, PV> {
+  extends BaseDeviceComponent<IE, AE, IV, I, A | MultimediaCommandAction, C, P, PV> {
 
   volumeControl = new FormControl<number>(0);
   muteControl = new FormControl<boolean>(false);

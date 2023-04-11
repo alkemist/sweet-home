@@ -6,9 +6,9 @@
     <ng-template pTemplate="header">
       <tr>
         <th i18n>Name</th>
-        <th i18n>Connectivity</th>
-        <th i18n>Category</th>
-        <th i18n>Type</th>
+        <th class="tablet-hidden" i18n>Connectivity</th>
+        <th class="mobile-hidden" i18n>Category</th>
+        <th class="mobile-hidden" i18n>Type</th>
         <th i18n>Jeedom ID</th>
         <th>
         </th>
@@ -21,7 +21,7 @@
             </ng-template>
           </p-columnFilter>
         </th>
-        <th>
+        <th class="tablet-hidden">
           <p-columnFilter [showMatchModes]="false" [showMenu]="false" [showOperator]="false" display="row"
                           field="connectivity" matchMode="in">
             <ng-template let-filter="filterCallback" let-value pTemplate="filter">
@@ -34,7 +34,7 @@
             </ng-template>
           </p-columnFilter>
         </th>
-        <th>
+        <th class="mobile-hidden">
           <p-columnFilter [showMatchModes]="false" [showMenu]="false" [showOperator]="false" display="row"
                           field="category" matchMode="in">
             <ng-template let-filter="filterCallback" let-value pTemplate="filter">
@@ -47,7 +47,7 @@
             </ng-template>
           </p-columnFilter>
         </th>
-        <th>
+        <th class="mobile-hidden">
           <p-columnFilter [showMatchModes]="false" [showMenu]="false" [showOperator]="false" display="row"
                           field="type" matchMode="in">
             <ng-template let-filter="filterCallback" let-value pTemplate="filter">
@@ -81,13 +81,13 @@
         <td>
           {{device.name}}
         </td>
-        <td>
+        <td class="tablet-hidden">
           {{device.connectivityLabel}}
         </td>
-        <td>
+        <td class="mobile-hidden">
           {{device.categoryLabel}}
         </td>
-        <td>
+        <td class="mobile-hidden">
           {{device.typeLabel}}
         </td>
         <td>

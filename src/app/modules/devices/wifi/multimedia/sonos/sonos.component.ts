@@ -31,7 +31,6 @@ interface SonosCommandValues extends MultimediaCommandValues {
 export class DeviceSonosComponent
   extends DeviceMultimediaComponent<
     SonosExtendCommandInfo, SonosExtendCommandAction,
-    SonosExtendCommandInfo,
     SonosCommandValues,
     SonosCommandInfo, SonosCommandAction, SonosParamValue
   > {
