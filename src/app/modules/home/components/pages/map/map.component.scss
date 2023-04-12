@@ -33,7 +33,7 @@
 
   height: $header-desktop-height;
 
-  @media screen and (max-width: $mobile-breakpoint-width) {
+  @media screen and (max-width: $tablet-breakpoint-width) {
     height: $header-mobile-height;
   }
 }
