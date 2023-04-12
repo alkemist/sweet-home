@@ -25,7 +25,7 @@ export class MathHelper {
 
     return {
       x: position.y,
-      y: -position.x + mapSize.h - componentSize.h
+      y: MathHelper.round(-position.x + mapSize.h - componentSize.h)
     }
   }
 
@@ -41,7 +41,7 @@ export class MathHelper {
     }
 
     return {
-      x: mapSize.h - position.y - componentSize.h,
+      x: MathHelper.round(-position.y + mapSize.h - componentSize.h),
       y: position.x
     }
   }

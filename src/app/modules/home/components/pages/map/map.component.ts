@@ -35,6 +35,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
   @ViewChild("plan") planRef?: ElementRef;
   devices: DeviceModel[] = [];
   mapLoading = true;
+  planLoading = false;
   apiLoading = false;
   switchEditModeFormControl = new FormControl<boolean>(false);
   pollingDelay = 5000;
@@ -133,7 +134,11 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
 
     if (this.planRef) {
       this.planRef.nativeElement.onload = (onLoadResult: Event) => {
-        //console.log('-- Image loaded');
+        this.planLoading = false;
+        /*console.log('-- Image loaded',
+          this.planRef?.nativeElement.naturalWidth,
+          (onLoadResult.target as HTMLImageElement)?.naturalWidth
+        );*/
         this.mapBuilder.setPlan(onLoadResult.target as HTMLImageElement, this.mapLoading);
       };
       this.loadPlan();
@@ -147,10 +152,11 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
       //console.log('-- Load plan');
       this.isLandscape = this.mapBuilder.isLandscape;
 
+      this.planLoading = true;
       this.planRef.nativeElement.src = `/assets/images/${ isLandscape ? 'plan-landscape.svg' : 'plan.svg' }`;
       this.isLandscape = isLandscape;
       this.changeDetectorRef.detectChanges();
-    } else {
+    } else if (!this.planLoading) {
       this.mapBuilder.onResize();
     }
   }
