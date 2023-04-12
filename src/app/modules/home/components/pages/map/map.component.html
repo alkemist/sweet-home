@@ -1,7 +1,7 @@
 <blockable-div #lockable class="page-container__content">
-  <div #page id="page">
+  <div #page [class.landscape]="isLandscape" id="page">
     <div #map [class]="{draggable: !switchEditModeFormControl.value}" id="map">
-      <img #plan (mousedown)="$event.preventDefault()" alt="Plan" onContextMenu="return false;" src=""/>
+      <img #plan (mousedown)="$event.preventDefault()" alt="Plan" id="plan" onContextMenu="return false;" src=""/>
       <ng-template #container></ng-template>
     </div>
   </div>

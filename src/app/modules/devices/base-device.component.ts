@@ -10,7 +10,7 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { CoordinateInterface, JeedomCommandResultInterface, SmartArrayModel } from '@models';
+import { CoordinateInterface, JeedomCommandResultInterface, SizeInterface, SmartArrayModel } from '@models';
 import { BaseComponent } from '../../components/base.component';
 import { DeviceService } from '@services';
 import { MapBuilder, ObjectHelper } from '@tools';
@@ -28,6 +28,7 @@ export abstract class BaseDeviceComponent<
   P extends string = string,
   PV extends Record<P, string | number | boolean | null> = Record<P, string | number | boolean | null>,
 > extends BaseComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
+  abstract size: SizeInterface;
 
   @HostBinding('class.draggable') draggable: boolean = false;
   @HostBinding('style.left') x = '0px';
@@ -49,6 +50,14 @@ export abstract class BaseDeviceComponent<
   ) {
     super();
   }
+
+  @HostBinding('style.width') get w() {
+    return this.size.w + 'px';
+  };
+
+  @HostBinding('style.height') get h() {
+    return this.size.h + 'px';
+  };
 
   @ViewChild("overlayPanel") _overlayPanel?: OverlayPanel;
 

@@ -45,8 +45,15 @@ export class MapBuilder {
   private _hammerEnabled = true;
   private _isEditMode = false;
   private _isDragging = false;
+  private _planElement?: HTMLImageElement;
 
   constructor(protected loggerService: LoggerService) {
+  }
+
+  private _isLandscape?: boolean;
+
+  get isLandscape() {
+    return this._isLandscape as boolean;
   }
 
   private _deviceUpdated$ = new Subject<void>();
@@ -149,6 +156,23 @@ export class MapBuilder {
     this.hammer.get('pan').set({ enable, direction: Hammer.DIRECTION_ALL });
   }
 
+  changeOrientation() {
+    const isLandscape = this.pageElement.offsetWidth > this.pageElement.offsetHeight;
+
+    if (this._isLandscape !== undefined && this._isLandscape !== isLandscape) {
+      /*console.log('-- Map change orientation', isLandscape ? 'landscape' : 'portrait');
+      console.log('-- Container size', this._containerSize);
+      console.log('-- Map size', this._mapSize);*/
+
+      this._supervisors
+        .forEach((supervisor) => supervisor.changeOrientation(
+          this._mapSize,
+          isLandscape
+        ));
+    }
+    this._isLandscape = isLandscape;
+  }
+
   addLoader() {
     return this._loaderManager.addLoader();
   }
@@ -166,7 +190,14 @@ export class MapBuilder {
 
       const componentRef = this.viewContainer.createComponent(componentConstructor);
       const componentInstance = componentRef.instance;
-      componentInstance.setPosition(device.position);
+
+      componentInstance.setPosition(MathHelper.orientationConverterPointToMap(
+        device.position,
+        this._mapSize,
+        componentInstance.size,
+        this.isLandscape,
+      ));
+
       componentInstance.name = device.name;
       componentInstance.actionInfoIds = device.infoCommandIds;
       componentInstance.actionCommandIds = device.actionCommandIds;
@@ -174,7 +205,12 @@ export class MapBuilder {
       componentInstance.setParameterValues(device.parameterValues.toRecord());
 
       componentInstance.loaded.subscribe(() => {
-        const supervisor = new DeviceSupervisor(componentRef, ObjectHelper.clone(device));
+        const supervisor = new DeviceSupervisor(
+          componentRef,
+          ObjectHelper.clone(device),
+          this._mapSize,
+          this.isLandscape
+        );
 
         supervisor.moved$.subscribe(() => {
           this._deviceMoved$.next(supervisor.device);
@@ -199,7 +235,6 @@ export class MapBuilder {
     this._supervisors
       .forEach((supervisor) => supervisor.switchEditMode(
         editMode,
-        this._mapSize,
         this._scale
       ));
   }
@@ -211,6 +246,7 @@ export class MapBuilder {
     this.updateRange();
     this.updateCurrentPosition(this._mapPosition)
     this.updateMap(this._currentMapPosition.x, this._currentMapPosition.y, this._scale);
+    this.changeOrientation();
 
     if (this._ready$.value && this._isEditMode) {
       this.switchEditMode(false);
@@ -223,13 +259,18 @@ export class MapBuilder {
     //console.log('Update current position', this._currentMapPosition);
   }
 
-  setElements(viewContainerRef: ViewContainerRef | undefined, pageRef: ElementRef, mapRef: ElementRef) {
+  setAllElements(viewContainerRef: ViewContainerRef | undefined, pageRef: ElementRef, mapRef: ElementRef) {
     //console.log('-- Set Elements');
 
     this._viewContainerRef = viewContainerRef;
+
+    this.setHtmlElements(pageRef, mapRef);
+    this.checkPageStatus();
+  }
+
+  setHtmlElements(pageRef: ElementRef, mapRef: ElementRef) {
     this._pageElement = pageRef.nativeElement;
     this._mapElement = mapRef.nativeElement;
-    this.checkPageStatus();
   }
 
   updateSize() {
@@ -315,15 +356,16 @@ export class MapBuilder {
     });
   }
 
-  getDevices(): DeviceModel[] {
-    return [ ...this._supervisors.values() ].map((supervisor) => supervisor.device);
-  }
+  setPlan(planElement: HTMLImageElement, firstLoading: boolean) {
+    this._planElement = planElement;
+    this._mapSize.w = planElement.naturalWidth;
+    this._mapSize.h = planElement.naturalHeight;
 
-  setPlan(target: HTMLImageElement) {
-    this._mapSize.w = target.naturalWidth;
-    this._mapSize.h = target.naturalHeight;
-
-    this.checkPageStatus();
+    if (firstLoading) {
+      this.checkPageStatus();
+    } else {
+      this.onResize();
+    }
   }
 
   private checkDevicesStatus(devicesCount: number) {

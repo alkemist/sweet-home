@@ -23,6 +23,10 @@ export abstract class DeviceOnOffComponent
     ...super.infoCommandValues,
     state: false,
   };
+  size = {
+    w: 50,
+    h: 50
+  }
 
   onOffControl = new FormControl<boolean>(false);
 

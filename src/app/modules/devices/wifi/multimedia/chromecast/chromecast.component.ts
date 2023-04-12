@@ -31,6 +31,11 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
   ChromecastCommandValues,
   ChromecastCommandInfo, ChromecastCommandAction
 > {
+  size = {
+    w: 130,
+    h: 54
+  }
+
   override infoCommandValues: ChromecastCommandValues = {
     ...super.infoCommandValues,
     online: false, //0-1

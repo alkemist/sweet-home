@@ -34,6 +34,11 @@ export class DeviceSonosComponent
     SonosCommandValues,
     SonosCommandInfo, SonosCommandAction, SonosParamValue
   > {
+  size = {
+    w: 130,
+    h: 54
+  }
+
   shuffleControl = new FormControl<boolean>(true);
   repeatControl = new FormControl<boolean>(true);
 

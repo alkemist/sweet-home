@@ -12,6 +12,11 @@ interface ThermometerCommandValues extends ZigbeeBatteryCommandValues {
 @Directive()
 export abstract class DeviceThermometerComponent
   extends ZigbeeBatteryComponent<ThermometerExtendCommandInfo, string, ThermometerCommandValues> {
+  size = {
+    w: 100,
+    h: 80,
+  }
+
   override infoCommandValues: ThermometerCommandValues = {
     ...super.infoCommandValues,
     temperature: 0,

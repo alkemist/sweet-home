@@ -38,6 +38,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
   apiLoading = false;
   switchEditModeFormControl = new FormControl<boolean>(false);
   pollingDelay = 5000;
+  isLandscape?: boolean;
   private pollingLoader = new SmartLoaderModel('polling');
 
   constructor(
@@ -54,6 +55,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     this.sub = this.mapBuilder.ready$.pipe(filter((ready) => ready))
       .subscribe(() => {
         // console.log('-- Builder Ready');
+        //this.isLandscape = this.mapBuilder.isLandscape;
         this.loadDevices();
       });
 
@@ -105,7 +107,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     })
 
     this.sub = this.mapBuilder.deviceUpdated$.subscribe(_ => {
-      console.log('-- Device updated');
+      //console.log('-- Device updated');
       this.pollingLoader.addLoader(this.pollingDelay);
     })
 
@@ -116,8 +118,8 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
 
   @HostListener('window:resize', [ '$event' ])
   onResize() {
+    this.loadPlan();
     this.switchEditModeFormControl.setValue(false, { emitEvent: false });
-    this.mapBuilder.onResize();
   }
 
   ngOnInit() {
@@ -127,13 +129,29 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
   }
 
   async ngAfterViewInit(): Promise<void> {
-    this.mapBuilder.setElements(this.viewContainerRef, this.pageRef as ElementRef, this.mapRef as ElementRef);
+    this.mapBuilder.setAllElements(this.viewContainerRef, this.pageRef as ElementRef, this.mapRef as ElementRef);
 
     if (this.planRef) {
       this.planRef.nativeElement.onload = (onLoadResult: Event) => {
-        this.mapBuilder.setPlan(onLoadResult.target as HTMLImageElement);
+        //console.log('-- Image loaded');
+        this.mapBuilder.setPlan(onLoadResult.target as HTMLImageElement, this.mapLoading);
       };
-      this.planRef.nativeElement.src = '/assets/images/plan.svg';
+      this.loadPlan();
+    }
+  }
+
+  loadPlan() {
+    const isLandscape = this.pageRef?.nativeElement.offsetWidth > this.pageRef?.nativeElement.offsetHeight;
+
+    if (this.planRef && isLandscape !== this.isLandscape) {
+      //console.log('-- Load plan');
+      this.isLandscape = this.mapBuilder.isLandscape;
+
+      this.planRef.nativeElement.src = `/assets/images/${ isLandscape ? 'plan-landscape.svg' : 'plan.svg' }`;
+      this.isLandscape = isLandscape;
+      this.changeDetectorRef.detectChanges();
+    } else {
+      this.mapBuilder.onResize();
     }
   }
 

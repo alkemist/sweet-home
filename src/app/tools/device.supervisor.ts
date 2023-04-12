@@ -5,12 +5,13 @@ import { Subject } from 'rxjs';
 import { MathHelper } from './math.helper';
 import * as Hammer from 'hammerjs';
 import { OverlayPanel } from 'primeng/overlaypanel';
+import { ObjectHelper } from './object.helper';
 
 export class DeviceSupervisor {
   private _isDragging = false;
   private _currentPosition: CoordinateInterface = { x: 0, y: 0 };
   private readonly _deviceSize: SizeInterface = { w: 0, h: 0 };
-  private _mapSize: SizeInterface = { w: 0, h: 0 };
+  private _devicePosition: CoordinateInterface = { x: 0, y: 0 };
   private _scale: number = 1;
   private readonly _hammer?: HammerManager;
   private _overlayPanel: OverlayPanel;
@@ -18,27 +19,28 @@ export class DeviceSupervisor {
   constructor(
     private _componentRef: ComponentRef<BaseDeviceComponent>,
     private _device: DeviceModel,
+    private _mapSize: SizeInterface,
+    private _isLandscape: boolean
   ) {
     //console.log('-- Supervisor', _device.position, _device.x, _device.y);
 
     this._overlayPanel = _componentRef.instance.overlayPanel;
     this._hammer = new Hammer(this._componentRef.location.nativeElement);
-    this._deviceSize = {
-      w: this._componentRef.location.nativeElement.offsetWidth,
-      h: this._componentRef.location.nativeElement.offsetHeight
-    };
+    this._deviceSize = ObjectHelper.clone(_componentRef.instance.size);
+
+    this.changeOrientation(_mapSize, _isLandscape);
 
     this.initHammer();
   }
 
-  get hammer(): HammerManager {
-    return this._hammer as HammerManager;
-  }
-
-  private _moved$ = new Subject<CoordinateInterface>();
+  private _moved$ = new Subject<void>();
 
   get moved$() {
     return this._moved$.asObservable();
+  }
+
+  get hammer(): HammerManager {
+    return this._hammer as HammerManager;
   }
 
   get device(): DeviceModel {
@@ -49,6 +51,30 @@ export class DeviceSupervisor {
     return this._componentRef.instance;
   }
 
+  changeOrientation(_mapSize: SizeInterface, isLandscape: boolean) {
+    /*if (this._device.name === 'Prise couloir') {
+      console.log(`-- [${ this._device.name }] Device change orientation`, isLandscape ? 'landscape' : 'portrait');
+      console.log('-- Map size', this._mapSize);
+    }*/
+
+    this._isLandscape = isLandscape;
+    this._mapSize = _mapSize;
+
+    this._devicePosition = MathHelper.orientationConverterPointToMap(
+      ObjectHelper.clone(this._device.position),
+      this._mapSize,
+      this._deviceSize,
+      this._isLandscape,
+    );
+
+    /*if (this._device.name === 'Prise couloir') {
+      console.log(`-- [${ this._device.name }] Original`, this._device.position);
+      console.log('-- Converted', this._devicePosition);
+    }*/
+
+    this._componentRef.instance.setPosition(this._devicePosition);
+  }
+
   initHammer() {
     this.hammer.add(new Hammer.Pan({ enable: false, direction: Hammer.DIRECTION_ALL }));
     this.hammer.on("pan", (event) => {
@@ -56,11 +82,11 @@ export class DeviceSupervisor {
 
       if (!this._isDragging) {
         this._isDragging = true;
-        this._currentPosition.x = this._device.x;
-        this._currentPosition.y = this._device.y;
+        //console.log('-- Begin drag', this._devicePosition);
+        this._currentPosition = ObjectHelper.clone(this._devicePosition);
       }
 
-      const position: CoordinateInterface = {
+      let position: CoordinateInterface = {
         x: MathHelper.clamp(
           MathHelper.round(this._currentPosition.x + (event.deltaX / this._scale)),
           2,
@@ -77,13 +103,21 @@ export class DeviceSupervisor {
 
       if (event.isFinal) {
         this._isDragging = false;
-        this._device.position = position;
-        this._moved$.next(position);
+        this._devicePosition = position;
+        this._device.position = MathHelper.orientationConverterMapToPoint(
+          position,
+          this._mapSize,
+          this._componentRef.instance.size,
+          this._isLandscape,
+        );
+        /*console.log(`-- [${ this._device.name }] Original : `, position);
+        console.log(`-- [${ this._device.name }] Update position`, this._device.position);*/
+        this._moved$.next();
       }
     });
   }
 
-  switchEditMode(editMode: boolean, _mapSize: SizeInterface, _scale: number) {
+  switchEditMode(editMode: boolean, _scale: number) {
     //console.log('-- Switch Edit Mode Device', editMode);
 
     this.hammer.get('pan').set({ enable: editMode, direction: Hammer.DIRECTION_ALL });
@@ -92,7 +126,6 @@ export class DeviceSupervisor {
       this._overlayPanel.show({ target: this._componentRef.location.nativeElement } as MouseEvent);
       this._componentRef.instance.draggable = true;
       this._scale = _scale;
-      this._mapSize = _mapSize;
       //console.log('-- Map scale', _scale);
 
 

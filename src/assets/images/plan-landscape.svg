@@ -1,0 +1,58 @@
+<svg height="634" version="1.2" viewBox="0 0 1032 634" width="1032" xmlns="http://www.w3.org/2000/svg">
+  <style>.a {
+    fill: #415657
+  }
+
+  .b {
+    fill: none;
+    stroke: #f90;
+    stroke-width: 8
+  }
+
+  .c {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 4
+  }
+
+  .d {
+    fill: none;
+    stroke: #0075ff;
+    stroke-width: 4
+  }</style>
+  <path class="a"
+        d="m832.3 167v6.4l194.8 342.7-208.3 114-150-263.8-586.1 0.9-0.3-165.2h-82.4v-194h83v1.2l660-1.1v-3.1h105.2l1.8-1 0.6 1h2.1v3.6l64.4 111.1z"
+        fill-rule="evenodd"/>
+  <path class="b" d="m82 170l2 204"/>
+  <path class="b" d="m86 370l257-2.9"/>
+  <path class="b" d="m449 367.1l222-0.1"/>
+  <path class="b" d="m626.5 279.1l95 179.1"/>
+  <path class="b" d="m805.5 605.5l14.5 26"/>
+  <path class="b" d="m817.1 628.5l210-114"/>
+  <path class="b" d="m1028 518.5l-199-349"/>
+  <path class="b" d="m816 176.5l103-58"/>
+  <path class="b" d="m890.5 76l27 47"/>
+  <path class="b" d="m862.5 25.9l-13-24"/>
+  <path class="b" d="m78 12.1l775-8.1"/>
+  <path class="b" d="m82 8v70.1"/>
+  <path class="b" d="m624.1 282.5l131-71"/>
+  <path class="b" d="m435.9 108.1l64-1"/>
+  <path class="b" d="m496.9 106l1.2 191"/>
+  <path class="b" d="m500 107.1l77-1.1"/>
+  <path class="b" d="m632 101.9l3 175"/>
+  <path class="b" d="m498 347v24"/>
+  <path class="b" d="m748.5 215.9l-43-76.9"/>
+  <path class="b" d="m709 141.1l-13-0.1"/>
+  <path class="b" d="m494 281h35"/>
+  <path class="b" d="m611 281h18"/>
+  <path class="b" d="m318 166l2 203"/>
+  <path class="c" d="m535 281h70"/>
+  <path class="c" d="m349 367h47 47"/>
+  <path class="c" d="m724.7 464l77 136"/>
+  <path class="d" d="m691 141h-49"/>
+  <path class="d" d="m82 84v80"/>
+  <path class="d" d="m761 208.5l49.5-28.5"/>
+  <path class="d" d="m498 302v40"/>
+  <path class="d" d="m582 106h41"/>
+  <path class="d" d="m865.5 30l23 41"/>
+</svg>
