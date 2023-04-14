@@ -35,7 +35,7 @@ export class DeviceState {
        }: StateContext<DeviceStateInterface>, { payload }: FillDevices) {
     patchState({
       all: payload,
-      lastUpdated: new Date()
+      lastUpdated: parseInt(process.env['APP_OFFLINE'] ?? '0') ? new Date() : null
     });
   }
 

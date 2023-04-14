@@ -1,4 +1,4 @@
-import { DocumentModel, DocumentStoredInterface } from '@models';
+import { DocumentModel, DocumentStoredInterface, HasIdInterface, HasIdWithInterface } from '@models';
 import { LoggerService } from '@services';
 import { first, Observable } from 'rxjs';
 import { ArrayHelper, TimeHelper } from '@tools';
@@ -13,18 +13,18 @@ import {
   UpdateDocument
 } from '../stores/document.action';
 import { FirestoreService } from './firestore.service';
-import { HasIdInterface, HasIdWithInterface } from '../models/id.interface';
 import { MessageService } from 'primeng/api';
+import { JsonService } from './json.service';
 
-export abstract class DataStoreService<
-  S extends DocumentStoredInterface,
+export abstract class DatastoreService<
+  I extends DocumentStoredInterface,
   M extends DocumentModel
-> extends FirestoreService<S, M> {
+> extends FirestoreService<I, M> {
 
   // Heritage du selecteur du store
   protected lastUpdated$?: Observable<Date>;
   // Heritage du selecteur du store
-  protected all$?: Observable<S[]>;
+  protected all$?: Observable<I[]>;
   // Données du service
   protected all: M[] = [];
   protected lastUpdated?: Date;
@@ -33,17 +33,18 @@ export abstract class DataStoreService<
 
   protected constructor(messageService: MessageService,
                         protected override loggerService: LoggerService,
+                        jsonService: JsonService,
                         collectionName: string,
                         collectionNameTranslated: string,
-                        type: (new (data: S) => M),
+                        type: (new (data: I) => M),
                         protected store: Store,
-                        protected addAction: (new (payload: S) => AddDocument<S>),
-                        protected updateAction: (new (payload: S) => UpdateDocument<S>),
+                        protected addAction: (new (payload: I) => AddDocument<I>),
+                        protected updateAction: (new (payload: I) => UpdateDocument<I>),
                         protected removeAction: (new (payload: HasIdInterface) => RemoveDocument<HasIdInterface>),
-                        protected fillAction: (new (payload: S[]) => FillDocuments<S>),
-                        protected invalideAction: (new () => InvalideDocuments<S>),
+                        protected fillAction: (new (payload: I[]) => FillDocuments<I>),
+                        protected invalideAction: (new () => InvalideDocuments<I>),
   ) {
-    super(messageService, loggerService, collectionName, collectionNameTranslated, type);
+    super(messageService, loggerService, jsonService, collectionName, collectionNameTranslated, type);
     this.initLastUpdated();
   }
 
@@ -53,7 +54,7 @@ export abstract class DataStoreService<
     });
   }
 
-  getAll$(): Observable<S[]> | undefined {
+  getAll$(): Observable<I[]> | undefined {
     return this.all$;
   }
 
@@ -62,14 +63,20 @@ export abstract class DataStoreService<
   }
 
   storeIsOutdated(): boolean {
-    if (this.lastUpdated === undefined) {
+    if (parseInt(process.env['APP_OFFLINE'] ?? '0')) {
+      return false;
+    }
+    if (this.lastUpdated === undefined || this.lastUpdated === null) {
       return true;
     }
+
     const nbHours = TimeHelper.calcHoursAfter(this.lastUpdated);
     return nbHours >= this.maxHourOutdated;
   }
 
   async getListOrRefresh(): Promise<M[]> {
+    //console.log(`[${ this.collectionName }] Get list or refresh`, this.loaded, this.storeIsOutdated())
+
     return new Promise<M[]>(async resolve => {
       // Si les données ont déjà été chargé dans le service
       if (this.loaded) {
@@ -95,7 +102,7 @@ export abstract class DataStoreService<
     });
   }
 
-  refreshList(documents: S[]): M[] {
+  refreshList(documents: I[]): M[] {
     this.all = [];
     for (const document of documents) {
       this.all.push(new this.type(document));
@@ -111,18 +118,18 @@ export abstract class DataStoreService<
     });
   }
 
-  async add(document: M): Promise<S> {
+  async add(document: M): Promise<I> {
     const documentStored = await super.addOne(document);
     this.invalidLocalData();
     return await this.addToStore(documentStored);
   }
 
-  async addToStore(documentStored: S): Promise<S> {
+  async addToStore(documentStored: I): Promise<I> {
     this.store.dispatch(new this.addAction(documentStored));
     return documentStored;
   }
 
-  async update(document: M): Promise<S> {
+  async update(document: M): Promise<I> {
     const documentStored = await super.updateOne(document);
     this.invalidLocalData();
     this.store.dispatch(new this.updateAction(documentStored));

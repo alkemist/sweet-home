@@ -19,10 +19,11 @@ import {
 import { DocumentBackInterface, DocumentModel, HasIdInterface, HasIdWithInterface } from '@models';
 import { objectConverter } from '../converters/object.converter';
 import { MessageService } from 'primeng/api';
+import { JsonService } from './json.service';
 
 
 export abstract class FirestoreService<
-  B extends DocumentBackInterface,
+  I extends DocumentBackInterface,
   M extends DocumentModel
 > {
   private readonly ref: CollectionReference;
@@ -30,10 +31,11 @@ export abstract class FirestoreService<
   protected constructor(
     protected messageService: MessageService,
     protected loggerService: LoggerService,
+    private jsonService: JsonService,
     protected collectionName: string,
     protected collectionNameTranslated: string,
-    protected type: (new (data: HasIdWithInterface<B>) => M),
-    private converter: FirestoreDataConverter<B> = objectConverter<B>(),
+    protected type: (new (data: HasIdWithInterface<I>) => M),
+    private converter: FirestoreDataConverter<I> = objectConverter<I>(),
   ) {
     this.ref = collection(getFirestore(), collectionName);
   }
@@ -56,8 +58,14 @@ export abstract class FirestoreService<
     return !!dataObjectDocument;
   }
 
-  public async findOneById(id: string): Promise<HasIdWithInterface<B>> {
+  public async findOneById(id: string): Promise<HasIdWithInterface<I>> {
     let docSnapshot;
+
+
+    if (parseInt(process.env['APP_OFFLINE'] ?? '0')) {
+      return this.findOneBy('id', id);
+    }
+
     try {
       const ref = doc(this.ref, id).withConverter(this.converter);
       docSnapshot = await getDoc(ref);
@@ -85,8 +93,8 @@ export abstract class FirestoreService<
     };
   }
 
-  public async findOneBy(property: string, value: string): Promise<HasIdWithInterface<B>> {
-    let list: HasIdWithInterface<B>[] = [];
+  public async findOneBy(property: string, value: string): Promise<HasIdWithInterface<I>> {
+    let list: HasIdWithInterface<I>[] = [];
 
     try {
       list = await this.queryList(where(property, '==', value));
@@ -104,11 +112,11 @@ export abstract class FirestoreService<
     return list[0];
   }
 
-  public async findOneBySlug(slug: string): Promise<HasIdWithInterface<B>> {
+  public async findOneBySlug(slug: string): Promise<HasIdWithInterface<I>> {
     return this.findOneBy('slug', slug);
   }
 
-  public async addOne(document: M): Promise<HasIdWithInterface<B>> {
+  public async addOne(document: M): Promise<HasIdWithInterface<I>> {
     const id = generatePushID();
 
     try {
@@ -128,7 +136,7 @@ export abstract class FirestoreService<
     return await this.findOneById(id);
   }
 
-  public async updateOne(document: M): Promise<HasIdWithInterface<B>> {
+  public async updateOne(document: M): Promise<HasIdWithInterface<I>> {
     if (!document.id) {
       throw new EmptyDocumentIdError(this.collectionName, document);
     }
@@ -173,7 +181,7 @@ export abstract class FirestoreService<
 
   async getAll(orderByColumn = 'name'): Promise<M[]> {
     const documents = await this.queryList(orderBy(orderByColumn));
-    return documents.map((document: HasIdWithInterface<B>) => new this.type(document));
+    return documents.map((document: HasIdWithInterface<I>) => new this.type(document));
   }
 
   /**
@@ -181,9 +189,24 @@ export abstract class FirestoreService<
    * @param queryConstraints
    * @private
    */
-  protected async queryList(...queryConstraints: QueryConstraint[]): Promise<HasIdWithInterface<B>[]> {
+  protected async queryList(...queryConstraints: QueryConstraint[]): Promise<HasIdWithInterface<I>[]> {
     const q = query(this.ref, ...queryConstraints).withConverter(this.converter);
-    const documents: HasIdWithInterface<B>[] = [];
+    const documents: HasIdWithInterface<I>[] = [];
+
+    /*if (parseInt(process.env['APP_OFFLINE'] ?? '0')) {
+      // Gérer les queryConstraints
+      offlineData.map((d) => {
+          return this.converter.fromFirestore({
+            data(options?: SnapshotOptions): HasIdWithInterface<I> {
+              return d;
+            },
+          } as QueryDocumentSnapshot<HasIdWithInterface<I>>);
+        }
+      )
+      return this.jsonService.importOfflineData<HasIdWithInterface<I>>(
+        this.collectionName
+      );
+    }*/
 
     try {
       const querySnapshot = await getDocs(q);
@@ -195,6 +218,12 @@ export abstract class FirestoreService<
         });
       });
 
+      /*if (isDevMode()) {
+        await this.jsonService.writeOfflineData<HasIdWithInterface<I>>(
+          this.collectionName,
+          documents
+        );
+      }*/
     } catch (e) {
       const error = e as Error;
 

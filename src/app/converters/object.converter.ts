@@ -2,13 +2,13 @@ import { DocumentSnapshot, SnapshotOptions } from 'firebase/firestore';
 import { DocumentBackInterface } from '@models';
 import { FirestoreDataConverter } from '@firebase/firestore';
 
-export const objectConverter = <T extends DocumentBackInterface>(): FirestoreDataConverter<T> => {
+export const objectConverter = <I extends DocumentBackInterface>(): FirestoreDataConverter<I> => {
   return {
-    toFirestore: (document: T): DocumentBackInterface => {
+    toFirestore: (document: I): DocumentBackInterface => {
       return document;
     },
     fromFirestore: (snapshot: DocumentSnapshot, options: SnapshotOptions) => {
-      return snapshot.data(options) as T;
-    }
+      return snapshot.data(options) as I;
+    },
   };
 };

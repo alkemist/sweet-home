@@ -11,7 +11,7 @@ export class LoggerService {
   constructor() {
     this.errorHandler = new StackdriverErrorReporter();
 
-    if (!process.env['APP_DEBUG']) {
+    if (!parseInt(process.env['APP_DEBUG'] ?? '0')) {
       this.errorHandler.start({
         key: process.env['GOOGLE_CLOUD_OPERATIONS_API_KEY'] as string,
         projectId: process.env['FIREBASE_PROJECT_ID'] as string
@@ -20,7 +20,7 @@ export class LoggerService {
   }
 
   error<T>(error: BaseError): BaseError {
-    if (!process.env['APP_DEBUG']) {
+    if (!parseInt(process.env['APP_DEBUG'] ?? '0')) {
       this.errorHandler.report(error);
     } else {
       console.error(`-- Error [${ error.type }]`, error.message, ':', error.context);

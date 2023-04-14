@@ -13,13 +13,13 @@ const states = [
 @NgModule({
   imports: [
     NgxsModule.forRoot(states, {
-      developmentMode: !!process.env['APP_DEBUG']
+      developmentMode: !!parseInt(process.env['APP_DEBUG'] ?? '0')
     }),
     NgxsReduxDevtoolsPluginModule.forRoot({
-      disabled: !process.env['APP_DEBUG'],
+      disabled: !parseInt(process.env['APP_DEBUG'] ?? '0'),
     }),
     NgxsLoggerPluginModule.forRoot({
-      disabled: !process.env['APP_DEBUG'],
+      disabled: !parseInt(process.env['APP_DEBUG'] ?? '0'),
     }),
     NgxsStoragePluginModule.forRoot()
   ],

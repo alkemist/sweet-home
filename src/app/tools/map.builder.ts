@@ -220,6 +220,8 @@ export class MapBuilder {
         this.checkDevicesStatus(devices.length);
       });
     })
+
+    this.checkDevicesStatus(devices.length);
   }
 
   getComponents(): BaseDeviceComponent[] {
@@ -369,8 +371,6 @@ export class MapBuilder {
   }
 
   private checkDevicesStatus(devicesCount: number) {
-    // console.log('-- Check devices status', this._supervisors.size, devicesCount)
-
     if (this._supervisors.size === devicesCount) {
       this._loaded$.next(true);
 

@@ -13,6 +13,7 @@ import {
 import { LoggerService } from './logger.service';
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from 'firebase/auth';
 import { MessageService } from 'primeng/api';
+import { JsonService } from './json.service';
 
 export type AppKey = 'sonos' | 'spotify';
 
@@ -23,11 +24,30 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
   private auth = getAuth();
   private _isLoggedIn: BehaviorSubject<boolean | null>;
 
-  constructor(messageService: MessageService, loggerService: LoggerService) {
-    super(messageService, loggerService, 'user', $localize`User`, UserModel);
+  constructor(
+    messageService: MessageService,
+    loggerService: LoggerService,
+    jsonService: JsonService,
+  ) {
+    super(messageService, loggerService, jsonService, 'user', $localize`User`, UserModel);
     this._isLoggedIn = new BehaviorSubject<boolean | null>(null);
 
+    if (parseInt(process.env['APP_OFFLINE'] ?? '0')) {
+      this._user = new UserModel({
+        id: '',
+        name: '',
+        email: '',
+        slug: '',
+        jeedom: '',
+      })
+    }
+
     onAuthStateChanged(this.auth, (userFirebase) => {
+      if (parseInt(process.env['APP_OFFLINE'] ?? '0')) {
+        this._isLoggedIn.next(true);
+        return;
+      }
+
       if (!userFirebase) {
         this._isLoggedIn.next(false);
       } else {

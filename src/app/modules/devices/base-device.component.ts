@@ -126,7 +126,7 @@ export abstract class BaseDeviceComponent<
       return result;
     }, {} as Record<IE, string | number | boolean | null>);
 
-    // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
+    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
 
     this.infoCommandValues = ObjectHelper.clone(infoCommandValues as IV);
     this.updateInfoCommandValues(infoCommandValues);

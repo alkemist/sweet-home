@@ -12,25 +12,27 @@ import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { JeedomService } from './jeedom.service';
 import { LoggerService } from './logger.service';
-import { DataStoreService } from './data-store.service';
+import { DatastoreService } from './datastore.service';
 import { MessageService } from 'primeng/api';
 import { BaseDeviceComponent } from '../modules/devices/base-device.component';
 import { UnknownCommandIdError } from '@errors';
+import { JsonService } from './json.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class DeviceService extends DataStoreService<DeviceStoredInterface, DeviceModel> {
+export class DeviceService extends DatastoreService<DeviceStoredInterface, DeviceModel> {
   @Select(DeviceState.lastUpdated) override lastUpdated$?: Observable<Date>;
   // Données du store
   @Select(DeviceState.all) protected override all$?: Observable<DeviceStoredInterface[]>;
 
   constructor(messageService: MessageService,
               protected override loggerService: LoggerService,
+              jsonService: JsonService,
               store: Store,
               protected jeedomService: JeedomService) {
-    super(messageService, loggerService, 'device', $localize`device`, DeviceModel, store,
+    super(messageService, loggerService, jsonService, 'device', $localize`device`, DeviceModel, store,
       AddDevice, UpdateDevice, RemoveDevice, FillDevices, InvalideDevices);
   }
 
@@ -81,8 +83,8 @@ export class DeviceService extends DataStoreService<DeviceStoredInterface, Devic
         if (values) {
           components.forEach((component) => {
             component.updateGlobalInfoCommandValues(values);
-            resolve(true);
           })
+          resolve(true);
         } else {
           console.info('NO VALUES');
           resolve(false);

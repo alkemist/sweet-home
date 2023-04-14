@@ -61,7 +61,10 @@ export class JeedomService {
 
   private request(method: string, params: Record<string, any> = {}): PromiseLike<any> {
     const apikey = this.userService.getJeedomApiKey();
-    if (!apikey) {
+
+    if (parseInt(process.env['APP_OFFLINE'] ?? '0')) {
+      return Promise.resolve({});
+    } else if (!apikey) {
       this.loggerService.error(new UserHasNotTokenError());
       throw new UserHasNotTokenError();
     }
