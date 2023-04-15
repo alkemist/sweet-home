@@ -20,7 +20,7 @@
             "customWebpackConfig": {
               "path": "./custom-webpack.config.js"
             },
-            "outputPath": "dist/sweet-home",
+            "outputPath": "www",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -31,6 +31,8 @@
             "assets": [
               "src/favicon.ico",
               "src/favicon.png",
+              "src/cordova.js",
+              "src/logo.png",
               "src/humans.txt",
               "src/robots.txt",
               "src/assets",

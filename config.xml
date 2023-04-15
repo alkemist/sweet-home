@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.alkemist.sweethome" version="1.0.0" xmlns="http://www.w3.org/ns/widgets"
+>
+  <name>SweetHome</name>
+  <description>Personnal project</description>
+  <author email="achain.jeremy@gmail.com" href="https://jeremy-achain.dev">
+    Jérémy ACHAIN
+  </author>
+  <content src="index.html"/>
+  <allow-intent href="http://*/*"/>
+  <allow-intent href="https://*/*"/>
+</widget>

@@ -6,7 +6,8 @@
     "types": [
       "@angular/localize",
       "node",
-      "hammerjs"
+      "hammerjs",
+      "cordova"
     ]
   },
   "files": [
