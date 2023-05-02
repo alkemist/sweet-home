@@ -1,20 +1,27 @@
-import { Component } from '@angular/core';
-import { DeviceMultimediaComponent, MultimediaCommandValues, MultimediaState } from '../multimedia.component';
+import {Component} from '@angular/core';
+import {
+  DeviceMultimediaComponent,
+  MultimediaCommandValues,
+  MultimediaParameterValues,
+  MultimediaState
+} from '../multimedia.component';
 import {
   ChromecastCommandAction,
   ChromecastCommandInfo,
   ChromecastExtendCommandAction,
   ChromecastExtendCommandInfo,
+  ChromecastExtendParamValue,
   ChromecastGlobalCommandInfo
 } from './chromecast.const';
 
 interface ChromecastCommandValues extends MultimediaCommandValues {
   online: boolean,
   player: string,
-  status: string,
   display: string,
-  title: string,
-  artist: string,
+}
+
+export interface ChromecastParameterValues extends MultimediaParameterValues {
+  disableVolume: boolean,
 }
 
 @Component({
@@ -29,7 +36,8 @@ interface ChromecastCommandValues extends MultimediaCommandValues {
 export class DeviceChromecastComponent extends DeviceMultimediaComponent<
   ChromecastExtendCommandInfo, ChromecastExtendCommandAction,
   ChromecastCommandValues,
-  ChromecastCommandInfo, ChromecastCommandAction
+  ChromecastCommandInfo, ChromecastCommandAction, string,
+  ChromecastExtendParamValue, ChromecastParameterValues
 > {
   size = {
     w: 130,
@@ -38,27 +46,9 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
 
   override infoCommandValues: ChromecastCommandValues = {
     ...super.infoCommandValues,
-    online: false, //0-1
-    player: "", //"UNKNOWN", "PLAYING" (si en cours), "IDLE" ???
-    status: "", //"&nbsp;",
-    // "Netflix", "Diffusion: Netflix" (si en cours),
-    // "Diffusion: Azalea Town" (si en cours, mais pas à jour)
-    // "YouTube"
-    // "Casting Prime Video"
-    display: "", //
-    // "Netflix",
-    // "Spotify"
-    // "Youtube"
-    // "Prime Video"
-    // "Backdrop"
-    title: "", //"",
-    // "Netflix"
-    // "Green Hills" (titre en cours)
-    // "RÉSUMÉ : MY HERO ACADEMIA : SAISON 5" (titre en cours)
-    // "Les Épreuves de Vasselheim"
-    artist: "",
-    //
-    // "Helynt, Koreskape, GameChops"
+    online: false,
+    player: "",
+    display: "",
   };
 
   get isBackdrop(): boolean {
@@ -91,12 +81,20 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
     })
   }
 
+  override openModal() {
+    if ((!this.parameterValues.disableVolume || this.application) && this.state !== MultimediaState.offline) {
+      super.openModal();
+    }
+  }
+
   override updateInfoCommandValues(values: Record<ChromecastGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
 
     this.infoCommandValues.online = values.online === 1;
 
-    if (this.infoCommandValues.player === "PLAYING") {
+    if (!this.infoCommandValues.online) {
+      this.state = MultimediaState.offline;
+    } else if (this.infoCommandValues.player === "PLAYING") {
       this.state = MultimediaState.playing;
     } else if (this.infoCommandValues.player === "PAUSED") {
       this.state = MultimediaState.paused;
@@ -104,6 +102,6 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
       this.state = MultimediaState.stopped;
     }
 
-    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues,);
+    console.log(`-- [${this.name}] Updated info command values`, this.infoCommandValues,);
   }
 }

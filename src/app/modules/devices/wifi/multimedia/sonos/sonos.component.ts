@@ -1,22 +1,20 @@
-import { Component } from '@angular/core';
-import { DeviceMultimediaComponent, MultimediaCommandValues, MultimediaState } from '../multimedia.component';
+import {Component} from '@angular/core';
+import {DeviceMultimediaComponent, MultimediaCommandValues, MultimediaState} from '../multimedia.component';
 import {
   SonosCommandAction,
   SonosCommandInfo,
+  SonosConfiguration,
   SonosExtendCommandAction,
   SonosExtendCommandInfo,
-  SonosGlobalCommandInfo,
-  SonosParamValue
+  SonosGlobalCommandInfo
 } from './sonos.const';
-import { FormControl } from '@angular/forms';
+import {FormControl} from '@angular/forms';
 
 interface SonosCommandValues extends MultimediaCommandValues {
   state: string,
   shuffle: boolean,
   repeat: boolean,
-  artist: string,
   album: string,
-  title: string,
 }
 
 @Component({
@@ -32,7 +30,7 @@ export class DeviceSonosComponent
   extends DeviceMultimediaComponent<
     SonosExtendCommandInfo, SonosExtendCommandAction,
     SonosCommandValues,
-    SonosCommandInfo, SonosCommandAction, SonosParamValue
+    SonosCommandInfo, SonosCommandAction, SonosConfiguration
   > {
   size = {
     w: 130,
@@ -47,14 +45,8 @@ export class DeviceSonosComponent
     state: "",
     shuffle: false,
     repeat: false,
-    artist: "",
     album: "",
-    title: "",
   };
-
-  get hasTitle() {
-    return this.infoCommandValues.artist !== 'Aucun';
-  }
 
   get hasTvSound() {
     return this.infoCommandValues.title === 'Entrée de ligne';
@@ -82,6 +74,12 @@ export class DeviceSonosComponent
       })
   }
 
+  override openModal() {
+    if (this.state !== MultimediaState.offline) {
+      super.openModal();
+    }
+  }
+
   override updateInfoCommandValues(values: Record<SonosGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
 
@@ -95,14 +93,16 @@ export class DeviceSonosComponent
         this.state = MultimediaState.paused;
       } else if (this.infoCommandValues.state === "Arrêté") {
         this.state = MultimediaState.stopped;
+      } else if (this.infoCommandValues.state === "") {
+        this.state = MultimediaState.offline;
       }
     } else {
       this.state = MultimediaState.stopped;
     }
 
-    this.shuffleControl.setValue(this.infoCommandValues.shuffle, { emitEvent: false });
-    this.repeatControl.setValue(this.infoCommandValues.repeat, { emitEvent: false });
+    this.shuffleControl.setValue(this.infoCommandValues.shuffle, {emitEvent: false});
+    this.repeatControl.setValue(this.infoCommandValues.repeat, {emitEvent: false});
 
-    // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
+    //console.log(`-- [${this.name}] Updated info command values`, this.infoCommandValues);
   }
 }

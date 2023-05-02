@@ -2,7 +2,7 @@
      [tooltipDisabled]="isEditMode || isDragging"
      tooltipEvent="hover" tooltipPosition="top">
   <div *ngIf="initialized" class="flex flex-row gap-2">
-    <div class="map-icon-value flex flex-row align-content-center gap-1">
+    <div *ngIf="state !== MultimediaState.offline" class="map-icon-value flex flex-row align-content-center gap-1">
       <div class="icon">
         <i class="fa fa-volume-up"></i>
       </div>
@@ -10,7 +10,8 @@
         {{ infoCommandValues.volume }}%
       </div>
     </div>
-    <div *ngIf="state !== MultimediaState.stopped" class="flex flex-row align-content-center gap-1">
+    <div *ngIf="state !== MultimediaState.stopped && state !== MultimediaState.offline"
+         class="flex flex-row align-content-center gap-1">
       <div class="icon">
         <i *ngIf="state === MultimediaState.playing" class="fa fa-play color-light"></i>
         <i *ngIf="state === MultimediaState.paused" class="fa fa-pause color-warn"></i>

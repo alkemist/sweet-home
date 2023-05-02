@@ -14,6 +14,7 @@ import {
   zigbeeOfficialThermostatMoesInfoCommandFilters
 } from './zigbee';
 import {
+  ChromecastParams,
   MultimediaChromecastInfoCommandFilters,
   MultimediaParams,
   wifiMultimediaChromecastActionCommandFilters,
@@ -21,8 +22,8 @@ import {
   wifiMultimediaSonosConfigurationFilters,
   wifiMultimediaSonosInfoCommandFilters
 } from './wifi';
-import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum, PartialRecord } from '@models';
-import { zigbeeLinkerOnOffMoesActionCommandFilters } from './zigbee/on-off/moes/on-off-moes.const';
+import {DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum, PartialRecord} from '@models';
+import {zigbeeLinkerOnOffMoesActionCommandFilters} from './zigbee/on-off/moes/on-off-moes.const';
 
 export interface DeviceDefinitions {
   infoCommandFilters?: Record<string, Record<string, string>>,
@@ -92,6 +93,7 @@ export const deviceDefinitionsByConnectivityCategoryType:
       [DeviceTypeEnum.Chromecast]: {
         infoCommandFilters: MultimediaChromecastInfoCommandFilters,
         actionCommandFilters: wifiMultimediaChromecastActionCommandFilters,
+        customParams: ChromecastParams,
       },
       [DeviceTypeEnum.Sonos]: {
         infoCommandFilters: wifiMultimediaSonosInfoCommandFilters,
@@ -143,12 +145,12 @@ export const deviceDefinitionsByConnectivityCategoryType:
 const mergeDefinitions = ()
   : GlobalDeviceConfigurations<DeviceConnectivityEnum, DeviceCategoryEnum, DeviceTypeEnum> => {
   return Object.entries(deviceDefinitionsByConnectivityCategoryType).reduce(
-    (resultByConnectivity, [ connectivityKey, deviceConfigurationsByCategory ]) => {
+    (resultByConnectivity, [connectivityKey, deviceConfigurationsByCategory]) => {
       resultByConnectivity[connectivityKey as DeviceConnectivityEnum] =
         Object.entries(deviceConfigurationsByCategory).reduce(
-          (resultByCategory, [ categoryKey, deviceConfigurationsByType ]) => {
+          (resultByCategory, [categoryKey, deviceConfigurationsByType]) => {
             resultByCategory[categoryKey as DeviceCategoryEnum] = Object.entries(deviceConfigurationsByType).reduce(
-              (resultByType, [ typeKey, deviceConfigurationByTypes ]) => {
+              (resultByType, [typeKey, deviceConfigurationByTypes]) => {
                 const parent = deviceConfigurationsByConnectivityCategory[connectivityKey as DeviceConnectivityEnum][categoryKey as DeviceCategoryEnum];
                 resultByType[typeKey as DeviceTypeEnum] = {
                   infoCommandFilters: {

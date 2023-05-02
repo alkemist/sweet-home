@@ -10,21 +10,19 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { CoordinateInterface, JeedomCommandResultInterface, SizeInterface, SmartArrayModel } from '@models';
-import { BaseComponent } from '../../components/base.component';
-import { DeviceService } from '@services';
-import { MapBuilder, ObjectHelper } from '@tools';
-import { OverlayPanel } from 'primeng/overlaypanel';
-import { UndefinedVarError } from '@errors';
-import { MessageService } from 'primeng/api';
+import {CoordinateInterface, JeedomCommandResultInterface, SizeInterface, SmartArrayModel} from '@models';
+import {BaseComponent} from '../../components/base.component';
+import {DeviceService} from '@services';
+import {MapBuilder, ObjectHelper} from '@tools';
+import {OverlayPanel} from 'primeng/overlaypanel';
+import {UndefinedVarError} from '@errors';
+import {MessageService} from 'primeng/api';
 
 @Directive()
 export abstract class BaseDeviceComponent<
-  IE extends string = string,
-  AE extends string = string,
+  IE extends string = string, AE extends string = string,
   IV extends Record<IE, string | number | boolean | null> = Record<IE, string | number | boolean | null>,
-  I extends string = IE, A extends string = AE,
-  C extends string = string,
+  I extends string = IE, A extends string = AE, C extends string = string,
   P extends string = string,
   PV extends Record<P, string | number | boolean | null> = Record<P, string | number | boolean | null>,
 > extends BaseComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
@@ -96,6 +94,7 @@ export abstract class BaseDeviceComponent<
   }
 
   openModal() {
+    console.log('openModal', this.isUserAction())
     if (!this.isUserAction()) {
       return;
     }
@@ -137,7 +136,7 @@ export abstract class BaseDeviceComponent<
   protected execUpdateSlider(commandAction: A, commandValue: number) {
     return this.execUpdateValue(
       commandAction,
-      { slider: commandValue }
+      {slider: commandValue}
     );
   }
 
@@ -152,16 +151,16 @@ export abstract class BaseDeviceComponent<
   protected execCommand(commandId: number, commandName: string, commandValue?: unknown) {
     return new Promise<any>((resolve, reject) => {
       const loader = this.mapBuilder.addLoader();
-      console.log(`-- [${ this.name }][${ commandName }] Exec action`, commandValue ? 'with' : '', commandValue ?? '');
+      console.log(`-- [${this.name}][${commandName}] Exec action`, commandValue ? 'with' : '', commandValue ?? '');
 
       this.deviceService.execCommand(commandId, commandName, commandValue).then((value) => {
-        console.log(`-- [${ this.name }][${ commandName }] Exec action result`, value);
+        console.log(`-- [${this.name}][${commandName}] Exec action result`, value);
 
         loader.finish();
         this.mapBuilder.addUpdate();
         resolve(commandValue);
       }).catch((e) => {
-        console.log(`-- [${ this.name }][${ commandName }] Exec action error`, e);
+        console.log(`-- [${this.name}][${commandName}] Exec action error`, e);
         reject(e);
       })
     })

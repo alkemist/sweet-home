@@ -3,12 +3,17 @@
      tooltipEvent="hover" tooltipPosition="top">
   <div *ngIf="initialized" class="flex flex-column gap-2">
     <div class="flex flex-row gap-2">
-      <div class="map-icon-value flex flex-row align-content-center gap-1">
+      <div *ngIf="!parameterValues.disableVolume" class="map-icon-value flex flex-row align-content-center gap-1">
         <div class="icon">
           <i class="fa fa-volume-up"></i>
         </div>
         <div class="value">
           {{ infoCommandValues.volume }}%
+        </div>
+      </div>
+      <div *ngIf="state === MultimediaState.offline" class="map-icon-value flex flex-row align-content-center gap-1">
+        <div class="icon">
+          <i class="fa fa-ban"></i>
         </div>
       </div>
       <div *ngIf="state !== MultimediaState.stopped" class="flex flex-row align-content-center gap-1">
@@ -41,6 +46,11 @@
           [resizable]="false" appendTo="body"
           position="bottom" styleClass="device-modal">
   <div class="flex flex-column gap-5">
+    <div *ngIf="hasTitle" class="flex justify-content-center align-items-center gap-5">
+      <span class="text-center">{{ infoCommandValues.artist}}</span>
+      <span>/</span>
+      <span class="text-center">{{ infoCommandValues.title}}</span>
+    </div>
     <div *ngIf="application" class="application flex flex-row justify-content-between align-items-center">
       <span class="application">{{ application }}</span>
       <p-button (click)="unCast()" icon="fa fa-times-circle"
@@ -61,7 +71,7 @@
       <p-button (click)="next()" icon="pi pi-step-forward-alt"
                 styleClass="p-button-rounded p-button-success p-button-text"></p-button>
     </div>
-    <div class="flex flex-column gap-3">
+    <div *ngIf="!parameterValues.disableVolume" class="flex flex-column gap-3">
       <div class="flex justify-content-center ">{{ volumeControl.value }}%</div>
       <div class="flex flex-row align-items-center gap-3">
         <p-slider [formControl]="volumeControl" [max]="parameterValues.volumeMax" [min]="0"

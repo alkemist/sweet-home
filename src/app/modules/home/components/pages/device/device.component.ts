@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ComponentClassByType, ObjectHelper, slugify } from '@tools';
-import { ConfirmationService, FilterService, MessageService } from 'primeng/api';
-import { AppService, DeviceService } from '@services';
-import { KeyValue } from '@angular/common';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ComponentClassByType, ObjectHelper, slugify} from '@tools';
+import {ConfirmationService, FilterService, MessageService} from 'primeng/api';
+import {AppService, DeviceService} from '@services';
+import {KeyValue} from '@angular/common';
 import {
   CoordinateFormInterface,
   DeviceCategoryEnum,
@@ -18,13 +18,13 @@ import {
   KeyValueFormInterface,
   SmartArrayModel,
 } from '@models';
-import { BaseComponent } from '../../../../../components/base.component';
-import { deviceConfigurations } from '@devices';
+import {BaseComponent} from '../../../../../components/base.component';
+import {deviceConfigurations} from '@devices';
 
 @Component({
   selector: 'app-device',
   templateUrl: './device.component.html',
-  styleUrls: [ './device.component.scss' ],
+  styleUrls: ['./device.component.scss'],
   host: {
     class: 'page-container'
   }
@@ -38,14 +38,14 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
 
   form: FormGroup<DeviceFormInterface> = new FormGroup<DeviceFormInterface>({
     id: new FormControl<string | null | undefined>(''),
-    connectivity: new FormControl<DeviceConnectivityEnum | null>(null, [ Validators.required ]),
-    category: new FormControl<DeviceCategoryEnum | null>(null, [ Validators.required ]),
-    type: new FormControl<DeviceTypeEnum | null>(null, [ Validators.required ]),
-    name: new FormControl<string>('', [ Validators.required ]),
-    jeedomId: new FormControl<number | null>(null, [ Validators.required ]),
+    connectivity: new FormControl<DeviceConnectivityEnum | null>(null, [Validators.required]),
+    category: new FormControl<DeviceCategoryEnum | null>(null, [Validators.required]),
+    type: new FormControl<DeviceTypeEnum | null>(null, [Validators.required]),
+    name: new FormControl<string>('', [Validators.required]),
+    jeedomId: new FormControl<number | null>(null, [Validators.required]),
     position: new FormGroup<CoordinateFormInterface>({
-      x: new FormControl<number | null>(10, [ Validators.required ]),
-      y: new FormControl<number | null>(10, [ Validators.required ]),
+      x: new FormControl<number | null>(10, [Validators.required]),
+      y: new FormControl<number | null>(10, [Validators.required]),
     }),
     infoCommandIds: new FormArray<FormGroup<KeyValueFormInterface<number>>>([]),
     actionCommandIds: new FormArray<FormGroup<KeyValueFormInterface<number>>>([]),
@@ -101,40 +101,40 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
         const configurations = deviceConfigurations[this.connectivity.value]![this.category.value]![this.type.value];
 
         if (configurations) {
-          Object.entries(configurations.infoCommandFilters).forEach(([ commandId, commandFilter ]) => {
+          Object.entries(configurations.infoCommandFilters).forEach(([commandId, commandFilter]) => {
             const command = deviceCommands.find((command) => {
-              return Object.entries(commandFilter).every(([ key, value ]) => command[key] === value);
+              return Object.entries(commandFilter).every(([key, value]) => command[key] === value);
             })
 
             if (command) {
-              this.addInfoCommand({ key: commandId, value: parseInt(command['id'], 10) })
+              this.addInfoCommand({key: commandId, value: parseInt(command['id'], 10)})
             }
           });
 
-          Object.entries(configurations.actionCommandFilters).forEach(([ commandId, commandFilter ]) => {
+          Object.entries(configurations.actionCommandFilters).forEach(([commandId, commandFilter]) => {
             const command = deviceCommands.find((command) => {
-              return Object.entries(commandFilter).every(([ key, value ]) => command[key] === value);
+              return Object.entries(commandFilter).every(([key, value]) => command[key] === value);
             })
 
             if (command) {
-              this.addActionCommand({ key: commandId, value: parseInt(command['id'], 10) })
+              this.addActionCommand({key: commandId, value: parseInt(command['id'], 10)})
             }
           });
 
-          Object.entries(configurations.configurationFilters).forEach(([ configurationId, commandFilter ]) => {
+          Object.entries(configurations.configurationFilters).forEach(([configurationId, commandFilter]) => {
             const value = jeedomDevice.values[commandFilter];
 
             if (value) {
-              this.addConfigurationValue({ key: configurationId, value: value })
+              this.addConfigurationValue({key: configurationId, value: value})
             }
           });
 
           configurations.customParameters.forEach((paramName) => {
-            this.addParameterValue({ key: paramName, value: parameterValues.get(paramName) ?? '' });
+            this.addParameterValue({key: paramName, value: parameterValues.get(paramName) ?? ''});
           })
         }
 
-        this.importDeviceControl.setValue('', { emitEvent: false });
+        this.importDeviceControl.setValue('', {emitEvent: false});
       }
     })
   }
@@ -230,8 +230,8 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
 
   addCommandForm<T>(keyValue?: KeyValue<string, T>) {
     return new FormGroup({
-      key: new FormControl<string | null>(keyValue?.key ?? null, [ Validators.required ]),
-      value: new FormControl<T | null>(keyValue?.value ?? null, [ Validators.required ]),
+      key: new FormControl<string | null>(keyValue?.key ?? null, [Validators.required]),
+      value: new FormControl<T | null>(keyValue?.value ?? null),
     });
   }
 
@@ -245,7 +245,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
       if (checkExist) {
         this.deviceService.exist(formData.name).then(async exist => {
           if (exist) {
-            return this.name.setErrors({ 'exist': true });
+            return this.name.setErrors({'exist': true});
           }
           await this.submit(formData);
         });
@@ -267,7 +267,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
           severity: 'success',
           detail: $localize`Device updated`
         });
-        await this.routerService.navigate([ '../' ], { relativeTo: this.activatedRoute });
+        await this.routerService.navigate(['../'], {relativeTo: this.activatedRoute});
       });
     } else {
       await this.deviceService.add(device).then(async _ => {
@@ -277,7 +277,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
           severity: 'success',
           detail: $localize`Device added`,
         });
-        await this.routerService.navigate([ '../' ], { relativeTo: this.activatedRoute });
+        await this.routerService.navigate(['../'], {relativeTo: this.activatedRoute});
       });
     }
   }
@@ -294,7 +294,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
             severity: 'success',
             detail: $localize`Device deleted`
           });
-          await this.routerService.navigate([ '../' ], { relativeTo: this.activatedRoute });
+          await this.routerService.navigate(['../'], {relativeTo: this.activatedRoute});
         });
       }
     });
@@ -307,7 +307,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     this.filteredJeedomRooms = [];
     this.jeedomRooms.forEach((room) => {
       const filteredDevices: JeedomDeviceModel[] =
-        this.filterService.filter(room.devices, [ 'name', 'id' ], event.query, "contains");
+        this.filterService.filter(room.devices, ['name', 'id'], event.query, "contains");
 
       if (filteredDevices.length > 0) {
         this.filteredJeedomRooms.push(
