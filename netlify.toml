@@ -1,6 +1,6 @@
 [build]
 base = ""
-publish = "dist/sweet-home"
+publish = "www"
 command = "npm run build"
 
 [dev]

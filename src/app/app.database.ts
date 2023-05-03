@@ -11,6 +11,6 @@ const app = initializeApp({
   appId: process.env['FIREBASE_APP_ID'],
 });
 
-if (!isDevMode() && !parseInt(process.env['APP_OFFLINE'] ?? '0')) {
+if (!isDevMode() && !parseInt(process.env['APP_OFFLINE'] ?? '0') && typeof window['cordova'] === 'undefined') {
   getAnalytics(app);
 }

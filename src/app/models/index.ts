@@ -1,3 +1,4 @@
+export * from './cordova'
 export * from './spotify'
 export * from './sonos'
 export * from './api-access-token.interface';

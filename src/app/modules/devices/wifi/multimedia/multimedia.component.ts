@@ -1,8 +1,8 @@
-import {Directive} from '@angular/core';
-import {BaseDeviceComponent} from '../../base-device.component';
-import {FormControl} from '@angular/forms';
-import {debounceTime} from 'rxjs';
-import {MultimediaCommandAction, MultimediaCommandInfo, MultimediaParamValue} from '@devices';
+import { Directive } from '@angular/core';
+import { BaseDeviceComponent } from '../../base-device.component';
+import { FormControl } from '@angular/forms';
+import { debounceTime } from 'rxjs';
+import { MultimediaCommandAction, MultimediaCommandInfo, MultimediaParamValue } from '@devices';
 
 export enum MultimediaState {
   offline,
@@ -75,9 +75,9 @@ export abstract class DeviceMultimediaComponent<
         if (mute !== null) {
           void this.setMute(mute ? 'mute' : 'unmute').then(_ => {
             if (mute) {
-              this.volumeControl.disable({emitEvent: false});
+              this.volumeControl.disable({ emitEvent: false });
             } else {
-              this.volumeControl.enable({emitEvent: false});
+              this.volumeControl.enable({ emitEvent: false });
             }
           })
         }
@@ -130,9 +130,25 @@ export abstract class DeviceMultimediaComponent<
     this.infoCommandValues.volume = values.volume as number ?? 0;
     this.infoCommandValues.muted = values.muted === 1;
 
-    this.volumeControl.setValue(this.infoCommandValues.volume, {emitEvent: false});
-    this.muteControl.setValue(this.infoCommandValues.muted, {emitEvent: false});
+    this.volumeControl.setValue(this.infoCommandValues.volume, { emitEvent: false });
+    this.muteControl.setValue(this.infoCommandValues.muted, { emitEvent: false });
 
     // console.log(`-- [${ this.name }] Updated info command values`, values, this.infoCommandValues);
+  }
+
+  upVolumeButton = () => {
+    this.upDownButton(1);
+  }
+
+  downVolumeButton = () => {
+    this.upDownButton(-1);
+  }
+
+  private upDownButton(step: number) {
+    let volumeValue = this.volumeControl.value;
+    if (volumeValue) {
+      volumeValue += step;
+      this.volumeControl.setValue(volumeValue);
+    }
   }
 }

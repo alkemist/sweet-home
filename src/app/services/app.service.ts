@@ -1,16 +1,22 @@
-import {Title} from '@angular/platform-browser';
-import {Injectable} from '@angular/core';
-import {AppWorker} from "../models/worker/app-worker.model";
+import { Title } from '@angular/platform-browser';
+import { Injectable } from '@angular/core';
+import { AppWorker } from "../models/worker/app-worker.model";
+import { GeolocationWorker } from '@models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppService {
   private pageTitle: string | undefined = undefined;
-  private appWorker = new AppWorker('app');
+  private appWorker?: AppWorker;
+  private geofence?: GeolocationWorker;
 
   constructor(private readonly titleService: Title) {
-
+    if (typeof window.cordova === 'undefined') {
+      this.appWorker = new AppWorker('app')
+    } else {
+      this.geofence = new GeolocationWorker()
+    }
   }
 
   setTitle(title: string | undefined) {
@@ -18,18 +24,18 @@ export class AppService {
       this.pageTitle = title;
 
       if (title !== undefined) {
-        this.titleService.setTitle(`${process.env['APP_NAME']} - ${title}`);
+        this.titleService.setTitle(`${ process.env['APP_NAME'] } - ${ title }`);
       } else {
-        this.titleService.setTitle(`${process.env['APP_NAME']}`);
+        this.titleService.setTitle(`${ process.env['APP_NAME'] }`);
       }
     }
   }
 
   setSubTitle(subTitle?: string) {
     if (subTitle !== undefined) {
-      this.titleService.setTitle(`${process.env['APP_NAME']} - ${this.pageTitle} - ${subTitle}`);
+      this.titleService.setTitle(`${ process.env['APP_NAME'] } - ${ this.pageTitle } - ${ subTitle }`);
     } else {
-      this.titleService.setTitle(`${process.env['APP_NAME']} - ${this.pageTitle}`);
+      this.titleService.setTitle(`${ process.env['APP_NAME'] } - ${ this.pageTitle }`);
     }
   }
 }

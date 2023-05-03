@@ -45,7 +45,7 @@ export class AppWorker {
     const message = event.data;
     switch (message.type) {
       case "init":
-        // console.log("-- [App Worker] Initialized");
+        console.log("-- [App Worker] Initialized");
         break;
 
       default:

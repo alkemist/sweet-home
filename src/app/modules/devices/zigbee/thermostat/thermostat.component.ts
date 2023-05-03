@@ -1,9 +1,9 @@
 import { Directive } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { debounceTime } from 'rxjs';
 import { ThermostatCommandAction, ThermostatExtendCommandInfo, ThermostatGlobalCommandInfo } from '@devices';
 import { ZigbeeBatteryCommandValues, ZigbeeBatteryComponent } from '../zigbee-battery-component.directive';
 import { MathHelper } from '@tools';
+import { debounceTime } from 'rxjs';
 
 interface ThermostatCommandValues extends ZigbeeBatteryCommandValues {
   thermostat: number,
@@ -26,12 +26,22 @@ export abstract class DeviceThermostatComponent
     room: 0,
   };
 
+  override openModal() {
+    super.openModal();
+
+    document.addEventListener("volumeupbutton", this.upVolumeButton, false);
+    document.addEventListener("volumedownbutton", this.downVolumeButton, false);
+  }
+
   override closeModal() {
     super.closeModal();
 
     if (this.thermostatControl.value) {
       this.setThermostat(this.thermostatControl.value);
     }
+
+    document.removeEventListener("volumeupbutton", this.upVolumeButton, false);
+    document.removeEventListener("volumedownbutton", this.downVolumeButton, false);
   }
 
   override ngOnInit() {
@@ -43,7 +53,7 @@ export abstract class DeviceThermostatComponent
       )
       .subscribe((thermostatValue) => {
         if (thermostatValue) {
-
+          this.setThermostat(thermostatValue);
         }
       });
   }
@@ -66,5 +76,21 @@ export abstract class DeviceThermostatComponent
     }
 
     //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
+  }
+
+  upVolumeButton = () => {
+    this.upDownButton(this.thermostatStep);
+  }
+
+  downVolumeButton = () => {
+    this.upDownButton(-this.thermostatStep);
+  }
+
+  private upDownButton(step: number) {
+    let thermostatValue = this.thermostatControl.value;
+    if (thermostatValue) {
+      thermostatValue += step;
+      this.thermostatControl.setValue(thermostatValue);
+    }
   }
 }
