@@ -1,8 +1,8 @@
-import { Directive } from '@angular/core';
-import { BaseDeviceComponent } from '../../base-device.component';
-import { FormControl } from '@angular/forms';
-import { debounceTime } from 'rxjs';
-import { MultimediaCommandAction, MultimediaCommandInfo, MultimediaParamValue } from '@devices';
+import {Directive} from '@angular/core';
+import {MultimediaCommandAction, MultimediaCommandInfo, MultimediaParamValue} from '@devices';
+import {FormControl} from '@angular/forms';
+import {debounceTime} from 'rxjs';
+import BaseDeviceComponent from "@base-device-component";
 
 export enum MultimediaState {
   offline,

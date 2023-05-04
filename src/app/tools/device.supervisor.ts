@@ -1,17 +1,17 @@
-import { ComponentRef } from '@angular/core';
-import { BaseDeviceComponent } from '../modules/devices/base-device.component';
-import { CoordinateInterface, DeviceModel, SizeInterface } from '@models';
-import { Subject } from 'rxjs';
-import { MathHelper } from './math.helper';
+import {ComponentRef} from '@angular/core';
+import {CoordinateInterface, DeviceModel, SizeInterface} from '@models';
+import {Subject} from 'rxjs';
+import {MathHelper} from './math.helper';
 import * as Hammer from 'hammerjs';
-import { OverlayPanel } from 'primeng/overlaypanel';
-import { ObjectHelper } from './object.helper';
+import {OverlayPanel} from 'primeng/overlaypanel';
+import {ObjectHelper} from './object.helper';
+import BaseDeviceComponent from "@base-device-component";
 
 export class DeviceSupervisor {
   private _isDragging = false;
-  private _currentPosition: CoordinateInterface = { x: 0, y: 0 };
-  private readonly _deviceSize: SizeInterface = { w: 0, h: 0 };
-  private _devicePosition: CoordinateInterface = { x: 0, y: 0 };
+  private _currentPosition: CoordinateInterface = {x: 0, y: 0};
+  private readonly _deviceSize: SizeInterface = {w: 0, h: 0};
+  private _devicePosition: CoordinateInterface = {x: 0, y: 0};
   private _scale: number = 1;
   private readonly _hammer?: HammerManager;
   private _overlayPanel: OverlayPanel;
@@ -76,7 +76,7 @@ export class DeviceSupervisor {
   }
 
   initHammer() {
-    this.hammer.add(new Hammer.Pan({ enable: false, direction: Hammer.DIRECTION_ALL }));
+    this.hammer.add(new Hammer.Pan({enable: false, direction: Hammer.DIRECTION_ALL}));
     this.hammer.on("pan", (event) => {
       //console.log('-- Hammer pan', event.deltaX, event.deltaY);
 
@@ -120,10 +120,10 @@ export class DeviceSupervisor {
   switchEditMode(editMode: boolean, _scale: number) {
     //console.log('-- Switch Edit Mode Device', editMode);
 
-    this.hammer.get('pan').set({ enable: editMode, direction: Hammer.DIRECTION_ALL });
+    this.hammer.get('pan').set({enable: editMode, direction: Hammer.DIRECTION_ALL});
 
     if (editMode) {
-      this._overlayPanel.show({ target: this._componentRef.location.nativeElement } as MouseEvent);
+      this._overlayPanel.show({target: this._componentRef.location.nativeElement} as MouseEvent);
       this._componentRef.instance.draggable = true;
       this._scale = _scale;
       //console.log('-- Map scale', _scale);

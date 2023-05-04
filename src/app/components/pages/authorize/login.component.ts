@@ -1,14 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { UserService } from '@services';
-import { UserFormInterface } from '@models';
-import { BaseComponent } from '../../base.component';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {UserService} from '@services';
+import {UserFormInterface} from '@models';
+import BaseComponent from '@base-component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: [ './login.component.scss' ],
+  styleUrls: ['./login.component.scss'],
   host: {
     class: 'page-container'
   }
@@ -54,7 +54,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
     if (this.form.valid && this.form.value.email && this.form.value.password) {
       try {
         await this.userService.login(this.form.value.email, this.form.value.password);
-        void this.router.navigate([ '../home' ]);
+        void this.router.navigate(['../home']);
       } catch (error) {
         this.error = (error as Error).message;
       }

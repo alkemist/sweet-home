@@ -1,10 +1,9 @@
-import { DocumentModel } from './document.model';
-import { CoordinateInterface } from './coordinate.interface';
-import { DeviceBackInterface, DeviceFrontInterface, DeviceStoredInterface } from './device.interface';
-import { slugify } from '@tools';
-import { HasIdInterface } from './id.interface';
-import { SmartArrayModel } from './smart-array.model';
-import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum } from './device.enum';
+import {DocumentModel, HasIdInterface} from '../document';
+import {CoordinateInterface} from '../coordinate';
+import {DeviceBackInterface, DeviceFrontInterface, DeviceStoredInterface} from './device.interface';
+import {slugify} from '@tools';
+import {SmartArrayModel} from '../smart';
+import {DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum} from './device.enum';
 
 export class DeviceModel extends DocumentModel implements HasIdInterface {
   constructor(device: DeviceStoredInterface) {
@@ -17,7 +16,7 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
     this._actionCommandIds = new SmartArrayModel<string, number>(device.actionCommandIds);
     this._configurationValues = new SmartArrayModel<string, string>(device.configurationValues);
     this._parameterValues = new SmartArrayModel<string, string>(device.parameterValues);
-    this._position = device.position ?? { x: 0, y: 0 };
+    this._position = device.position ?? {x: 0, y: 0};
   }
 
   protected _position: CoordinateInterface;

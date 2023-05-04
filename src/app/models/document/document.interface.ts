@@ -1,4 +1,4 @@
-import { HasIdWithInterface } from './id.interface';
+import {HasIdWithInterface} from './id.interface';
 
 export interface DocumentBackInterface {
   name: string;

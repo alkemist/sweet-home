@@ -1,6 +1,5 @@
-import { DeviceStoredInterface } from '@models';
-import { AddDocument, FillDocuments, InvalideDocuments, RemoveDocument, UpdateDocument } from './document.action';
-import { HasIdInterface } from '../models/id.interface';
+import {DeviceStoredInterface, HasIdInterface} from '@models';
+import {AddDocument, FillDocuments, InvalideDocuments, RemoveDocument, UpdateDocument} from './document.action';
 
 export class AddDevice extends AddDocument<DeviceStoredInterface> {
   static override readonly type: string = '[Device] Add';

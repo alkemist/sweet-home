@@ -1,4 +1,4 @@
-import {DeviceCommands} from '../../../device-configurations.const';
+import {DeviceCommands} from '@devices';
 import {MultimediaCommandAction, MultimediaCommandInfo, MultimediaParamValue} from '../multimedia.const';
 
 export type ChromecastExtendCommandInfo = ChromecastCommandInfo & MultimediaCommandInfo;

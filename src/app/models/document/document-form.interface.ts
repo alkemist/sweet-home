@@ -1,4 +1,4 @@
-import { FormControl } from '@angular/forms';
+import {FormControl} from '@angular/forms';
 
 export interface DocumentFormInterface {
   id: FormControl<string | null | undefined>,

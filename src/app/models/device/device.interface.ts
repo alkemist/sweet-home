@@ -1,8 +1,7 @@
-import { KeyValue } from '@angular/common';
-import { DocumentBackInterface, DocumentFrontInterface } from './document.interface';
-import { CoordinateInterface } from './coordinate.interface';
-import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum } from './device.enum';
-import { HasIdWithInterface } from './id.interface';
+import {KeyValue} from '@angular/common';
+import {DocumentBackInterface, DocumentFrontInterface, HasIdWithInterface} from '../document';
+import {CoordinateInterface} from '../coordinate';
+import {DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum} from './device.enum';
 
 
 export interface DeviceBackInterface extends DocumentBackInterface {

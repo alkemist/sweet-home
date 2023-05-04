@@ -1,13 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { DeviceService } from '@services';
-import { BaseComponent } from '../../../../../components/base.component';
-import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceModel, DeviceTypeEnum, SmartArrayModel } from '@models';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {DeviceService} from '@services';
+import {DeviceCategoryEnum, DeviceConnectivityEnum, DeviceModel, DeviceTypeEnum, SmartArrayModel} from '@models';
+import BaseComponent from "@base-component";
 
 
 @Component({
   selector: 'app-devices',
   templateUrl: './devices.component.html',
-  styleUrls: [ './devices.component.scss' ],
+  styleUrls: ['./devices.component.scss'],
   host: {
     class: 'page-container'
   }

@@ -1,16 +1,21 @@
-import { ElementRef, Injectable, ViewContainerRef } from '@angular/core';
-import { CoordinateInterface, DeviceCategoryEnum, DeviceModel, DeviceTypeEnum, SizeInterface } from '@models';
+import {ElementRef, Injectable, ViewContainerRef} from '@angular/core';
+import {
+  CoordinateInterface,
+  DeviceCategoryEnum,
+  DeviceModel,
+  DeviceTypeEnum,
+  SizeInterface,
+  SmartLoaderModel,
+  SmartMapModel
+} from '@models';
 import * as Hammer from 'hammerjs';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { DocumentHelper } from './document.helper';
-import { MathHelper } from './math.helper';
-import { DeviceSupervisor } from './device.supervisor';
-import { SmartMapModel } from '../models/smart-map.model';
-import { BaseDeviceComponent } from '../modules/devices/base-device.component';
-import { SmartLoaderModel } from '../models/smart-loader.model';
-import { ObjectHelper } from './object.helper';
-import { DeviceService, LoggerService } from '@services';
-import { MessageService } from 'primeng/api';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {DocumentHelper} from './document.helper';
+import {MathHelper} from './math.helper';
+import {DeviceSupervisor} from './device.supervisor';
+import {ObjectHelper} from './object.helper';
+import {DeviceService, LoggerService} from '@services';
+import {MessageService} from 'primeng/api';
 import {
   DeviceChromecastComponent,
   DeviceOnOffLidlComponent,
@@ -20,7 +25,8 @@ import {
   DeviceThermostatAqaraComponent,
   DeviceThermostatMoesComponent
 } from '@devices';
-import { UnexpectedError } from '@errors';
+import {UnexpectedError} from '@errors';
+import BaseDeviceComponent from "@base-device-component";
 
 @Injectable({
   providedIn: 'root'
@@ -29,17 +35,17 @@ export class MapBuilder {
   private _loaderManager = new SmartLoaderModel('queries');
 
   private _viewContainerRef?: ViewContainerRef;
-  private _containerSize: SizeInterface = { w: 0, h: 0 };
-  private _mapSize: SizeInterface = { w: 0, h: 0 };
+  private _containerSize: SizeInterface = {w: 0, h: 0};
+  private _mapSize: SizeInterface = {w: 0, h: 0};
   private _currentScale: number = 1;
   private _scale: number = 1;
   private _scaleMin: number = 1;
   private _scaleMax: number = 1;
-  private _range: CoordinateInterface = { x: 0, y: 0 };
-  private _rangeMin: CoordinateInterface = { x: 0, y: 0 };
-  private _rangeMax: CoordinateInterface = { x: 0, y: 0 };
-  private _currentMapPosition: CoordinateInterface = { x: 0, y: 0 };
-  private _mapPosition: CoordinateInterface = { x: 0, y: 0 };
+  private _range: CoordinateInterface = {x: 0, y: 0};
+  private _rangeMin: CoordinateInterface = {x: 0, y: 0};
+  private _rangeMax: CoordinateInterface = {x: 0, y: 0};
+  private _currentMapPosition: CoordinateInterface = {x: 0, y: 0};
+  private _mapPosition: CoordinateInterface = {x: 0, y: 0};
   private _traversableElements: Element[] = [];
   private _supervisors = new SmartMapModel<string, DeviceSupervisor>();
   private _hammerEnabled = true;
@@ -121,17 +127,17 @@ export class MapBuilder {
     this._mapElement = undefined;
     this._pageElement = undefined;
     this._hammer = undefined;
-    this._containerSize = { w: 0, h: 0 };
-    this._mapSize = { w: 0, h: 0 };
+    this._containerSize = {w: 0, h: 0};
+    this._mapSize = {w: 0, h: 0};
     this._currentScale = 1;
     this._scale = 1;
     this._scaleMin = 1;
     this._scaleMax = 1;
-    this._range = { x: 0, y: 0 };
-    this._rangeMin = { x: 0, y: 0 };
-    this._rangeMax = { x: 0, y: 0 };
-    this._currentMapPosition = { x: 0, y: 0 };
-    this._mapPosition = { x: 0, y: 0 };
+    this._range = {x: 0, y: 0};
+    this._rangeMin = {x: 0, y: 0};
+    this._rangeMax = {x: 0, y: 0};
+    this._currentMapPosition = {x: 0, y: 0};
+    this._mapPosition = {x: 0, y: 0};
     this._traversableElements = [];
     this._supervisors = new SmartMapModel<string, DeviceSupervisor>();
     this._hammerEnabled = true;
@@ -152,8 +158,8 @@ export class MapBuilder {
 
   enableHammer(enable: boolean) {
     this._hammerEnabled = enable;
-    this.hammer.get('pinch').set({ enable });
-    this.hammer.get('pan').set({ enable, direction: Hammer.DIRECTION_ALL });
+    this.hammer.get('pinch').set({enable});
+    this.hammer.get('pan').set({enable, direction: Hammer.DIRECTION_ALL});
   }
 
   changeOrientation() {
@@ -315,8 +321,8 @@ export class MapBuilder {
 
   initHammer() {
     this._hammer = new Hammer(this.pageElement);
-    this.hammer.get('pinch').set({ enable: true });
-    this.hammer.get('pan').set({ enable: true, direction: Hammer.DIRECTION_ALL });
+    this.hammer.get('pinch').set({enable: true});
+    this.hammer.get('pan').set({enable: true, direction: Hammer.DIRECTION_ALL});
 
     this.hammer.on('pan', (event) => {
       //console.log('-- Hammer pan', event.deltaX, event.deltaY)

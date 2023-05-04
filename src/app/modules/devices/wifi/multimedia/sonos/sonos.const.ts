@@ -1,4 +1,4 @@
-import {DeviceCommands, DeviceConfiguration} from '../../../device-configurations.const';
+import {DeviceCommands, DeviceConfiguration} from '@devices';
 import {MultimediaCommandAction, MultimediaCommandInfo} from '../multimedia.const';
 
 export type SonosExtendCommandInfo = SonosCommandInfo & MultimediaCommandInfo;

@@ -1,4 +1,4 @@
-import { KeyValue } from '@angular/common';
+import {KeyValue} from '@angular/common';
 
 export class SmartArrayModel<K extends string | number, V extends string | number> extends Array<KeyValue<K, V>> {
   record: Map<K, V> = new Map<K, V>();
@@ -27,7 +27,7 @@ export class SmartArrayModel<K extends string | number, V extends string | numbe
     this.push(...keys.map((key: K) => {
       const value = record[key] as V;
       this.record.set(key, value);
-      return { key, value }
+      return {key, value}
     }));
   }
 
@@ -60,7 +60,7 @@ export class SmartArrayModel<K extends string | number, V extends string | numbe
     this.push(...keys.map((value: V) => {
       const key = enumValue[value] as K;
       this.record.set(key, value);
-      return { key, value }
+      return {key, value}
     }));
   }
 }

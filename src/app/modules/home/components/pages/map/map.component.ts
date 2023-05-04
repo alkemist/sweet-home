@@ -1,4 +1,4 @@
-import { DeviceModel } from '@models';
+import {DeviceModel, SmartLoaderModel} from '@models';
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -10,26 +10,23 @@ import {
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
-import { DeviceService } from '@services';
-import { MapBuilder } from '@tools';
-import { BaseComponent } from '../../../../../components/base.component';
-import { BehaviorSubject, filter } from 'rxjs';
-import { FormControl } from '@angular/forms';
-import { SmartLoaderModel } from '../../../../../models/smart-loader.model';
-import { SpotifyService } from '../../../../../services/spotify.service';
-import { Router } from '@angular/router';
-import { SonosService } from '../../../../../services/sonos.service';
+import {DeviceService, SonosService, SpotifyService} from '@services';
+import {MapBuilder} from '@tools';
+import {BehaviorSubject, filter} from 'rxjs';
+import {FormControl} from '@angular/forms';
+import {Router} from '@angular/router';
+import BaseComponent from "@base-component";
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
-  styleUrls: [ './map.component.scss' ],
+  styleUrls: ['./map.component.scss'],
   host: {
     class: 'page-container'
   }
 })
 export class MapComponent extends BaseComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild("container", { read: ViewContainerRef, static: true }) viewContainerRef?: ViewContainerRef;
+  @ViewChild("container", {read: ViewContainerRef, static: true}) viewContainerRef?: ViewContainerRef;
   @ViewChild("page") pageRef?: ElementRef;
   @ViewChild("map") mapRef?: ElementRef;
   @ViewChild("plan") planRef?: ElementRef;
@@ -117,10 +114,10 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     //void this.sonosService.test2();
   }
 
-  @HostListener('window:resize', [ '$event' ])
+  @HostListener('window:resize', ['$event'])
   onResize() {
     this.loadPlan();
-    this.switchEditModeFormControl.setValue(false, { emitEvent: false });
+    this.switchEditModeFormControl.setValue(false, {emitEvent: false});
   }
 
   ngOnInit() {
@@ -153,7 +150,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
       this.isLandscape = this.mapBuilder.isLandscape;
 
       this.planLoading = true;
-      this.planRef.nativeElement.src = `/assets/images/${ isLandscape ? 'plan-landscape.svg' : 'plan.svg' }`;
+      this.planRef.nativeElement.src = `/assets/images/${isLandscape ? 'plan-landscape.svg' : 'plan.svg'}`;
       this.isLandscape = isLandscape;
       this.changeDetectorRef.detectChanges();
     } else if (!this.planLoading) {

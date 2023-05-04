@@ -5,18 +5,18 @@ import {
   JeedomDeviceModel,
   JeedomRoomModel
 } from '@models';
-import { inject, Injectable } from '@angular/core';
-import { AddDevice, DeviceState, FillDevices, InvalideDevices, RemoveDevice, UpdateDevice } from '@stores';
-import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
-import { Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
-import { JeedomService } from './jeedom.service';
-import { LoggerService } from './logger.service';
-import { DatastoreService } from './datastore.service';
-import { MessageService } from 'primeng/api';
-import { BaseDeviceComponent } from '../modules/devices/base-device.component';
-import { UnknownCommandIdError } from '@errors';
-import { JsonService } from './json.service';
+import {inject, Injectable} from '@angular/core';
+import {AddDevice, DeviceState, FillDevices, InvalideDevices, RemoveDevice, UpdateDevice} from '@stores';
+import {ActivatedRouteSnapshot, ResolveFn} from '@angular/router';
+import {Select, Store} from '@ngxs/store';
+import {Observable} from 'rxjs';
+import {JeedomService} from './jeedom.service';
+import {LoggerService} from './logger.service';
+import {DatastoreService} from './datastore.service';
+import {MessageService} from 'primeng/api';
+import {UnknownCommandIdError} from '@errors';
+import {JsonService} from './json.service';
+import BaseDeviceComponent from "@base-device-component";
 
 
 @Injectable({

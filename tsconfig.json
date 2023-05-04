@@ -24,6 +24,12 @@
       "dom"
     ],
     "paths": {
+      "@base-component": [
+        "src/app/components/base.component"
+      ],
+      "@base-device-component": [
+        "src/app/modules/devices/base-device.component.ts"
+      ],
       "@components": [
         "src/app/components"
       ],

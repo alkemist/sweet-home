@@ -1,4 +1,4 @@
-import { JeedomDeviceModel } from './jeedom-device.model';
+import {JeedomDeviceModel} from './jeedom-device.model';
 
 export class JeedomRoomModel {
   constructor(

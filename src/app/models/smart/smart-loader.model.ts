@@ -1,4 +1,4 @@
-import { combineLatest, map, Subject, switchMap } from 'rxjs';
+import {combineLatest, map, Subject, switchMap} from 'rxjs';
 
 export class LoaderModel extends Subject<number> {
   constructor(protected loaderId: string, protected _id: number, protected timing?: number) {

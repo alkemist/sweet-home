@@ -11,15 +11,15 @@ import {
   ViewChild
 } from '@angular/core';
 import {CoordinateInterface, JeedomCommandResultInterface, SizeInterface, SmartArrayModel} from '@models';
-import {BaseComponent} from '../../components/base.component';
 import {DeviceService} from '@services';
 import {MapBuilder, ObjectHelper} from '@tools';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {UndefinedVarError} from '@errors';
 import {MessageService} from 'primeng/api';
+import BaseComponent from "@base-component";
 
 @Directive()
-export abstract class BaseDeviceComponent<
+export default abstract class BaseDeviceComponent<
   IE extends string = string, AE extends string = string,
   IV extends Record<IE, string | number | boolean | null> = Record<IE, string | number | boolean | null>,
   I extends string = IE, A extends string = AE, C extends string = string,

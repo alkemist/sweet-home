@@ -1,4 +1,4 @@
-import { OauthTokenInterface, OauthTokenModel } from "./oauth-token.model";
+import {OauthTokenInterface, OauthTokenModel} from "./oauth-token.model";
 
 export interface OauthTokensInterface {
   refreshToken?: OauthTokenInterface | null,

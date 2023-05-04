@@ -1,6 +1,6 @@
-import { UserInterface, UserStoredInterface } from './user.interface';
-import { DocumentModel } from './document.model';
-import { OauthTokensModel } from "./oauth-tokens.model";
+import {UserInterface, UserStoredInterface} from './user.interface';
+import {DocumentModel} from '../document';
+import {OauthTokensModel} from "../oauth";
 
 
 export class UserModel extends DocumentModel {

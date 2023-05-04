@@ -1,4 +1,4 @@
-import { JeedomDeviceInterface } from './jeedom-device.interface';
+import {JeedomDeviceInterface} from '../';
 
 export interface JeedomRoomInterface {
   id: string

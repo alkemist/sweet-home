@@ -1,6 +1,5 @@
-import { DocumentBackInterface } from './document.interface';
-import { HasIdWithInterface } from './id.interface';
-import { OauthTokensInterface } from "./oauth-tokens.model";
+import {DocumentBackInterface, HasIdWithInterface} from '../document';
+import {OauthTokensInterface} from "../oauth";
 
 
 export interface UserInterface extends DocumentBackInterface {

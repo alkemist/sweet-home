@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
-import { DeviceThermostatComponent } from '../thermostat.component';
-
+import {Component} from '@angular/core';
+import {DeviceThermostatComponent} from '../thermostat.component';
 
 @Component({
   selector: 'app-device-thermostat-moes',

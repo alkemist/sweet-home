@@ -18,8 +18,8 @@ import {
   KeyValueFormInterface,
   SmartArrayModel,
 } from '@models';
-import {BaseComponent} from '../../../../../components/base.component';
 import {deviceConfigurations} from '@devices';
+import BaseComponent from "@base-component";
 
 @Component({
   selector: 'app-device',

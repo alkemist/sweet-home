@@ -1,6 +1,6 @@
-import { DocumentBackInterface, DocumentFrontInterface, DocumentStoredInterface } from './document.interface';
-import { HasIdInterface } from './id.interface';
-import { slugify } from '@tools';
+import {DocumentBackInterface, DocumentFrontInterface, DocumentStoredInterface} from './document.interface';
+import {HasIdInterface} from './id.interface';
+import {slugify} from '@tools';
 
 
 export class DocumentModel implements HasIdInterface {

@@ -1,20 +1,20 @@
-import { Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, RoutesRecognized } from '@angular/router';
-import { filter, first, map, Observable, Subject } from 'rxjs';
-import { Title } from '@angular/platform-browser';
-import { AppService, DeviceService, LoggerService, UserService } from '@services';
-import { MenuItem } from 'primeng/api';
-import { DataModelMenuItems, LogoutMenuItem, MenuItems } from './menuItems.data';
-import { BaseComponent } from '../../base.component';
-import { default as NoSleep } from 'nosleep.js';
-import { MapBuilder } from '@tools';
-import { NoSleepError } from '../../../errors/no-sleep.error';
+import {Component, OnDestroy} from '@angular/core';
+import {ActivatedRoute, Router, RoutesRecognized} from '@angular/router';
+import {filter, first, map, Observable, Subject} from 'rxjs';
+import {Title} from '@angular/platform-browser';
+import {AppService, DeviceService, LoggerService, UserService} from '@services';
+import {MenuItem} from 'primeng/api';
+import {DataModelMenuItems, LogoutMenuItem, MenuItems} from './menuItems.data';
+import {default as NoSleep} from 'nosleep.js';
+import {MapBuilder} from '@tools';
+import {NoSleepError} from '@errors';
+import BaseComponent from "@base-component";
 
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: [ './header.component.scss' ]
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent extends BaseComponent implements OnDestroy {
   loading = true;
@@ -120,7 +120,7 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
       ...LogoutMenuItem, command: () => {
         this.userService.logout().then(async () => {
           await this.userService.logout();
-          void this.router.navigate([ '../login' ]);
+          void this.router.navigate(['../login']);
         });
       }
     });

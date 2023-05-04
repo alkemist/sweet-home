@@ -1,6 +1,6 @@
-import { AfterContentInit, AfterViewInit, Directive, OnDestroy, OnInit } from '@angular/core';
-import { BaseDeviceComponent } from '../base-device.component';
-import { MathHelper } from '@tools';
+import {AfterContentInit, AfterViewInit, Directive, OnDestroy, OnInit} from '@angular/core';
+import {MathHelper} from '@tools';
+import BaseDeviceComponent from "@base-device-component";
 
 export type ZigbeeCommandInfo = 'signal';
 

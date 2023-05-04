@@ -1,17 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AppKey, LoggerService, UserService } from '@services';
-import { BaseComponent } from '../../base.component';
-import { combineLatest } from 'rxjs';
-import { MessageService } from 'primeng/api';
-import { UnknownTokenError } from '@errors';
-import { SpotifyService } from '../../../services/spotify.service';
-import { SonosService } from '../../../services/sonos.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AppKey, LoggerService, SonosService, SpotifyService, UserService} from '@services';
+import {combineLatest} from 'rxjs';
+import {MessageService} from 'primeng/api';
+import {UnknownTokenError} from '@errors';
+import BaseComponent from "@base-component";
 
 @Component({
   selector: 'app-authorize',
   templateUrl: './authorize.component.html',
-  styleUrls: [ './authorize.component.scss' ],
+  styleUrls: ['./authorize.component.scss'],
   host: {
     class: 'page-container'
   }
@@ -35,12 +33,12 @@ export class AuthorizeComponent extends BaseComponent implements OnInit, OnDestr
       this.route.queryParams,
     ])
       .subscribe(async (mixedData) => {
-        const [ { type }, { code } ] = mixedData as [ { type: AppKey }, { code: string } ];
+        const [{type}, {code}] = mixedData as [{ type: AppKey }, { code: string }];
 
         if (type && code) {
           this.updateToken(type, code).then(() => {
             // console.log(`-- [${ type }] Refresh token updated`);
-            void this.router.navigate([ '../../', 'home' ], { relativeTo: this.route })
+            void this.router.navigate(['../../', 'home'], {relativeTo: this.route})
           })
         } else {
           this.messageService.add({

@@ -1,8 +1,8 @@
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { CoordinateFormInterface } from './coordinate-form.interface';
-import { KeyValueFormInterface } from './key-value-form.interface';
-import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum } from './device.enum';
-import { DocumentFormInterface } from './document-form.interface';
+import {FormArray, FormControl, FormGroup} from '@angular/forms';
+import {CoordinateFormInterface} from '../coordinate';
+import {KeyValueFormInterface} from '../key-value-form.interface';
+import {DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum} from './device.enum';
+import {DocumentFormInterface} from '../document';
 
 export interface DeviceFormInterface extends DocumentFormInterface {
   connectivity: FormControl<DeviceConnectivityEnum | null>
