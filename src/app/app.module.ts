@@ -1,19 +1,20 @@
-import { isDevMode, NgModule } from '@angular/core';
-import { AppComponent } from './app.component';
-import { AuthorizeComponent, HeaderComponent } from '@components';
+import {isDevMode, NgModule} from '@angular/core';
+import {AppComponent} from './app.component';
+import {AuthorizeComponent, HeaderComponent} from '@components';
 
 import './app.database';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AppRoutingModule } from './modules/app-routing.module';
-import { StoringModule } from './modules/storing.module';
-import { SharingModule } from './modules/sharing.module';
-import { ServiceWorkerModule } from '@angular/service-worker';
+import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {AppRoutingModule} from './modules/app-routing.module';
+import {StoringModule} from './modules/storing.module';
+import {SharingModule} from './modules/sharing.module';
+import {ServiceWorkerModule} from '@angular/service-worker';
 
-import { Buffer } from "buffer";
-import { LoginComponent } from './components/pages/authorize/login.component';
+import {Buffer} from "buffer";
+import {LoginComponent} from './components/pages/authorize/login.component';
 
 window.Buffer = window.Buffer || Buffer;
+window.cordova = window.cordova || undefined;
 
 @NgModule({
   declarations: [
@@ -36,7 +37,7 @@ window.Buffer = window.Buffer || Buffer;
     }),
   ],
   providers: [],
-  bootstrap: [ AppComponent ]
+  bootstrap: [AppComponent]
 })
 export class AppModule {
 }

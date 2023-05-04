@@ -2,11 +2,10 @@ import {Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute, Router, RoutesRecognized} from '@angular/router';
 import {filter, first, map, Observable, Subject} from 'rxjs';
 import {Title} from '@angular/platform-browser';
-import {AppService, DeviceService, LoggerService, UserService} from '@services';
+import {AppService, DeviceService, LoggerService, MapBuilder, UserService} from '@services';
 import {MenuItem} from 'primeng/api';
 import {DataModelMenuItems, LogoutMenuItem, MenuItems} from './menuItems.data';
 import {default as NoSleep} from 'nosleep.js';
-import {MapBuilder} from '@tools';
 import {NoSleepError} from '@errors';
 import BaseComponent from "@base-component";
 

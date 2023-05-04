@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ComponentClassByType, ObjectHelper, slugify} from '@tools';
+import {ObjectHelper, slugify} from '@tools';
 import {ConfirmationService, FilterService, MessageService} from 'primeng/api';
-import {AppService, DeviceService} from '@services';
+import {AppService, ComponentClassByType, DeviceService} from '@services';
 import {KeyValue} from '@angular/common';
 import {
   CoordinateFormInterface,
@@ -18,8 +18,8 @@ import {
   KeyValueFormInterface,
   SmartArrayModel,
 } from '@models';
-import {deviceConfigurations} from '@devices';
 import BaseComponent from "@base-component";
+import {deviceConfigurations} from "@devices";
 
 @Component({
   selector: 'app-device',

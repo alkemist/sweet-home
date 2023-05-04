@@ -10,11 +10,8 @@ import {
 } from '@models';
 import * as Hammer from 'hammerjs';
 import {BehaviorSubject, Subject} from 'rxjs';
-import {DocumentHelper} from './document.helper';
-import {MathHelper} from './math.helper';
-import {DeviceSupervisor} from './device.supervisor';
-import {ObjectHelper} from './object.helper';
-import {DeviceService, LoggerService} from '@services';
+import {DeviceSupervisor, DocumentHelper, MathHelper, ObjectHelper} from '@tools';
+import {DeviceService, LoggerService} from './index';
 import {MessageService} from 'primeng/api';
 import {
   DeviceChromecastComponent,

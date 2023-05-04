@@ -11,8 +11,8 @@ import {
   ViewChild
 } from '@angular/core';
 import {CoordinateInterface, JeedomCommandResultInterface, SizeInterface, SmartArrayModel} from '@models';
-import {DeviceService} from '@services';
-import {MapBuilder, ObjectHelper} from '@tools';
+import {DeviceService, MapBuilder} from '@services';
+import {ObjectHelper} from '@tools';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {UndefinedVarError} from '@errors';
 import {MessageService} from 'primeng/api';

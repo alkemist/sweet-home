@@ -10,8 +10,7 @@ import {
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
-import {DeviceService, SonosService, SpotifyService} from '@services';
-import {MapBuilder} from '@tools';
+import {DeviceService, MapBuilder, SonosService, SpotifyService} from '@services';
 import {BehaviorSubject, filter} from 'rxjs';
 import {FormControl} from '@angular/forms';
 import {Router} from '@angular/router';

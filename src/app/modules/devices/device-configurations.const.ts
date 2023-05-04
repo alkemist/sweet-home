@@ -1,7 +1,24 @@
 import {
+  DeviceConfigurationBy,
+  GlobalDeviceConfigurations,
+  GlobalDeviceDefinitions,
+  GroupedDeviceDefinitions
+} from "./device-configurations.type";
+import {DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum, PartialRecord} from "@models";
+import {
+  ChromecastParams,
+  MultimediaChromecastInfoCommandFilters,
+  MultimediaParams,
+  wifiMultimediaChromecastActionCommandFilters,
+  wifiMultimediaSonosActionCommandFilters,
+  wifiMultimediaSonosConfigurationFilters,
+  wifiMultimediaSonosInfoCommandFilters
+} from "./wifi";
+import {
   OnOffParams,
   zigbeeLinkerOnOffActionCommandFilters,
   zigbeeLinkerOnOffInfoCommandFilters,
+  zigbeeLinkerOnOffMoesActionCommandFilters,
   zigbeeLinkerThermometerInfoCommandFilters,
   zigbeeLinkerThermostatActionCommandFilters,
   zigbeeLinkerThermostatInfoCommandFilters,
@@ -12,43 +29,7 @@ import {
   zigbeeOfficialThermostatAqaraInfoCommandFilters,
   zigbeeOfficialThermostatInfoCommandFilters,
   zigbeeOfficialThermostatMoesInfoCommandFilters
-} from './zigbee';
-import {
-  ChromecastParams,
-  MultimediaChromecastInfoCommandFilters,
-  MultimediaParams,
-  wifiMultimediaChromecastActionCommandFilters,
-  wifiMultimediaSonosActionCommandFilters,
-  wifiMultimediaSonosConfigurationFilters,
-  wifiMultimediaSonosInfoCommandFilters
-} from './wifi';
-import {DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum, PartialRecord} from '@models';
-import {zigbeeLinkerOnOffMoesActionCommandFilters} from './zigbee/on-off/moes/on-off-moes.const';
-
-export interface DeviceDefinitions {
-  infoCommandFilters?: Record<string, Record<string, string>>,
-  actionCommandFilters?: Record<string, Record<string, string>>,
-  configurationFilters?: Record<string, string>,
-  customParams?: string[]
-}
-
-export interface DeviceConfigurations {
-  infoCommandFilters: Record<string, Record<string, string>>,
-  actionCommandFilters: Record<string, Record<string, string>>,
-  configurationFilters: Record<string, string>,
-  customParameters: string[]
-}
-
-export type DeviceDefinitionsBy<U extends string> = PartialRecord<U, DeviceDefinitions>;
-export type DeviceConfigurationBy<U extends string> = PartialRecord<U, DeviceConfigurations>;
-export type GroupedDeviceDefinitions<T extends string, U extends string> =
-  Record<T, DeviceDefinitionsBy<U>>;
-export type GlobalDeviceDefinitions<T extends string, U extends string, V extends string> =
-  Record<T, PartialRecord<U, DeviceDefinitionsBy<V>>>;
-export type GlobalDeviceConfigurations<T extends string, U extends string, V extends string> =
-  Record<T, PartialRecord<U, DeviceConfigurationBy<V>>>;
-export type DeviceCommands<E extends string> = Record<E, Record<string, string>>;
-export type DeviceConfiguration<E extends string> = Record<E, string>;
+} from "./zigbee";
 
 export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinitions<DeviceConnectivityEnum, DeviceCategoryEnum> =
   {
