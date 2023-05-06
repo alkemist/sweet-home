@@ -86,6 +86,9 @@ export abstract class DeviceMultimediaComponent<
 
   override closeModal() {
     super.closeModal();
+
+    document.removeEventListener("volumeupbutton", this.upVolumeButton, false);
+    document.removeEventListener("volumedownbutton", this.downVolumeButton, false);
   }
 
   setVolume(volume: number): Promise<void> {
@@ -124,6 +127,13 @@ export abstract class DeviceMultimediaComponent<
 
   next(): Promise<void> {
     return this.execUpdateValue('next');
+  }
+
+  override openModal() {
+    super.openModal();
+
+    document.addEventListener("volumeupbutton", this.upVolumeButton, false);
+    document.addEventListener("volumedownbutton", this.downVolumeButton, false);
   }
 
   override updateInfoCommandValues(values: Record<MultimediaCommandInfo, string | number | boolean | null>) {
