@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {Inject, Injectable} from "@angular/core";
 import {BehaviorSubject, filter, map, Observable, of} from "rxjs";
 import {FirestoreService} from "./firestore.service";
 import {OauthTokenModel, OauthTokensModel, UserInterface, UserModel} from "@models";
@@ -20,6 +20,7 @@ import {MessageService} from "primeng/api";
 import {JsonService} from "./json.service";
 import {FirebaseAuthError} from "../errors/firebase-auth.error";
 import {Router} from "@angular/router";
+import {DOCUMENT} from "@angular/common";
 
 export type AppKey = "sonos" | "spotify" | "google";
 
@@ -35,8 +36,8 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
 		messageService: MessageService,
 		loggerService: LoggerService,
 		jsonService: JsonService,
-		//protected document: Document,
-		protected router: Router
+		protected router: Router,
+    @Inject(DOCUMENT) document: Document
 	) {
 		super(messageService, loggerService, jsonService, "user", $localize`User`, UserModel);
 		this._isLoggedIn = new BehaviorSubject<boolean | null>(null);
