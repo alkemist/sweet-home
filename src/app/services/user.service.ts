@@ -13,14 +13,13 @@ import {
 	signInWithEmailLink,
 	signInWithPopup,
 	signOut,
-	User
+	User,
+  GoogleAuthProvider
 } from "firebase/auth";
 import {MessageService} from "primeng/api";
 import {JsonService} from "./json.service";
 import {FirebaseAuthError} from "../errors/firebase-auth.error";
 import {Router} from "@angular/router";
-import firebase from "firebase/compat";
-import GoogleAuthProvider = firebase.auth.GoogleAuthProvider;
 
 export type AppKey = "sonos" | "spotify" | "google";
 
