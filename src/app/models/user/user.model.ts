@@ -1,52 +1,59 @@
-import {UserInterface, UserStoredInterface} from './user.interface';
-import {DocumentModel} from '../document';
+import {UserInterface, UserStoredInterface} from "./user.interface";
+import {DocumentModel} from "../document";
 import {OauthTokensModel} from "../oauth";
 
 
 export class UserModel extends DocumentModel {
-  protected _email: string;
+	protected _email: string;
+	protected _jeedom: string;
+	protected _sonos: OauthTokensModel;
+	protected _spotify: OauthTokensModel;
+	protected _google: OauthTokensModel;
 
-  constructor(user: UserStoredInterface) {
-    super(user);
-    this._email = user.email ?? '';
-    this._jeedom = user.jeedom ?? '';
-    this._spotify = new OauthTokensModel(user.spotify ?? {});
-    this._sonos = new OauthTokensModel(user.sonos ?? {});
-  }
+	constructor(user: UserStoredInterface) {
+		super(user);
+		this._email = user.email ?? "";
+		this._jeedom = user.jeedom ?? "";
+		this._spotify = new OauthTokensModel(user.spotify ?? {});
+		this._sonos = new OauthTokensModel(user.sonos ?? {});
+		this._google = new OauthTokensModel(user.google ?? {});
+	}
 
-  protected _jeedom: string;
+	get jeedom(): string {
+		return this._jeedom;
+	}
 
-  get jeedom(): string {
-    return this._jeedom;
-  }
+	get sonos() {
+		return this._sonos;
+	}
 
-  protected _sonos: OauthTokensModel;
+	set sonos(oauthToken: OauthTokensModel) {
+		this._sonos = oauthToken;
+	}
 
-  get sonos() {
-    return this._sonos;
-  }
+	get spotify() {
+		return this._spotify;
+	}
 
-  set sonos(oauthToken: OauthTokensModel) {
-    this._sonos = oauthToken;
-  }
+	set spotify(oauthToken: OauthTokensModel) {
+		this._spotify = oauthToken;
+	}
 
-  protected _spotify: OauthTokensModel;
+	get google() {
+		return this._google;
+	}
 
-  get spotify() {
-    return this._spotify;
-  }
+	set google(oauthToken: OauthTokensModel) {
+		this._google = oauthToken;
+	}
 
-  set spotify(oauthToken: OauthTokensModel) {
-    this._spotify = oauthToken;
-  }
-
-  override toFirestore(): UserInterface {
-    return {
-      ...super.toFirestore(),
-      email: this._email,
-      jeedom: this._jeedom,
-      spotify: this._spotify.toFirestore(),
-      sonos: this._sonos.toFirestore(),
-    }
-  }
+	override toFirestore(): UserInterface {
+		return {
+			...super.toFirestore(),
+			email: this._email,
+			jeedom: this._jeedom,
+			spotify: this._spotify.toFirestore(),
+			sonos: this._sonos.toFirestore(),
+		};
+	}
 }
