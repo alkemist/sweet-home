@@ -35,7 +35,7 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
 		messageService: MessageService,
 		loggerService: LoggerService,
 		jsonService: JsonService,
-		protected document: Document,
+		//protected document: Document,
 		protected router: Router
 	) {
 		super(messageService, loggerService, jsonService, "user", $localize`User`, UserModel);
@@ -112,7 +112,7 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
 		return sendSignInLinkToEmail(this.auth, email, {
 			// URL you want to redirect back to. The domain (www.example.com) for this
 			// URL must be in the authorized domains list in the Firebase Console.
-			url: `${this.document.location.origin}/authorize`,
+			url: `/authorize`, //${this.document.location.origin}
 			// This must be true.
 			handleCodeInApp: true,
 			android: {
