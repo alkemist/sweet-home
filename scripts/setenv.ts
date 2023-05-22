@@ -15,14 +15,9 @@ const targetPath = isProduction
 
 const envVars =
 	Object.fromEntries(Object.entries(process.env)
-		.filter(([key]) =>
-			key.startsWith("APP_") ||
-			key.startsWith("FIREBASE_") ||
-			key.startsWith("JEEDOM_") ||
-			key.startsWith("GOOGLE_") ||
-			key.startsWith("SPOTIFY_") ||
-			key.startsWith("SONOS_")
-		));
+		.filter(([key]) => key.startsWith("SH_"))
+		.map(([key, value]) => [key.replace("SH_", ""), value])
+	);
 
 // we have access to our environment variables
 // in the process.env object thanks to dotenv
