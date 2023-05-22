@@ -1,4 +1,4 @@
-import {computed, effect, signal} from "@angular/core";
+import {computed, effect, Signal, signal} from "@angular/core";
 
 export class LoaderSignalModel {
 	private _terminated = signal(false);
@@ -11,8 +11,8 @@ export class LoaderSignalModel {
 		return this._id;
 	}
 
-	get terminated() {
-		return this._terminated();
+	get terminated(): Signal<boolean> {
+		return this._terminated.asReadonly();
 	}
 
 	start() {
@@ -42,7 +42,7 @@ export class SmartLoaderSignalModel {
 		this._terminated = computed(() =>
 			this._loaders().length > 0 &&
 			this._loaders()
-				.filter(loader => !loader.terminated)
+				.filter(loader => !loader.terminated())
 				.length > 0
 		);
 
@@ -53,8 +53,8 @@ export class SmartLoaderSignalModel {
 		}, {allowSignalWrites: true});
 	}
 
-	terminated() {
-		return this._terminated();
+	terminated(): Signal<boolean> {
+		return this._terminated;
 	}
 
 	addLoader(timing: number = 0): LoaderSignalModel {
