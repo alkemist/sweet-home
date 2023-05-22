@@ -1,4 +1,5 @@
-import {computed, effect, Signal, signal} from "@angular/core";
+import {computed, Signal, signal} from "@angular/core";
+import {takeUntilDestroyed, toObservable} from "@angular/core/rxjs-interop";
 
 export class LoaderSignalModel {
 	private _terminated = signal(false);
@@ -32,29 +33,31 @@ export class LoaderSignalModel {
 }
 
 export class SmartLoaderSignalModel {
-	private readonly _terminated;
+	private readonly _loading;
 	private readonly _loaders
 	;
 
 	constructor() {
 		this._loaders = signal<LoaderSignalModel[]>([]);
 
-		this._terminated = computed(() =>
+		this._loading = computed(() =>
 			this._loaders().length > 0 &&
 			this._loaders()
 				.filter(loader => !loader.terminated())
 				.length > 0
 		);
 
-		effect(() => {
-			if (!this._terminated()) {
-				this._loaders.set([]);
-			}
-		}, {allowSignalWrites: true});
+		toObservable(this._loading)
+			.pipe(takeUntilDestroyed())
+			.subscribe((loading) => {
+				if (!loading) {
+					this._loaders.set([]);
+				}
+			});
 	}
 
-	terminated(): Signal<boolean> {
-		return this._terminated;
+	loading(): Signal<boolean> {
+		return this._loading;
 	}
 
 	addLoader(timing: number = 0): LoaderSignalModel {
