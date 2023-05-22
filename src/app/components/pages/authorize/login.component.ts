@@ -5,6 +5,7 @@ import {UserService} from "@services";
 import {UserFormInterface} from "@models";
 import BaseComponent from "@base-component";
 import {MessageService} from "primeng/api";
+import {environment} from "../../../../environments/environment";
 
 @Component({
 	selector: "app-login",
@@ -27,10 +28,10 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 	constructor(private userService: UserService, private router: Router, private messageService: MessageService) {
 		super();
 
-		if (process.env["APP_AUTO_LOGIN"] && process.env["APP_AUTO_PASSWORD"]) {
+		if (environment["APP_AUTO_LOGIN"] && environment["APP_AUTO_PASSWORD"]) {
 			this.form.setValue({
-				email: process.env["APP_AUTO_LOGIN"],
-				password: process.env["APP_AUTO_PASSWORD"]
+				email: environment["APP_AUTO_LOGIN"],
+				password: environment["APP_AUTO_PASSWORD"]
 			});
 		}
 	}

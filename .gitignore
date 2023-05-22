@@ -46,7 +46,8 @@ Thumbs.db
 .env
 src/environments/
 src/environments/*
-src/environments/environment.ts
+!src/environments/environment.ts
+!src/environments/environment.interface.ts
 
 # Local Netlify folder
 .netlify

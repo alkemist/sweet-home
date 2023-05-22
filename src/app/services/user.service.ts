@@ -6,6 +6,7 @@ import {InvalidEmailError, OfflineError, TooManyRequestError, UserNotExistError,
 import {LoggerService} from "./logger.service";
 import {
 	getAuth,
+	GoogleAuthProvider,
 	isSignInWithEmailLink,
 	onAuthStateChanged,
 	sendSignInLinkToEmail,
@@ -13,14 +14,14 @@ import {
 	signInWithEmailLink,
 	signInWithPopup,
 	signOut,
-	User,
-  GoogleAuthProvider
+	User
 } from "firebase/auth";
 import {MessageService} from "primeng/api";
 import {JsonService} from "./json.service";
 import {FirebaseAuthError} from "../errors/firebase-auth.error";
 import {Router} from "@angular/router";
 import {DOCUMENT} from "@angular/common";
+import {environment} from "../../environments/environment";
 
 export type AppKey = "sonos" | "spotify" | "google";
 
@@ -37,12 +38,12 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
 		loggerService: LoggerService,
 		jsonService: JsonService,
 		protected router: Router,
-    @Inject(DOCUMENT) document: Document
+		@Inject(DOCUMENT) document: Document
 	) {
 		super(messageService, loggerService, jsonService, "user", $localize`User`, UserModel);
 		this._isLoggedIn = new BehaviorSubject<boolean | null>(null);
 
-		if (parseInt(process.env["APP_OFFLINE"] ?? "0")) {
+		if (parseInt(environment["APP_OFFLINE"] ?? "0")) {
 			this._user = new UserModel({
 				id: "",
 				name: "",
@@ -53,7 +54,7 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
 		}
 
 		onAuthStateChanged(this.auth, (userFirebase) => {
-			if (parseInt(process.env["APP_OFFLINE"] ?? "0")) {
+			if (parseInt(environment["APP_OFFLINE"] ?? "0")) {
 				this._isLoggedIn.next(true);
 				return;
 			}
