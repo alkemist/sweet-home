@@ -1,11 +1,12 @@
 <div class="page-container__content" id="login">
-  <form (submit)="handleSubmit()" [formGroup]="form" class="page-container__content__center flex-1">
+  <!--<form (submit)="handleSubmit()" [formGroup]="form" class="page-container__content__center flex-1">-->
+  <div class="page-container__content__center flex-1">
     <p-card>
       <ng-template pTemplate="title">
         <h5 class="text-center" i18n>Login</h5>
       </ng-template>
 
-      <div class="field-row field-float">
+      <!--<div class="field-row field-float">
         <div class="p-float-label">
           <input [ngClass]="{'p-invalid':email.invalid && (email.dirty || email.touched)}" class="w-full"
                  formControlName="email"
@@ -41,12 +42,14 @@
           </ng-template>
         </val-errors>
         <div *ngIf="error" class="p-error">{{ error }}</div>
-      </div>
+      </div>-->
 
       <ng-template pTemplate="footer">
-        <button class="w-full" i18n-label icon="pi pi-check" label="Sign in" pButton pRipple
-                type="submit"></button>
+        <!--<button class="w-full" i18n-label icon="pi pi-check" label="Sign in" pButton pRipple
+                type="submit"></button>-->
+        <button (click)="handleSubmit()" class="w-full" i18n-label icon="pi pi-check" label="Sign in" pButton
+                pRipple type="button"></button>
       </ng-template>
     </p-card>
-  </form>
+  </div>
 </div>

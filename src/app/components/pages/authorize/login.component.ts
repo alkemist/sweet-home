@@ -1,10 +1,6 @@
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from "@angular/core";
-import {FormControl, FormGroup} from "@angular/forms";
-import {Router} from "@angular/router";
 import {UserService} from "@services";
-import {UserFormInterface} from "@models";
 import BaseComponent from "@base-component";
-import {MessageService} from "primeng/api";
 
 @Component({
 	selector: "app-login",
@@ -16,32 +12,36 @@ import {MessageService} from "primeng/api";
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
-	form = new FormGroup<UserFormInterface>({
+	/*form = new FormGroup<UserFormInterface>({
 		email: new FormControl<string | null>("", []),
 		password: new FormControl<string | null>("", []),
-	});
+	});*/
 	error: string = "";
 
-	constructor(private userService: UserService, private router: Router, private messageService: MessageService) {
+	/*constructor(private userService: UserService, private router: Router, private messageService: MessageService) {
+		super();
+	}*/
+
+	constructor(private userService: UserService) {
 		super();
 	}
 
-	get email(): FormControl<string> {
+	/*get email(): FormControl<string> {
 		return this.form.get("email") as FormControl<string>;
 	}
 
 	get password(): FormControl<string> {
 		return this.form.get("password") as FormControl<string>;
-	}
+	}*/
 
 	ngOnInit(): void {
 
 	}
 
 	handleSubmit() {
-		this.form.markAllAsTouched();
+		//this.form.markAllAsTouched();
 
-		if (this.email.value && this.password.value) {
+		/*if (this.email.value && this.password.value) {
 			this.userService.login(this.email.value, this.password.value)
 				.then(_ => {
 					this.messageService.add({
@@ -62,6 +62,7 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 			});
 		} else {
 			void this.userService.loginWithProvider();
-		}
+		}*/
+		void this.userService.loginWithProvider();
 	}
 }
