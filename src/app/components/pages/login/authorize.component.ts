@@ -3,8 +3,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {AppKey, LoggerService, SonosService, SpotifyService, UserService} from "@services";
 import {combineLatest} from "rxjs";
 import {MessageService} from "primeng/api";
-import {UnknownTokenError} from "@errors";
 import BaseComponent from "@base-component";
+import {UnknownTokenError} from "@errors";
 
 @Component({
 	selector: "app-authorize",
@@ -34,7 +34,7 @@ export class AuthorizeComponent extends BaseComponent implements OnInit, OnDestr
 		])
 			.subscribe(async (mixedData) => {
 				const [{type}, {code}] = mixedData as [{ type: AppKey }, { code: string }];
-
+				// getRedirectResult
 				if (type && code) {
 					this.updateToken(type, code).then(() => {
 						// console.log(`-- [${ type }] Refresh token updated`);
@@ -44,15 +44,16 @@ export class AuthorizeComponent extends BaseComponent implements OnInit, OnDestr
 					this.userService.loginWithLink().then(_ => {
 						this.messageService.add({
 							severity: "success",
-							detail: `${$localize`Login link sended`}`
+							detail: `${$localize`Successfully logged`}`
 						});
+						void this.router.navigate(["../home"]);
 					});
 				} else {
 					this.messageService.add({
 						severity: "error",
 						detail: $localize`Unknown type or token`
 					});
-					this.loggerService.error(new UnknownTokenError(type));
+					this.loggerService.error(new UnknownTokenError(mixedData[0], mixedData[1]));
 				}
 			});
 	}

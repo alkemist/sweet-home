@@ -1,11 +1,10 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
 import {UserService} from "@services";
 import {UserFormInterface} from "@models";
 import BaseComponent from "@base-component";
 import {MessageService} from "primeng/api";
-import {environment} from "../../../../environments/environment";
 
 @Component({
 	selector: "app-login",
@@ -17,23 +16,13 @@ import {environment} from "../../../../environments/environment";
 })
 export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 	form = new FormGroup<UserFormInterface>({
-		email: new FormControl<string | null>("", [
-			Validators.required,
-			Validators.email,
-		]),
+		email: new FormControl<string | null>("", []),
 		password: new FormControl<string | null>("", []),
 	});
 	error: string = "";
 
 	constructor(private userService: UserService, private router: Router, private messageService: MessageService) {
 		super();
-
-		if (environment["APP_AUTO_LOGIN"] && environment["APP_AUTO_PASSWORD"]) {
-			this.form.setValue({
-				email: environment["APP_AUTO_LOGIN"],
-				password: environment["APP_AUTO_PASSWORD"]
-			});
-		}
 	}
 
 	get email(): FormControl<string> {
@@ -51,24 +40,27 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 	handleSubmit() {
 		this.form.markAllAsTouched();
 
-		if (this.form.valid && this.form.value.email && this.form.value.password) {
-			try {
-				this.userService.login(this.form.value.email, this.form.value.password).then(_ => this.afterLogin());
-			} catch (error) {
-				this.error = (error as Error).message;
-			}
-		} else if (this.form.valid && this.form.value.email && !this.form.value.password) {
-			this.userService.sendLoginLink(this.form.value.email).then(_ => this.afterLogin());
+		if (this.email.value && this.password.value) {
+			this.userService.login(this.email.value, this.password.value)
+				.then(_ => {
+					this.messageService.add({
+						severity: "success",
+						detail: `${$localize`Successfully logged`}`
+					});
+					void this.router.navigate(["../home"]);
+				})
+				.catch((error) => {
+					this.error = (error as Error).message;
+				});
+		} else if (this.email.value && !this.password.value) {
+			this.userService.sendLoginLink(this.email.value).then(_ => {
+				this.messageService.add({
+					severity: "success",
+					detail: `${$localize`Login link sended`}`
+				});
+			});
 		} else {
-			this.userService.loginWithProvider().then(_ => this.afterLogin());
+			void this.userService.loginWithProvider();
 		}
-	}
-
-	private afterLogin() {
-		this.messageService.add({
-			severity: "success",
-			detail: `${$localize`Successfully logged`}`
-		});
-		void this.router.navigate(["../home"]);
 	}
 }

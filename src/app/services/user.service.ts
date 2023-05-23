@@ -12,7 +12,7 @@ import {
 	sendSignInLinkToEmail,
 	signInWithEmailAndPassword,
 	signInWithEmailLink,
-	signInWithPopup,
+	signInWithRedirect,
 	signOut,
 	User
 } from "firebase/auth";
@@ -38,7 +38,7 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
 		loggerService: LoggerService,
 		jsonService: JsonService,
 		protected router: Router,
-		@Inject(DOCUMENT) document: Document
+		@Inject(DOCUMENT) protected document: Document
 	) {
 		super(messageService, loggerService, jsonService, "user", $localize`User`, UserModel);
 		this._isLoggedIn = new BehaviorSubject<boolean | null>(null);
@@ -114,16 +114,16 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
 		return sendSignInLinkToEmail(this.auth, email, {
 			// URL you want to redirect back to. The domain (www.example.com) for this
 			// URL must be in the authorized domains list in the Firebase Console.
-			url: `/authorize`, //${this.document.location.origin}
+			url: `${this.document.location.origin}/authorize/email`,
 			// This must be true.
 			handleCodeInApp: true,
-			android: {
+			/*android: {
 				packageName: "com.alkemist.sweethome",
 				installApp: true,
-			},
+			},*/
 		})
 			.then(() => {
-
+				window.localStorage.setItem("emailForSignIn", email);
 			})
 			.catch((error) => {
 				this.loggerService.error(new FirebaseAuthError(error));
@@ -154,17 +154,8 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
 	}
 
 	loginWithProvider() {
-		return signInWithPopup(this.auth, new GoogleAuthProvider())
-			.then((result) => {
-				console.log(result);
-				/*const credential = GoogleAuthProvider.credential(result);
-				if (credential.accessToken) {
-					void this.updateRefreshToken("google", new OauthTokenModel({
-						token: credential.accessToken,
-						token_type: "Bearer",
-					}));
-				}*/
-			})
+		window.localStorage.setItem("loginWithProvider", "true");
+		return signInWithRedirect(this.auth, new GoogleAuthProvider())
 			.catch((error) => {
 				const customError = new FirebaseAuthError(error);
 				this.loggerService.error(customError);

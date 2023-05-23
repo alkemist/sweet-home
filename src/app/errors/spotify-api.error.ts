@@ -1,8 +1,8 @@
-import { SpotifyError } from './spotify.error';
-import { HttpErrorResponse } from '@angular/common/http';
+import {HttpErrorResponse} from "@angular/common/http";
+import {ApiError} from "./api.error";
 
-export class SpotifyApiError extends SpotifyError {
-  constructor(url: string, params: any, error: HttpErrorResponse) {
-    super(`Api "${ url }"`, error, params);
-  }
+export class SpotifyApiError extends ApiError {
+	constructor(url: string, params: any, error: HttpErrorResponse) {
+		super("spotify", error, `Api "${url}"`, params);
+	}
 }

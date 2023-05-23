@@ -1,8 +1,11 @@
-import { UserError } from './user.error';
+import {UserError} from "./user.error";
 
 export class UnknownTokenError extends UserError {
-  constructor(type: string) {
-    super();
-    this.message = `No token "${ type }"`;
-  }
+	constructor(routeParams: any, queryParams: any) {
+		super();
+		this.message = `No token`;
+		this.context = {
+			routeParams, queryParams
+		};
+	}
 }
