@@ -1,7 +1,7 @@
-import {computed, Signal, signal} from "@angular/core";
+import {computed, DestroyRef, Signal, signal} from "@angular/core";
 import {takeUntilDestroyed, toObservable} from "@angular/core/rxjs-interop";
 
-export class LoaderSignalModel {
+export class LoaderModel {
 	private _terminated = signal(false);
 
 	constructor(protected _id: number, protected timing: number = 0) {
@@ -32,13 +32,13 @@ export class LoaderSignalModel {
 	}
 }
 
-export class SmartLoaderSignalModel {
+export class SmartLoaderModel {
 	private readonly _loading;
 	private readonly _loaders
 	;
 
-	constructor() {
-		this._loaders = signal<LoaderSignalModel[]>([]);
+	constructor(destroyRef?: DestroyRef) {
+		this._loaders = signal<LoaderModel[]>([]);
 
 		this._loading = computed(() =>
 			this._loaders().length > 0 &&
@@ -48,7 +48,7 @@ export class SmartLoaderSignalModel {
 		);
 
 		toObservable(this._loading)
-			.pipe(takeUntilDestroyed())
+			.pipe(takeUntilDestroyed(destroyRef))
 			.subscribe((loading) => {
 				if (!loading) {
 					this._loaders.set([]);
@@ -60,8 +60,8 @@ export class SmartLoaderSignalModel {
 		return this._loading;
 	}
 
-	addLoader(timing: number = 0): LoaderSignalModel {
-		const loader = new LoaderSignalModel(this._loaders().length + 1, timing);
+	addLoader(timing: number = 0): LoaderModel {
+		const loader = new LoaderModel(this._loaders().length + 1, timing);
 		this._loaders.mutate(loaders => loaders.push(loader));
 
 		if (timing > 0) {

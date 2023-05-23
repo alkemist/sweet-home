@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from "@angular/core";
 import {FormControl, FormGroup} from "@angular/forms";
 import {Router} from "@angular/router";
 import {UserService} from "@services";
@@ -12,7 +12,8 @@ import {MessageService} from "primeng/api";
 	styleUrls: ["./login.component.scss"],
 	host: {
 		class: "page-container"
-	}
+	},
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
 	form = new FormGroup<UserFormInterface>({

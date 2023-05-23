@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AppKey, LoggerService, SonosService, SpotifyService, UserService} from "@services";
 import {combineLatest} from "rxjs";
@@ -12,7 +12,8 @@ import {UnknownTokenError} from "@errors";
 	styleUrls: ["./authorize.component.scss"],
 	host: {
 		class: "page-container"
-	}
+	},
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthorizeComponent extends BaseComponent implements OnInit, OnDestroy {
 	constructor(
