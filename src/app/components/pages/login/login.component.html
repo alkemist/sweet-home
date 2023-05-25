@@ -1,0 +1,54 @@
+<div class="page-container__content" id="login">
+  <form (submit)="handleSubmit()" [formGroup]="form" class="page-container__content__center flex-1">
+    <p-card>
+      <ng-template pTemplate="title">
+        <h5 class="text-center" i18n>Login</h5>
+      </ng-template>
+
+      <div *ngIf="enableForm">
+        <div class="field-row field-float">
+          <div class="p-float-label">
+            <input [ngClass]="{'p-invalid':email.invalid && (email.dirty || email.touched)}" class="w-full"
+                   formControlName="email"
+                   id="email" pInputText/>
+            <label [ngClass]="{'p-error':email.invalid && (email.dirty || email.touched)}" class="w-full"
+                   for="email"
+                   i18n>Email</label>
+          </div>
+          <val-errors class="p-error" controlName="email">
+            <ng-template valError="required">
+              <ng-container i18n>Email is required.</ng-container>
+            </ng-template>
+            <ng-template valError="email">
+              <ng-container i18n>Email is malformed.</ng-container>
+            </ng-template>
+          </val-errors>
+        </div>
+
+        <div class="field-row field-float">
+          <div class="p-float-label">
+            <input [ngClass]="{'p-invalid':password.invalid && (password.dirty || password.touched)}"
+                   class="w-full"
+                   formControlName="password" id="password" pInputText
+                   type="password"/>
+            <label [ngClass]="{'p-error':password.invalid && (password.dirty || password.touched)}"
+                   class="w-full"
+                   for="password"
+                   i18n>Password</label>
+          </div>
+          <val-errors class="p-error" controlName="password">
+            <ng-template valError="required">
+              <ng-container i18n>Password is required.</ng-container>
+            </ng-template>
+          </val-errors>
+          <div *ngIf="error" class="p-error">{{ error }}</div>
+        </div>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <button class="w-full" i18n-label icon="pi pi-check" label="Sign in" pButton pRipple
+                type="submit"></button>
+      </ng-template>
+    </p-card>
+  </form>
+</div>

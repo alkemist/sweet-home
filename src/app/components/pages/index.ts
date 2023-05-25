@@ -1,1 +1,1 @@
-export * from './login/authorize.component';
+export * from './authorize/authorize.component';

@@ -11,7 +11,7 @@ import {SharingModule} from './modules/sharing.module';
 import {ServiceWorkerModule} from '@angular/service-worker';
 
 import {Buffer} from "buffer";
-import {LoginComponent} from './components/pages/authorize/login.component';
+import {LoginComponent} from './components/pages/login/login.component';
 
 window.Buffer = window.Buffer || Buffer;
 window.cordova = window.cordova || undefined;
