@@ -25,7 +25,8 @@ const envVars =
 // we have access to our environment variables
 // in the process.env object thanks to dotenv
 const environmentFileContent = `
-export const environment = ${JSON.stringify(envVars)};
+import {Environment} from "./environment.interface";
+export const environment: Environment = ${JSON.stringify(envVars)};
 `;
 
 //

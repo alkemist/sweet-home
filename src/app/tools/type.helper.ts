@@ -1,4 +1,4 @@
-import {JSONValue} from "./object.helper";
+import {JsonObject} from "./object.helper";
 
 export abstract class TypeHelper {
   static deepClone<T, I>(source: T): T {
@@ -26,11 +26,11 @@ export abstract class TypeHelper {
     return !isNaN(+num);
   }
 
-  static isArray(arr: unknown): arr is unknown[] {
-    return arr !== null && typeof arr !== "string" && Array.isArray(arr);
+  static isArray<T>(arr: unknown): arr is T[] {
+    return arr !== null && Array.isArray(arr);
   }
 
-  static isObject(obj: unknown): obj is Record<string, JSONValue> {
+  static isObject(obj: unknown): obj is JsonObject {
     return obj !== null && typeof obj === "object";
   }
 

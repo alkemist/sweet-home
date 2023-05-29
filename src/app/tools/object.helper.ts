@@ -1,12 +1,11 @@
 import {TypeHelper} from "./type.helper";
 
-export type JSONPrimitive = string | number | boolean | null;
-export type JSONValue = {
-  [key: string]: JSONValue;
-} | JSONValue[] | JSONPrimitive;
-export type JSONObject = {
-  [key: string]: JSONValue;
+export type JsonPrimitive = string | number | boolean | null;
+export type JsonObject = {
+  [key: string]: JsonValue;
 };
+export type JsonArray = JsonValue[];
+export type JsonValue = JsonObject | JsonArray | JsonPrimitive;
 
 export abstract class ObjectHelper {
   static clone<T>(object: T): T {
@@ -28,8 +27,8 @@ export abstract class ObjectHelper {
     }, {} as Record<string, V>)
   }
 
-  static getIn(object: JSONValue, path: string[]): JSONValue | undefined {
-    let value: JSONValue | undefined = object
+  static getIn(object: JsonValue, path: string[]): JsonValue | undefined {
+    let value: JsonValue | undefined = object
     let i = 0
 
     if (value) {
