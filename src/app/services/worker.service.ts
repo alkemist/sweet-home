@@ -12,10 +12,9 @@ export class WorkerService {
   private appWorker?: AppWorker;
   private geofence?: GeolocationWorker;
 
-  constructor(private readonly titleService: Title,
-              @Inject(DOCUMENT) document: Document) {
+  constructor() {
     if (typeof window.cordova === "undefined") {
-      this.appWorker = new AppWorker(document.location.origin, "app");
+      this.appWorker = new AppWorker("app");
     } else {
       this.geofence = new GeolocationWorker();
     }

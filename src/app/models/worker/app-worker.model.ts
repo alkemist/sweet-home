@@ -1,9 +1,9 @@
-import {InitializationMessage, WorkerMessage} from "./worker-message.model";
-import {UnknownWorkerError} from "@errors";
-import {GeolocationWorker} from "./geolocation-worker.model";
-import {combineLatest} from "rxjs";
-import {NotificationWorker} from "./notification-worker.model";
-import {importMetaUrl} from "./esm-import";
+import { InitializationMessage, WorkerMessage } from "./worker-message.model";
+import { UnknownWorkerError } from "@errors";
+import { GeolocationWorker } from "./geolocation-worker.model";
+import { combineLatest } from "rxjs";
+import { NotificationWorker } from "./notification-worker.model";
+import {createWebWorker} from "./create-web-worker";
 
 export type WorkerName = 'app';
 
@@ -12,12 +12,10 @@ export class AppWorker {
   private geolocationWorker = new GeolocationWorker();
   private notificationWorker = new NotificationWorker();
 
-  constructor(location: string, workerName: WorkerName) {
+  constructor(workerName: WorkerName) {
     switch (workerName) {
       case "app":
-        this.webWorker = new Worker(
-          new URL(`${location}/assets/workers/web.worker.js`, importMetaUrl())
-        );
+        this.webWorker = createWebWorker();
         this.webWorker.onmessage = this.onMessage;
         break;
 

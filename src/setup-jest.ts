@@ -48,6 +48,6 @@ jest.mock('firebase/firestore', () => ({
 
 jest.mock('stackdriver-errors-js');
 
-jest.mock('./app/models/worker/esm-import.ts', () => {
-  return {importMetaUrl: () => ''};
+jest.mock('./workers/create-web-worker.ts', () => {
+  return {};
 });
