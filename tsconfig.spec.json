@@ -4,16 +4,21 @@
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
     "types": [
-      "jasmine",
+      "jest",
       "@angular/localize"
-    ]
+    ],
+    "esModuleInterop": true
   },
+  "files": [
+    "src/setup-jest.ts",
+    "src/polyfills.ts"
+  ],
   "include": [
     "src/**/*.spec.ts",
     "src/**/*.d.ts"
   ],
   "exclude": [
     "./out-tsc/worker",
-    "src/app/workers/*.worker.ts"
+    "src/app/workers/esm-import.ts"
   ]
 }

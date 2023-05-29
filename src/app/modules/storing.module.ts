@@ -8,25 +8,25 @@ import {environment} from "../../environments/environment";
 
 
 const states = [
-	DeviceState
+  DeviceState
 ];
 
 @NgModule({
-	imports: [
-		NgxsModule.forRoot(states, {
-			developmentMode: !!parseInt(environment["APP_DEBUG"] ?? "0")
-		}),
-		NgxsReduxDevtoolsPluginModule.forRoot({
-			disabled: !parseInt(environment["APP_DEBUG"] ?? "0"),
-		}),
-		NgxsLoggerPluginModule.forRoot({
-			disabled: !parseInt(environment["APP_DEBUG"] ?? "0"),
-		}),
-		NgxsStoragePluginModule.forRoot()
-	],
-	exports: [
-		NgxsModule
-	],
+  imports: [
+    NgxsModule.forRoot(states, {
+      developmentMode: environment["APP_DEBUG"]
+    }),
+    NgxsReduxDevtoolsPluginModule.forRoot({
+      disabled: !environment["APP_DEBUG"],
+    }),
+    NgxsLoggerPluginModule.forRoot({
+      disabled: !environment["APP_DEBUG"],
+    }),
+    NgxsStoragePluginModule.forRoot()
+  ],
+  exports: [
+    NgxsModule
+  ],
 })
 export class StoringModule {
 }

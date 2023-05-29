@@ -1,6 +1,5 @@
 import {TypeHelper} from "./type.helper";
 
-export type JSONPath = string[];
 export type JSONPrimitive = string | number | boolean | null;
 export type JSONValue = {
   [key: string]: JSONValue;
@@ -29,7 +28,7 @@ export abstract class ObjectHelper {
     }, {} as Record<string, V>)
   }
 
-  static getIn(object: JSONValue, path: JSONPath): JSONValue | undefined {
+  static getIn(object: JSONValue, path: string[]): JSONValue | undefined {
     let value: JSONValue | undefined = object
     let i = 0
 

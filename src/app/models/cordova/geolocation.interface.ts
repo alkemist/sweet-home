@@ -4,11 +4,6 @@ export interface TransitionType {
   BOTH: number;
 }
 
-export interface Window {
-  geofence: GeofencePlugin;
-  TransitionType: TransitionType;
-}
-
 export interface GeofencePlugin {
   onTransitionReceived: (geofences: Geofence[]) => void;
   onNotificationClicked: (notificationData: Object) => void;

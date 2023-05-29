@@ -10,14 +10,17 @@ const environment = argv.environment;
 const isProduction = environment === "prod";
 // @ts-ignore
 const targetPath = isProduction
-	? `./src/environments/environment.production.ts`
-	: `./src/environments/environment.development.ts`;
+  ? `./src/environments/environment.production.ts`
+  : `./src/environments/environment.development.ts`;
 
 const envVars =
-	Object.fromEntries(Object.entries(process.env)
-		.filter(([key]) => key.startsWith("SH_"))
-		.map(([key, value]) => [key.replace("SH_", ""), value])
-	);
+  Object.fromEntries(Object.entries(process.env)
+    .filter(([key]) => key.startsWith("SH_"))
+    .map(([key, value]) => [
+      key.replace("SH_", ""),
+      ["SH_APP_DEBUG", "SH_APP_OFFLINE"].includes(key) ? value === "1" || value === "true" : value
+    ])
+  );
 
 // we have access to our environment variables
 // in the process.env object thanks to dotenv
@@ -28,8 +31,8 @@ export const environment = ${JSON.stringify(envVars)};
 //
 // write the content to the respective file
 writeFile(targetPath, environmentFileContent, (err: Error) => {
-	if (err) {
-		console.log(err);
-	}
-	console.log(`Wrote variables to ${targetPath}`);
+  if (err) {
+    console.log(err);
+  }
+  console.log(`Wrote variables to ${targetPath}`);
 });

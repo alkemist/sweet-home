@@ -1,15 +1,5 @@
-import { Geofence } from '@models';
-import { MathHelper } from '@tools';
-
-declare global {
-  interface Window {
-    geofence: any;
-  }
-
-  interface Navigator {
-    connection: any;
-  }
-}
+import {Geofence} from '@models';
+import {MathHelper} from '@tools';
 
 // https://cordova.apache.org/docs/en/11.x/reference/cordova-plugin-network-information/index.html
 export enum ConnectionType {
@@ -59,7 +49,7 @@ export class GeolocationWorker {
           }
         }, (error) => {
           console.log(error);
-        }, { maximumAge: 5000, timeout: 5000, enableHighAccuracy: true });
+        }, {maximumAge: 5000, timeout: 5000, enableHighAccuracy: true});
 
         const geofenceConfiguration: Geofence = {
           id: 'home',
@@ -122,7 +112,7 @@ export class GeolocationWorker {
         });
       }, (error) => {
         console.log(error);
-      }, { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true });
+      }, {maximumAge: 3000, timeout: 5000, enableHighAccuracy: true});
     }, (error: any) => {
       console.log("Error", error);
     });

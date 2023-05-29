@@ -2,7 +2,6 @@ import {ComponentRef} from '@angular/core';
 import {CoordinateInterface, DeviceModel, SizeInterface} from '@models';
 import {Subject} from 'rxjs';
 import {MathHelper} from './math.helper';
-import * as Hammer from 'hammerjs';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import {ObjectHelper} from './object.helper';
 import BaseDeviceComponent from "@base-device-component";

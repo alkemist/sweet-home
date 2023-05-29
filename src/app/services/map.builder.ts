@@ -1,4 +1,4 @@
-import {ElementRef, Injectable, ViewContainerRef} from '@angular/core';
+import {ElementRef, Injectable, Type, ViewContainerRef} from '@angular/core';
 import {
   CoordinateInterface,
   DeviceCategoryEnum,
@@ -8,11 +8,10 @@ import {
   SmartLoaderModel,
   SmartMapModel
 } from '@models';
-import * as Hammer from 'hammerjs';
+import 'hammerjs';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {DeviceSupervisor, DocumentHelper, MathHelper, ObjectHelper} from '@tools';
-import {DeviceService, LoggerService} from './index';
-import {MessageService} from 'primeng/api';
+import {LoggerService} from './index';
 import {
   DeviceChromecastComponent,
   DeviceOnOffLidlComponent,
@@ -448,9 +447,7 @@ interface MouseEventCustom extends MouseEvent {
   relatedTarget: Element;
 }
 
-type DeviceComponentConstructor = (new (mP: MapBuilder, dS: DeviceService, mS: MessageService) => BaseDeviceComponent);
-
-export const ComponentClassByType: Record<DeviceCategoryEnum, Partial<Record<DeviceTypeEnum, DeviceComponentConstructor>>> = {
+export const ComponentClassByType: Record<DeviceCategoryEnum, Partial<Record<DeviceTypeEnum, Type<BaseDeviceComponent>>>> = {
   [DeviceCategoryEnum.Thermostat]: {
     [DeviceTypeEnum.Aqara]: DeviceThermostatAqaraComponent,
     [DeviceTypeEnum.Moes]: DeviceThermostatMoesComponent,

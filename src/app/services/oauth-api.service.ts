@@ -1,10 +1,10 @@
-import { AppKey, UserService } from './user.service';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { LoggerService } from './logger.service';
-import { MessageService } from 'primeng/api';
-import { ApiAccessToken, OauthTokenModel } from '@models';
-import { catchError, first, throwError } from 'rxjs';
-import { ApiError } from '@errors';
+import {AppKey, UserService} from './user.service';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {LoggerService} from './logger.service';
+import {MessageService} from 'primeng/api';
+import {ApiAccessToken, OauthTokenModel} from '@models';
+import {catchError, first, throwError} from 'rxjs';
+import {ApiError} from '@errors';
 
 export abstract class OauthApiService {
   protected abstract authorizeUrl: string;
@@ -34,15 +34,15 @@ export abstract class OauthApiService {
       detail: $localize`Redirect for authorization request`
     });
 
-    const redirectUri = `${ this.document.location.origin }/authorize/${ this.appKey }`
+    const redirectUri = `${this.document.location.origin}/authorize/${this.appKey}`
 
     setTimeout(() => {
-      this.document.location.href = `${ this.authorizeUrl }?`
-        + `client_id=${ this.clientId }`
+      this.document.location.href = `${this.authorizeUrl}?`
+        + `client_id=${this.clientId}`
         + `&response_type=code`
-        + `&scope=${ this.scope }`
-        + `&redirect_uri=${ redirectUri }`
-        + `&state=${ new Date().getTime() }`;
+        + `&scope=${this.scope}`
+        + `&redirect_uri=${redirectUri}`
+        + `&state=${new Date().getTime()}`;
     }, 1000)
   }
 
@@ -51,7 +51,7 @@ export abstract class OauthApiService {
 
     if (accessToken) {
       return new Promise<unknown>(async (resolve) => {
-        (await this.http.get(`${ this.apiUrl }${ url }`, {
+        (await this.http.get(`${this.apiUrl}${url}`, {
           headers: accessToken.toHeaders(),
         }))
           .pipe(
@@ -69,7 +69,7 @@ export abstract class OauthApiService {
 
     if (accessToken) {
       return new Promise<unknown>(async (resolve) => {
-        (await this.http.post(`${ this.apiUrl }${ url }`, params, {
+        (await this.http.post(`${this.apiUrl}${url}`, params, {
           headers: accessToken.toHeaders('application/json'),
         }))
           .pipe(
@@ -87,7 +87,7 @@ export abstract class OauthApiService {
 
     if (accessToken) {
       return new Promise<unknown>(async (resolve) => {
-        (await this.http.put(`${ this.apiUrl }${ url }`, params, {
+        (await this.http.put(`${this.apiUrl}${url}`, params, {
           headers: accessToken.toHeaders(),
         }))
           .pipe(
@@ -126,22 +126,22 @@ export abstract class OauthApiService {
 
       //console.log(`-- [${ this.appKey }] request token "${ tokenType }"`);
 
-      let body = `grant_type=${ tokenType }`;
+      let body = `grant_type=${tokenType}`;
 
       if (tokenType === 'authorization_code') {
         //console.log(`-- [${ this.appKey }] authorization code "${ authorizationCode }"`);
 
-        body += `&code=${ authorizationCode }`
-          + `&redirect_uri=${ this.document.location.origin }/authorize/${ this.appKey }`;
+        body += `&code=${authorizationCode}`
+          + `&redirect_uri=${this.document.location.origin}/authorize/${this.appKey}`;
       } else if (tokenType === 'refresh_token') {
         const refreshToken = this.userService.getToken(this.appKey).getRefreshToken();
-        body += `&refresh_token=${ refreshToken?.token }`
+        body += `&refresh_token=${refreshToken?.token}`
       }
 
-      const requestToken = Buffer.from(this.clientId + ':' + this.clientSecret).toString('base64');
+      const requestToken = window.Buffer.from(this.clientId + ':' + this.clientSecret).toString('base64');
 
       return this.http.post(this.tokenUrl, body, {
-        headers: new OauthTokenModel({ token: requestToken, token_type: 'Basic' })
+        headers: new OauthTokenModel({token: requestToken, token_type: 'Basic'})
           .toHeaders('application/x-www-form-urlencoded')
       })
         .pipe(

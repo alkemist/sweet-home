@@ -1,8 +1,9 @@
-import { InitializationMessage, WorkerMessage } from "./worker-message.model";
-import { UnknownWorkerError } from "@errors";
-import { GeolocationWorker } from "./geolocation-worker.model";
-import { combineLatest } from "rxjs";
-import { NotificationWorker } from "./notification-worker.model";
+import {InitializationMessage, WorkerMessage} from "./worker-message.model";
+import {UnknownWorkerError} from "@errors";
+import {GeolocationWorker} from "./geolocation-worker.model";
+import {combineLatest} from "rxjs";
+import {NotificationWorker} from "./notification-worker.model";
+import {importMetaUrl} from "./esm-import";
 
 export type WorkerName = 'app';
 
@@ -14,7 +15,9 @@ export class AppWorker {
   constructor(workerName: WorkerName) {
     switch (workerName) {
       case "app":
-        this.webWorker = new Worker(new URL(`../../workers/web.worker`, import.meta.url));
+        this.webWorker = new Worker(
+          new URL(`../../workers/web.worker`, importMetaUrl())
+        );
         this.webWorker.onmessage = this.onMessage;
         break;
 
@@ -25,7 +28,7 @@ export class AppWorker {
     combineLatest([
       this.geolocationWorker.ready$,
       this.notificationWorker.ready$,
-    ]).subscribe(([ geolocationGranted, notificationGranted ]) => {
+    ]).subscribe(([geolocationGranted, notificationGranted]) => {
       // console.log('-- [App Worker] Permissions', geolocationGranted, notificationGranted);
 
       if (geolocationGranted && notificationGranted) {

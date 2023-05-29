@@ -50,7 +50,7 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
     super(messageService, loggerService, jsonService, "user", $localize`User`, UserModel);
     this._isLoggedIn = new BehaviorSubject<boolean | null>(null);
 
-    if (parseInt(environment["APP_OFFLINE"] ?? "0")) {
+    if (environment["APP_OFFLINE"]) {
       this._user = new UserModel({
         id: "",
         name: "",
@@ -61,7 +61,7 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
     }
 
     onAuthStateChanged(this.auth, (userFirebase) => {
-      if (parseInt(environment["APP_OFFLINE"] ?? "0")) {
+      if (environment["APP_OFFLINE"]) {
         this._isLoggedIn.next(true);
         return;
       }
