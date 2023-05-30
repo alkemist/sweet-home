@@ -10,5 +10,4 @@ export * from './metadata.helper';
 export * from './object.helper';
 export * from './slugify';
 export * from './time.helper';
-export * from './type.helper';
 export * from './xml.helper';

@@ -38,7 +38,7 @@
     "firebase": "^9.17.1",
     "fork-awesome": "^1.2.0",
     "hammerjs": "^2.0.8",
-    "json-compare-engine": "^1.0.0",
+    "json-compare-engine": "^1.0.4",
     "json-rpc-2.0": "^1.5.1",
     "ngx-valdemort": "^10.0.1",
     "nosleep.js": "^0.12.0",

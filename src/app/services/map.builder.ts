@@ -10,7 +10,7 @@ import {
 } from '@models';
 import 'hammerjs';
 import {BehaviorSubject, Subject} from 'rxjs';
-import {DeviceSupervisor, DocumentHelper, MathHelper, ObjectHelper} from '@tools';
+import {DeviceSupervisor, DocumentHelper, MathHelper} from '@tools';
 import {LoggerService} from './index';
 import {
   DeviceChromecastComponent,
@@ -23,6 +23,7 @@ import {
 } from '@devices';
 import {UnexpectedError} from '@errors';
 import BaseDeviceComponent from "@base-device-component";
+import {CompareUtils} from "json-compare-engine/src/compare-utils";
 
 @Injectable({
   providedIn: 'root'
@@ -209,7 +210,7 @@ export class MapBuilder {
       componentInstance.loaded.subscribe(() => {
         const supervisor = new DeviceSupervisor(
           componentRef,
-          ObjectHelper.clone(device),
+          CompareUtils.deepClone(device),
           this._mapSize,
           this.isLandscape
         );

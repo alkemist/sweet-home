@@ -9519,6 +9519,11 @@ json-buffer@3.0.1:
   resolved "https://registry.yarnpkg.com/json-buffer/-/json-buffer-3.0.1.tgz#9338802a30d3b6605fbe0613e094008ca8c05a13"
   integrity sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==
 
+json-compare-engine@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/json-compare-engine/-/json-compare-engine-1.0.4.tgz#ebb044b574fc4f60d410d36d7cae0f09b08d0868"
+  integrity sha512-OIpFDWebfc3HcGjlwQMx89hxIQ+E2zEbz+sxGAKdTS86K2FRJv+bTuWP9TIBxUtTwj+HITuOkSV6K/b1LppcnQ==
+
 json-parse-even-better-errors@^2.3.0, json-parse-even-better-errors@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/json-parse-even-better-errors/-/json-parse-even-better-errors-2.3.1.tgz#7c47805a94319928e05777405dc12e1f7a4ee02d"
@@ -10795,12 +10800,12 @@ ng-mocks@^14.10.1:
   resolved "https://registry.yarnpkg.com/ng-mocks/-/ng-mocks-14.10.1.tgz#68f8f005a137f944e320a1542e1b4c41cfb0f974"
   integrity sha512-XUjsFQD0olZ4tfIU9goUVxV8G0eI6AelQfzNy05Go/WIZ3TEYBxhzAZdI74ek1rE0WtBXQc+ROMqIrUqCGLCyA==
 
-ngx-valdemort@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/ngx-valdemort/-/ngx-valdemort-9.0.0.tgz#406eaf425dadec6bd1175afac9ff17871e41691e"
-  integrity sha512-LMVgdyv4yPDJ1FHTQqPX4riUXdrHfNgn1pgteV1gFsP4mbO5pyHv2a+EKl9gTKa76ZmIz3LvWtHIK7Gar3m7Eg==
+ngx-valdemort@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-valdemort/-/ngx-valdemort-10.0.1.tgz#6458869a7745eba70dad230a4b7aeebd3f7a11da"
+  integrity sha512-Yh6xklp4w9cRQiGRgMiroWoxT0NzQc+3yLn3X8lvoSvAfUy4wVy3Lo5poYvsKctq/GnV8OyJ7oRxe4rxxfIpAw==
   dependencies:
-    tslib "2.4.1"
+    tslib "2.5.0"
 
 nice-napi@^1.0.2:
   version "1.0.2"
@@ -12002,10 +12007,10 @@ primeicons@^6.0.1:
   resolved "https://registry.yarnpkg.com/primeicons/-/primeicons-6.0.1.tgz#431fa7c79825934eefd62087d8e1faa6a9e376ad"
   integrity sha512-KDeO94CbWI4pKsPnYpA1FPjo79EsY9I+M8ywoPBSf9XMXoe/0crjbUK7jcQEDHuc0ZMRIZsxH3TYLv4TUtHmAA==
 
-primeng@^15.2.0:
-  version "15.4.1"
-  resolved "https://registry.yarnpkg.com/primeng/-/primeng-15.4.1.tgz#a2a3eae9b557ba43cdedd32e8ec71d018f543b4c"
-  integrity sha512-j2unOQZk6756l6SgkzcmlHF6JlawF0bIjKTgAPWwT+S5RYeWEjpCPg/ABV8TylwW7CTNQX2oCHbyqCAuhtr++w==
+primeng@^15.4.4-lts:
+  version "15.4.4-lts"
+  resolved "https://registry.yarnpkg.com/primeng/-/primeng-15.4.4-lts.tgz#264a6553f93d2f857e4d009cba9f11cc49b1b692"
+  integrity sha512-yopd1q6FzrsPxHyFtiSIqIODAWPYS7CYRJEl7EpSQEr/ZlNgdGNYPEytqCJHpSty32twLy0owdm/YZMjr8/hCg==
   dependencies:
     tslib "^2.3.0"
 
@@ -13925,11 +13930,6 @@ ts-node@^10.5.0:
     make-error "^1.1.1"
     v8-compile-cache-lib "^3.0.1"
     yn "3.1.1"
-
-tslib@2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.1.tgz#0d0bfbaac2880b91e22df0768e55be9753a5b17e"
-  integrity sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==
 
 tslib@2.5.0:
   version "2.5.0"
