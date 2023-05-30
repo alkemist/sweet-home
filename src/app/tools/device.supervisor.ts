@@ -4,7 +4,7 @@ import {Subject} from 'rxjs';
 import {MathHelper} from './math.helper';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import BaseDeviceComponent from "@base-device-component";
-import {CompareUtils} from "json-compare-engine/src/compare-utils";
+import {CompareUtils} from "@alkemist/compare-engine";
 
 export class DeviceSupervisor {
   private _isDragging = false;

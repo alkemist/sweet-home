@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@alkemist/compare-engine@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@alkemist/compare-engine/-/compare-engine-1.0.7.tgz#601a0696f1141a13f08e78fdeda98403dc93d3f6"
+  integrity sha512-SqmTxbgix+ky5IyYV2SCgXFzUvYnJevME3dRGJEVJXGGdaDYG8hvqZJNWZhPDtuJDaleB9uQqJpmojiaSTbl2A==
+
 "@ampproject/remapping@2.2.1", "@ampproject/remapping@^2.1.0", "@ampproject/remapping@^2.2.0":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.2.1.tgz#99e8e11851128b8702cd57c33684f1d0f260b630"
@@ -9518,11 +9523,6 @@ json-buffer@3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/json-buffer/-/json-buffer-3.0.1.tgz#9338802a30d3b6605fbe0613e094008ca8c05a13"
   integrity sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==
-
-json-compare-engine@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/json-compare-engine/-/json-compare-engine-1.0.4.tgz#ebb044b574fc4f60d410d36d7cae0f09b08d0868"
-  integrity sha512-OIpFDWebfc3HcGjlwQMx89hxIQ+E2zEbz+sxGAKdTS86K2FRJv+bTuWP9TIBxUtTwj+HITuOkSV6K/b1LppcnQ==
 
 json-parse-even-better-errors@^2.3.0, json-parse-even-better-errors@^2.3.1:
   version "2.3.1"

@@ -16,7 +16,7 @@ import {OverlayPanel} from "primeng/overlaypanel";
 import {UndefinedVarError} from "@errors";
 import {MessageService} from "primeng/api";
 import BaseComponent from "@base-component";
-import {CompareUtils} from "json-compare-engine/src/compare-utils";
+import {CompareUtils} from "@alkemist/compare-engine";
 
 @Directive()
 export default abstract class BaseDeviceComponent<

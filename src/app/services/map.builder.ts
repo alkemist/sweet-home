@@ -23,7 +23,7 @@ import {
 } from '@devices';
 import {UnexpectedError} from '@errors';
 import BaseDeviceComponent from "@base-device-component";
-import {CompareUtils} from "json-compare-engine/src/compare-utils";
+import {CompareUtils} from "@alkemist/compare-engine";
 
 @Injectable({
   providedIn: 'root'
