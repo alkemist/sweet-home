@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@alkemist/compare-engine@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@alkemist/compare-engine/-/compare-engine-1.0.7.tgz#601a0696f1141a13f08e78fdeda98403dc93d3f6"
-  integrity sha512-SqmTxbgix+ky5IyYV2SCgXFzUvYnJevME3dRGJEVJXGGdaDYG8hvqZJNWZhPDtuJDaleB9uQqJpmojiaSTbl2A==
+"@alkemist/compare-engine@^1.1.10":
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@alkemist/compare-engine/-/compare-engine-1.1.10.tgz#90a7e7f963f9f430eed6d7fde24d99870850c2bd"
+  integrity sha512-UpLHcq2t0Yfo3VFq144C/o2kOwEGhtTVy+KAgcF01InEjniXjsa5SuAyv0oCpZe0tm5zsWGNMhCA1TiRHdNSqg==
 
 "@ampproject/remapping@2.2.1", "@ampproject/remapping@^2.1.0", "@ampproject/remapping@^2.2.0":
   version "2.2.1"
