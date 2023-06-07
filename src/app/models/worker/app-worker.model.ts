@@ -12,11 +12,11 @@ export class AppWorker {
   private geolocationWorker = new GeolocationWorker();
   private notificationWorker = new NotificationWorker();
 
-  constructor(workerName: WorkerName) {
+  constructor(location: string, workerName: WorkerName) {
     switch (workerName) {
       case "app":
         this.webWorker = new Worker(
-          new URL(`../../workers/web.worker`, importMetaUrl())
+          new URL(`${location}/assets/workers/web.worker.js`, importMetaUrl())
         );
         this.webWorker.onmessage = this.onMessage;
         break;

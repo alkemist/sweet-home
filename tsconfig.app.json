@@ -18,6 +18,6 @@
   ],
   "exclude": [
     "./out-tsc/worker",
-    "src/app/workers/*.worker.ts"
+    "src/assets/workers/*.ts"
   ]
 }

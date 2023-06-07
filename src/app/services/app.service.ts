@@ -1,7 +1,5 @@
 import {Title} from "@angular/platform-browser";
 import {Injectable} from "@angular/core";
-import {AppWorker} from "../models/worker/app-worker.model";
-import {GeolocationWorker} from "@models";
 import {environment} from "../../environments/environment";
 import "../global"
 
@@ -10,15 +8,8 @@ import "../global"
 })
 export class AppService {
   private pageTitle: string | undefined = undefined;
-  private appWorker?: AppWorker;
-  private geofence?: GeolocationWorker;
 
   constructor(private readonly titleService: Title) {
-    if (typeof window.cordova === "undefined") {
-      this.appWorker = new AppWorker("app");
-    } else {
-      this.geofence = new GeolocationWorker();
-    }
   }
 
   setTitle(title: string | undefined) {

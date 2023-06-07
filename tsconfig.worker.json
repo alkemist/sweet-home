@@ -4,13 +4,13 @@
   "compilerOptions": {
     "outDir": "./out-tsc/worker",
     "lib": [
-      "es2018",
+      "es2022",
       "webworker"
     ],
     "types": []
   },
   "include": [
-    "src/app/workers/*.worker.ts"
+    "src/assets/workers/*.ts"
   ],
   "exclude": [
     "./out-tsc/app"

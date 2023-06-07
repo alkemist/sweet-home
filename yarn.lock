@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@alkemist/compare-engine@^1.1.10":
-  version "1.1.10"
-  resolved "https://registry.yarnpkg.com/@alkemist/compare-engine/-/compare-engine-1.1.10.tgz#90a7e7f963f9f430eed6d7fde24d99870850c2bd"
-  integrity sha512-UpLHcq2t0Yfo3VFq144C/o2kOwEGhtTVy+KAgcF01InEjniXjsa5SuAyv0oCpZe0tm5zsWGNMhCA1TiRHdNSqg==
+"@alkemist/compare-engine@^1.1.16":
+  version "1.1.16"
+  resolved "https://registry.yarnpkg.com/@alkemist/compare-engine/-/compare-engine-1.1.16.tgz#837a33cac7cdb01646f996c29d8cb7d86fc11970"
+  integrity sha512-H993h0szrXYCoyDgkuWOr9MYpyhlkXyzQPAIAydYgmL+9CZQhowWN7CmqH5lnxKvQzK4fSTFA8NfHgS8dgdhkg==
 
 "@ampproject/remapping@2.2.1", "@ampproject/remapping@^2.1.0", "@ampproject/remapping@^2.2.0":
   version "2.2.1"
@@ -12007,10 +12007,10 @@ primeicons@^6.0.1:
   resolved "https://registry.yarnpkg.com/primeicons/-/primeicons-6.0.1.tgz#431fa7c79825934eefd62087d8e1faa6a9e376ad"
   integrity sha512-KDeO94CbWI4pKsPnYpA1FPjo79EsY9I+M8ywoPBSf9XMXoe/0crjbUK7jcQEDHuc0ZMRIZsxH3TYLv4TUtHmAA==
 
-primeng@^15.4.4-lts:
-  version "15.4.4-lts"
-  resolved "https://registry.yarnpkg.com/primeng/-/primeng-15.4.4-lts.tgz#264a6553f93d2f857e4d009cba9f11cc49b1b692"
-  integrity sha512-yopd1q6FzrsPxHyFtiSIqIODAWPYS7CYRJEl7EpSQEr/ZlNgdGNYPEytqCJHpSty32twLy0owdm/YZMjr8/hCg==
+primeng@15.4.1:
+  version "15.4.1"
+  resolved "https://registry.yarnpkg.com/primeng/-/primeng-15.4.1.tgz#a2a3eae9b557ba43cdedd32e8ec71d018f543b4c"
+  integrity sha512-j2unOQZk6756l6SgkzcmlHF6JlawF0bIjKTgAPWwT+S5RYeWEjpCPg/ABV8TylwW7CTNQX2oCHbyqCAuhtr++w==
   dependencies:
     tslib "^2.3.0"
 

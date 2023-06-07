@@ -19,6 +19,6 @@
   ],
   "exclude": [
     "./out-tsc/worker",
-    "src/app/workers/esm-import.ts"
+    "src/assets/workers/*.ts"
   ]
 }

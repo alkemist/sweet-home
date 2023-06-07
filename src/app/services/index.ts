@@ -7,3 +7,4 @@ export * from './map.builder';
 export * from './sonos.service';
 export * from './spotify.service';
 export * from './user.service';
+export * from './worker.service';
