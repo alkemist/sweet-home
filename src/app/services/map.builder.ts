@@ -207,7 +207,6 @@ export class MapBuilder {
       componentInstance.configurationValues = device.configurationValues;
       componentInstance.setParameterValues(device.parameterValues.toRecord());
 
-      console.log(CompareUtils);
       componentInstance.loaded.subscribe(() => {
         const supervisor = new DeviceSupervisor(
           componentRef,
