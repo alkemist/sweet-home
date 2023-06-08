@@ -18,7 +18,7 @@ const envVars =
     .filter(([key]) => key.startsWith("SH_"))
     .map(([key, value]) => [
       key.replace("SH_", ""),
-      ["SH_APP_DEBUG", "SH_APP_OFFLINE"].includes(key) ? value === "1" || value === "true" : value
+      ["SH_APP_DEBUG", "SH_APP_OFFLINE", "SH_APP_LOCAL"].includes(key) ? value === "1" || value === "true" : value
     ])
   );
 

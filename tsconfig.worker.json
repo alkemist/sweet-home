@@ -2,7 +2,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./out-tsc/worker",
+    "outDir": "./src/assets/workers",
     "lib": [
       "es2018",
       "webworker"

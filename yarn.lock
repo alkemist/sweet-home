@@ -6060,6 +6060,11 @@ cross-spawn@^7.0.0, cross-spawn@^7.0.1, cross-spawn@^7.0.3:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
+crossoriginworker@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/crossoriginworker/-/crossoriginworker-1.1.0.tgz#9779ffb0a87113f6383b9d9fa94d130ccd4d034f"
+  integrity sha512-nNrgCCyA8Qel1qiZDg4qAQMpIhup0yVCQZh04uv0rktIyLaTszli8Mhhb5ZcoeCcnkEPIjf2L+lAJidmeprYWg==
+
 crypto-random-string@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-2.0.0.tgz#ef2a7a966ec11083388369baa02ebead229b30d5"
@@ -13930,6 +13935,11 @@ ts-node@^10.5.0:
     make-error "^1.1.1"
     v8-compile-cache-lib "^3.0.1"
     yn "3.1.1"
+
+tsc@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/tsc/-/tsc-2.0.4.tgz#5f6499146abea5dca4420b451fa4f2f9345238f5"
+  integrity sha512-fzoSieZI5KKJVBYGvwbVZs/J5za84f2lSTLPYf6AGiIf43tZ3GNrI1QzTLcjtyDDP4aLxd46RTZq1nQxe7+k5Q==
 
 tslib@2.5.0:
   version "2.5.0"

@@ -3,25 +3,34 @@ import { UnknownWorkerError } from "@errors";
 import { GeolocationWorker } from "./geolocation-worker.model";
 import { combineLatest } from "rxjs";
 import { NotificationWorker } from "./notification-worker.model";
-import {createWebWorker} from "./create-web-worker";
+import {environment} from "../../../environments/environment";
+import {createDistantWebWorker, createLocalWebWorker} from "./create-web-worker";
 
 export type WorkerName = 'app';
 
 export class AppWorker {
-  private webWorker: Worker;
+  private webWorker?: Worker;
   private geolocationWorker = new GeolocationWorker();
   private notificationWorker = new NotificationWorker();
 
-  constructor(workerName: WorkerName) {
+  constructor(baseUrl: string, workerName: WorkerName) {
     switch (workerName) {
       case "app":
-        this.webWorker = createWebWorker();
-        this.webWorker.onmessage = this.onMessage;
+        if (environment["APP_LOCAL"]) {
+          this.init(createLocalWebWorker())
+        } else {
+          createDistantWebWorker(baseUrl).then(this.init)
+        }
         break;
 
       default:
         throw new UnknownWorkerError(workerName);
     }
+  }
+
+  init(webWorker: Worker) {
+    this.webWorker = webWorker;
+    this.webWorker.onmessage = this.onMessage;
 
     combineLatest([
       this.geolocationWorker.ready$,
@@ -39,7 +48,7 @@ export class AppWorker {
   }
 
   post(message: WorkerMessage) {
-    this.webWorker.postMessage(message);
+    this.webWorker?.postMessage(message);
   }
 
   onMessage(event: MessageEvent<WorkerMessage>) {

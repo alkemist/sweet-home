@@ -1,8 +1,9 @@
 export interface Environment {
   APP_NAME: string;
   APP_VERSION: string;
-  APP_OFFLINE: boolean;
+  APP_LOCAL: boolean;
   APP_DEBUG: boolean;
+  APP_OFFLINE: boolean;
   JEEDOM_HOST: string;
   FIREBASE_API_KEY: string;
   FIREBASE_APP_ID: string;

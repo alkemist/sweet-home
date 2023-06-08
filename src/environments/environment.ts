@@ -4,8 +4,9 @@ export const environment: Environment =
   {
     APP_NAME: "",
     APP_VERSION: "",
-    APP_OFFLINE: false,
+    APP_LOCAL: true,
     APP_DEBUG: true,
+    APP_OFFLINE: false,
     JEEDOM_HOST: "",
     FIREBASE_PROJECT_ID: "",
     FIREBASE_STORAGE_BUCKET: "",

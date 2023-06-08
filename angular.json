@@ -32,7 +32,8 @@
               "src/humans.txt",
               "src/robots.txt",
               "src/assets",
-              "src/manifest.webmanifest"
+              "src/manifest.webmanifest",
+              "src/web.worker.js"
             ],
             "styles": [
               "src/styles.scss",
@@ -46,7 +47,8 @@
               "nosleep.js",
               "buffer",
               "xml2js",
-              "html-entities"
+              "html-entities",
+              "crossoriginworker"
             ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json",
