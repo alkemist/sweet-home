@@ -7,7 +7,13 @@
       "es2018",
       "webworker"
     ],
-    "types": []
+    "types": [],
+    "plugins": [
+      {
+        "transform": "typescript-transform-extensions",
+        "extensions": {".js": ".js"}
+      }
+    ]
   },
   "include": [
     "src/workers/*.ts"

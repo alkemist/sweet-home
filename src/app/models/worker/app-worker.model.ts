@@ -16,11 +16,11 @@ export class AppWorker {
   constructor(baseUrl: string, workerName: WorkerName) {
     switch (workerName) {
       case "app":
-        if (environment["APP_LOCAL"]) {
+        /*if (environment["APP_LOCAL"]) {
           this.init(createLocalWebWorker())
-        } else {
-          createDistantWebWorker(baseUrl).then(this.init)
-        }
+        } else {*/
+          createDistantWebWorker(baseUrl).then((worker) => this.init(worker))
+        //}
         break;
 
       default:

@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import {WebWorker} from "./web-worker.model";
+import {WebWorker} from "./web-worker.model.js";
 
 const webWorker = new WebWorker(navigator);
 

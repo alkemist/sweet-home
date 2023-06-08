@@ -1,4 +1,4 @@
-import {InitializationMessage, WorkerMessage} from "../app/models/worker/worker-message.model";
+import {InitializationMessage, WorkerMessage} from "../app/models/worker/worker-message.model.js";
 
 export class WebWorker {
   _scope?: DedicatedWorkerGlobalScope;

@@ -1,7 +1,6 @@
 {
   "name": "sweet-home",
   "version": "0.0.0",
-  "packageManager": "yarn@1.22.19",
   "scripts": {
     "ng": "ng",
     "start": "npm run config -- --environment=dev && ng serve",
@@ -16,7 +15,8 @@
     "netlify": "netlify dev",
     "config": "ts-node ./scripts/setenv.ts",
     "rebuild": "cordova platform rm android && cordova platform add android && cordova plugin remove cordova-plugin-add-swift-support --force",
-    "server": "sudo http-server dist/sweet-home --https --port 443 -S -C ~/cert.pem -K ~/key.pem -o --cors.origin https://dev.my-sweet-home.netlify.app/ --cors.credentials"
+    "server": "sudo http-server dist/sweet-home --https --port 443 -S -C ~/cert.pem -K ~/key.pem -o --cors.origin https://dev.my-sweet-home.netlify.app/ --cors.credentials",
+    "prepare": "ts-patch install -s"
   },
   "private": true,
   "dependencies": {
@@ -80,8 +80,10 @@
     "ng-mocks": "^14.10.1",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.5.0",
+    "ts-patch": "^2.1.0",
     "tsc": "^2.0.4",
     "typescript": "~4.9.4",
+    "typescript-transform-extensions": "^1.0.1",
     "webpack": "^5.76.2"
   },
   "cordova": {
