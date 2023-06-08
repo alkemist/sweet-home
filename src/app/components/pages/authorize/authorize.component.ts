@@ -35,6 +35,7 @@ export class AuthorizeComponent extends BaseComponent implements OnInit, OnDestr
     ])
       .subscribe(async (mixedData) => {
         const [{type}, {code}] = mixedData as [{ type: AppKey }, { code: string }];
+        console.log('Authorize ?')
 
         if (type && code) {
           this.updateToken(type, code).then(() => {

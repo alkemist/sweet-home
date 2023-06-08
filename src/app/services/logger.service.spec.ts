@@ -3,7 +3,6 @@ import {DatabaseError} from '@errors';
 import {LoggerService} from '@services';
 import {environment} from "../../environments/environment";
 
-
 describe('LoggerService', () => {
   let service: LoggerService;
   let collectionName: string = "test";

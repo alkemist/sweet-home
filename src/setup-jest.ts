@@ -48,6 +48,6 @@ jest.mock('firebase/firestore', () => ({
 
 jest.mock('stackdriver-errors-js');
 
-jest.mock('./workers/create-web-worker.ts', () => {
+jest.mock('./app/models/worker/create-web-worker.ts', () => {
   return {};
 });
