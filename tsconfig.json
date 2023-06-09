@@ -15,11 +15,11 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "esnext",
-    "module": "esnext",
+    "target": "ESNext",
+    "module": "ESNext",
     "useDefineForClassFields": false,
     "lib": [
-      "esnext",
+      "ESNext",
       "dom"
     ],
     "paths": {
