@@ -6646,10 +6646,15 @@ dot-prop@^7.0.0:
   dependencies:
     type-fest "^2.11.2"
 
-dotenv@^16.0.0, dotenv@^16.0.2, dotenv@^16.0.3:
+dotenv@^16.0.0, dotenv@^16.0.2:
   version "16.0.3"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.3.tgz#115aec42bac5053db3c456db30cc243a5a836a07"
   integrity sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==
+
+dotenv@^16.1.0:
+  version "16.3.1"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.3.1.tgz#369034de7d7e5b120972693352a3bf112172cc3e"
+  integrity sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==
 
 download@^8.0.0:
   version "8.0.0"
@@ -14108,13 +14113,6 @@ typescript-transform-extensions@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/typescript-transform-extensions/-/typescript-transform-extensions-1.0.1.tgz#05d86bccfc7b6e38156c3b65193a94cbe58bdc56"
   integrity sha512-kV+h7R2Uenc6Jb/JDkKh8owJuW/LcaUg0cJQMTeJzvFdSiPOpfJhFkjEKAnTcRKYnHWSW+QOUcu5RnBFR8W5lQ==
-
-typescript-transform-paths@^3.4.6:
-  version "3.4.6"
-  resolved "https://registry.yarnpkg.com/typescript-transform-paths/-/typescript-transform-paths-3.4.6.tgz#28e6b24eb17a34116484a4b7af7323b8bb756db6"
-  integrity sha512-qdgpCk9oRHkIBhznxaHAapCFapJt5e4FbFik7Y4qdqtp6VyC3smAIPoDEIkjZ2eiF7x5+QxUPYNwJAtw0thsTw==
-  dependencies:
-    minimatch "^3.0.4"
 
 typescript@5.0:
   version "5.0.4"
