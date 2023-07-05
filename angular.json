@@ -105,7 +105,9 @@
           },
           "options": {
             "browserTarget": "sweet-home:build",
-            "proxyConfig": "./proxy.conf.json"
+            "proxyConfig": "./proxy.conf.json",
+            "sslKey": "key.pem",
+            "sslCert": "cert.pem"
           },
           "defaultConfiguration": "development"
         },

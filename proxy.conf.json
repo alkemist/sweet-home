@@ -1,4 +1,12 @@
 {
+  "/__/auth/*": {
+    "target": "https://sweet-home-385514.firebaseapp.com/__/auth",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/__/auth": ""
+    }
+  },
   "/sonos-auth": {
     "target": "https://api.sonos.com/login/v3/oauth/access",
     "secure": true,

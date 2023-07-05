@@ -13,6 +13,12 @@ port = 4242
 #    schedule = "@weekly"
 
 [[redirects]]
+from = "/__/auth/*"
+to = "https://sweet-home-385514.firebaseapp.com/__/auth/:splat"
+status = 302
+force = true
+
+[[redirects]]
 from = "/sonos-auth"
 to = "https://api.sonos.com/login/v3/oauth/access"
 status = 200

@@ -49,6 +49,7 @@ src/environments/
 src/environments/*
 !src/environments/environment.ts
 !src/environments/environment.interface.ts
+*.pem
 
 # Local Netlify folder
 .netlify

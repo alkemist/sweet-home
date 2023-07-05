@@ -45,31 +45,37 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
 			map(_ => titleService.getTitle().replaceAll("-", "/"))
 		));
 
-		document.addEventListener("visibilitychange", _ => {
-			//console.log('-- Visbility change', document.visibilityState)
-			this.appIsVisible$.next(document.visibilityState === "visible");
-		});
+    const enableNoSleep = () => {
+      document.removeEventListener('click', enableNoSleep, false);
+      this.appIsVisible$.next(document.visibilityState === "visible");
+    }
+    document.addEventListener('click', enableNoSleep, false);
+
+    document.addEventListener("visibilitychange", _ => {
+      //console.log('-- Visbility change', document.visibilityState)
+      this.appIsVisible$.next(document.visibilityState === "visible");
+    });
 
 		this.mapBuilder.loaded$.subscribe((ready) => {
 			if (ready && !this.noSleep.isEnabled) {
 				//console.log('-- Wake lock activation')
-				if (document.visibilityState === "visible") {
+				/*if (document.visibilityState === "visible") {
 					//console.log('-- App is visible, we active wake lock')
 					void this.noSleep.enable().catch((e) => {
 						this.loggerService.error(new NoSleepError(e));
 					});
-				} else {
+				} else {*/
 					//console.log('-- App hidded, wait for visible')
 					this.appIsVisible$.asObservable().pipe(
 						filter(isVisible => isVisible),
 						first()
 					).subscribe(() => {
-						//console.log('-- App visible again, we active wake lock')
+						console.log('-- App visible again, we active wake lock')
 						void this.noSleep.enable().catch((e) => {
 							this.loggerService.error(new NoSleepError(e));
 						});
 					});
-				}
+				//}
 			} else if (!ready && this.noSleep.isEnabled) {
 				this.noSleep.disable();
 			}

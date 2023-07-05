@@ -61,8 +61,6 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
     }
 
     onAuthStateChanged(this.auth, (userFirebase) => {
-      console.log('onAuthStateChanged', userFirebase)
-
       if (environment["APP_OFFLINE"]) {
         this._isLoggedIn.next(true);
         return;
@@ -165,23 +163,28 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
   }
 
   checkLoginWithProvider() {
-    console.log("checkLoginWithProvider", window.localStorage.getItem("loginWithProvider"));
-
     if (window.localStorage.getItem("loginWithProvider")) {
-      return getRedirectResult(this.auth).catch((error) => {
-        const customError = new FirebaseAuthError(error);
-        this.loggerService.error(customError);
-        window.localStorage.removeItem("loginWithProvider");
+      return getRedirectResult(this.auth)
+        .then((data) => {
+          if (data) {
+            return Promise.resolve(data);
+          }
+          return Promise.resolve(null);
+        })
+        .catch((error) => {
+          const customError = new FirebaseAuthError(error);
+          this.loggerService.error(customError);
 
-        throw customError;
-      });
+          throw customError;
+        })
+        .finally(() => {
+          window.localStorage.removeItem("loginWithProvider");
+        });
     }
-    return Promise.reject();
+    return Promise.resolve(null);
   }
 
   loginWithProvider() {
-    console.log("loginWithProvider");
-
     window.localStorage.setItem("loginWithProvider", "true");
     return signInWithRedirect(this.auth, new GoogleAuthProvider())
       .catch((error) => {
@@ -214,11 +217,7 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
   }
 
   private getUser(userFirebase: User) {
-    console.log('getUser', userFirebase);
-
     return this.findOneById(userFirebase.uid).then((dataUser) => {
-      console.log('get firebase user', dataUser);
-
       if (!dataUser) {
         this._isLoggedIn.next(false);
         this.loggerService.error(new UserNotExistError());

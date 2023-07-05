@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "npm run config -- --environment=dev && ng serve",
+    "start": "npm run config -- --environment=dev && ng serve --ssl",
     "serve": "npm run start -- --no-live-reload",
     "start-live": "npm run start -- --host 0.0.0.0 --disable-host-check",
     "serve-live": "npm run serve -- --host 0.0.0.0 --disable-host-check",
@@ -16,7 +16,6 @@
     "netlify": "netlify dev",
     "config": "ts-node ./scripts/setenv.ts",
     "rebuild": "cordova platform rm android && cordova platform add android && cordova plugin remove cordova-plugin-add-swift-support --force",
-    "server": "sudo http-server dist/sweet-home --https --port 443 -S -C ~/cert.pem -K ~/key.pem -o --cors.origin https://dev.my-sweet-home.netlify.app/ --cors.credentials",
     "prepare": "ts-patch install -s"
   },
   "private": true,
