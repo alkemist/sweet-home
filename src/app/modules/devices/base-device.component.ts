@@ -106,7 +106,7 @@ export default abstract class BaseDeviceComponent<
     }
 
     setPosition(position: CoordinateInterface) {
-        // console.log(`-- [${this.name}] -- Set device position`, position);
+        //console.log(`-- [${this.name}] -- Set device position`, position);
         this.x = position.x + "px";
         this.y = position.y + "px";
     }

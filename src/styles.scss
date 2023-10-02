@@ -218,7 +218,8 @@ p-dropdown.ng-touched.p-invalid > div {
 }
 
 .editMode {
-  box-shadow: 0 0 0 1px #d0d0d0;
+  //box-shadow: 0 0 0 1px #d0d0d0;
+  box-shadow: #d0d0d0 0 1px 4px, #d0d0d0 0 0 0 3px;
   background: rgba(0, 0, 0, 0.6);
 }
 

@@ -73,6 +73,12 @@ export class MapBuilder {
         return this._loaderManager.allLoaders$;
     }
 
+    private _deviceMoveFinished$ = new Subject<DeviceModel>();
+
+    get deviceMoveFinished$() {
+        return this._deviceMoveFinished$.asObservable();
+    }
+
     private _deviceMoved$ = new Subject<DeviceModel>();
 
     get deviceMoved$() {
@@ -218,6 +224,10 @@ export class MapBuilder {
                         this._deviceMoved$.next(supervisor.device);
                     });
 
+                    supervisor.moveFinished$.subscribe(() => {
+                        this._deviceMoveFinished$.next(supervisor.device);
+                    });
+
                     this._supervisors.set(device.id, supervisor);
                     this.checkDevicesStatus(devices.length);
                 })
@@ -300,15 +310,12 @@ export class MapBuilder {
     }
 
     initHammer() {
-        console.log('init hammer')
         this._hammer = new Hammer(this.pageElement);
         this.hammer.get('pinch').set({enable: true});
         this.hammer.get('pan').set({enable: true, direction: Hammer.DIRECTION_ALL});
 
         this.hammer.on('pan', (event) => {
             this._isDragging = true;
-
-            console.log('[pan]', event.deltaY, event.deltaY);
 
             this.updateCurrentPosition({
                 x: MathHelper.round(this._mapPosition.x + event.deltaX),
@@ -336,7 +343,6 @@ export class MapBuilder {
         });
 
         this.hammer.on('panend pancancel pinchend pinchcancel', () => {
-            console.log('[panend]');
             this.updateValues();
 
             setTimeout(() => {

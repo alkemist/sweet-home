@@ -66,6 +66,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
             this.sub = this.mapBuilder.globalLoader$.subscribe((globalLoader) => {
                 this.apiLoading = globalLoader;
             });
+
             // On a besoin de s'inscrire à l'évènement pour qu'il puisse fonctionner
             this.sub = this.mapBuilder.allLoaders$.subscribe(_ => _);
 
@@ -89,12 +90,13 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
                         this.pollingLoader.addLoader(this.pollingDelay);
                     });
                 });
-
-            //console.log('[Map] Loaded')
-            //this.changeDetectorRef.detectChanges();
         });
 
-        this.sub = this.mapBuilder.deviceMoved$.subscribe((device) => {
+        this.sub = this.mapBuilder.deviceMoved$.subscribe((_) => {
+            this.changeDetectorRef.detectChanges();
+        });
+
+        this.sub = this.mapBuilder.deviceMoveFinished$.subscribe((device) => {
             //console.log('-- Device moved', device);
             const loader = this.mapBuilder.addLoader();
             this.deviceService.update(device).then(() => {
