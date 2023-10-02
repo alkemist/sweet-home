@@ -21,7 +21,7 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
 	loading = signal(false);
 	logged = signal(false);
 	title;
-	menuItems: MenuItem[] = MenuItems;
+	menuItems: MenuItem[] = [...MenuItems];
 	services: Record<string, any> = {};
 	noSleep = new NoSleep();
 	appIsVisible$ = new Subject<boolean>();

@@ -53,13 +53,10 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
 
 		this.sub = this.mapBuilder.ready$.pipe(filter((ready) => ready))
 			.subscribe(() => {
-				// console.log('-- Builder Ready');
-				//this.isLandscape = this.mapBuilder.isLandscape;
 				this.loadDevices();
 			});
 
 		this.sub = this.mapBuilder.loaded$.pipe(filter((loaded) => loaded)).subscribe(() => {
-			// console.log('-- Map loaded');
 
 			this.mapLoading = false;
 			const components = this.mapBuilder.getComponents();
@@ -90,8 +87,6 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
 					const callLoader = this.mapBuilder.addLoader();
 					this.deviceService.updateComponents(components).then(() => {
 						callLoader.finish();
-						// console.log('-- Call received and wait');
-						//this.timer$.next();
 						this.pollingLoader.addLoader(this.pollingDelay);
 					});
 				});
@@ -147,7 +142,6 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
 		const isLandscape = this.pageRef?.nativeElement.offsetWidth > this.pageRef?.nativeElement.offsetHeight;
 
 		if (this.planRef && isLandscape !== this.isLandscape) {
-			//console.log('-- Load plan');
 			this.isLandscape = this.mapBuilder.isLandscape;
 
 			this.planLoading = true;

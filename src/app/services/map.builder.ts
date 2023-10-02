@@ -23,7 +23,7 @@ import {
 } from '@devices';
 import {UnexpectedError} from '@errors';
 import BaseDeviceComponent from "@base-device-component";
-import {CompareUtils} from "@alkemist/compare-engine";
+import {TypeHelper} from "@alkemist/smart-tools";
 
 @Injectable({
   providedIn: 'root'
@@ -163,10 +163,6 @@ export class MapBuilder {
     const isLandscape = this.pageElement.offsetWidth > this.pageElement.offsetHeight;
 
     if (this._isLandscape !== undefined && this._isLandscape !== isLandscape) {
-      /*console.log('-- Map change orientation', isLandscape ? 'landscape' : 'portrait');
-      console.log('-- Container size', this._containerSize);
-      console.log('-- Map size', this._mapSize);*/
-
       this._supervisors
         .forEach((supervisor) => supervisor.changeOrientation(
           this._mapSize,
@@ -210,7 +206,7 @@ export class MapBuilder {
       componentInstance.loaded.subscribe(() => {
         const supervisor = new DeviceSupervisor(
           componentRef,
-          CompareUtils.deepClone(device),
+          TypeHelper.deepClone(device),
           this._mapSize,
           this.isLandscape
         );
@@ -232,8 +228,6 @@ export class MapBuilder {
   }
 
   switchEditMode(editMode: boolean) {
-    //console.log('-- Switch Edit Mode');
-
     this.enableHammer(!editMode)
     this._isEditMode = editMode;
 
@@ -245,8 +239,6 @@ export class MapBuilder {
   }
 
   onResize() {
-    //console.log('-- Resize')
-
     this.updateSize();
     this.updateRange();
     this.updateCurrentPosition(this._mapPosition)
@@ -261,12 +253,9 @@ export class MapBuilder {
   updateCurrentPosition(position: CoordinateInterface) {
     this._currentMapPosition.x = MathHelper.clamp(position.x, this._rangeMin.x, this._rangeMax.x);
     this._currentMapPosition.y = MathHelper.clamp(position.y, this._rangeMin.y, this._rangeMax.y);
-    //console.log('Update current position', this._currentMapPosition);
   }
 
   setAllElements(viewContainerRef: ViewContainerRef | undefined, pageRef: ElementRef, mapRef: ElementRef) {
-    //console.log('-- Set Elements');
-
     this._viewContainerRef = viewContainerRef;
 
     this.setHtmlElements(pageRef, mapRef);
@@ -283,15 +272,11 @@ export class MapBuilder {
     this._containerSize.h = this.pageElement.offsetHeight;
 
     const minScale = Math.min(
-      MathHelper.round(this._containerSize.w / this._mapSize.w),
-      MathHelper.round(this._containerSize.h / this._mapSize.h)
+      (this._containerSize.w * 100 / this._mapSize.w) / 100,
+      (this._containerSize.h * 100 / this._mapSize.h) / 100
     );
     this._scale = this._currentScale = this._scaleMin = MathHelper.floor(minScale);
     this._scaleMax = this._scaleMin + 1;
-
-    /*console.log('-- Container size', this._containerSize.w, this._containerSize.h);
-    console.log('-- Plan size', this._mapSize.w, this._mapSize.h);
-    console.log('-- Min scale', this._scaleMin);*/
   }
 
   updateRange() {
@@ -303,15 +288,9 @@ export class MapBuilder {
 
     this._rangeMax.y = MathHelper.round(this._range.y / 2);
     this._rangeMin.y = MathHelper.round(0 - this._rangeMax.y);
-
-    /*console.log('-- Range', this._range);
-    console.log('-- Range min', this._rangeMin);
-    console.log('-- Range max', this._rangeMax);*/
   }
 
   updateMap(x: number, y: number, scale: number) {
-    //console.log('-- Update map', x, y, scale);
-
     this.mapElement.style.transform =
       'translateX(' + x + 'px) translateY(' + y + 'px) translateZ(0px) scale(' + scale + ',' + scale + ')';
   }
@@ -322,7 +301,6 @@ export class MapBuilder {
     this.hammer.get('pan').set({enable: true, direction: Hammer.DIRECTION_ALL});
 
     this.hammer.on('pan', (event) => {
-      //console.log('-- Hammer pan', event.deltaX, event.deltaY)
       this._isDragging = true;
 
       this.updateCurrentPosition({
@@ -334,7 +312,6 @@ export class MapBuilder {
     });
 
     this.hammer.on('pinch pinchmove', (event) => {
-      //console.log('-- Hammer pinch')
       this._isDragging = true;
 
       this._currentScale = MathHelper.clamp(
@@ -352,7 +329,6 @@ export class MapBuilder {
     });
 
     this.hammer.on('panend pancancel pinchend pinchcancel', () => {
-      //console.log('-- Hammer end')
       this.updateValues();
 
       setTimeout(() => {
@@ -391,7 +367,6 @@ export class MapBuilder {
         }
 
         const event = e as WheelEventCustom;
-        //console.log('-- Wheel', event.wheelDelta);
 
         this._currentScale =
           MathHelper.clamp(this._scale + (event.wheelDelta / 800), this._scaleMin, this._scaleMax);
@@ -428,11 +403,6 @@ export class MapBuilder {
   }
 
   private updateValues() {
-    /*console.log('-- Update values')
-    console.log('--- Scale ', this._scale, this._currentScale);
-    console.log('--- X ', this._mapPosition.x, this._currentMapPosition.x);
-    console.log('--- Y ', this._mapPosition.y, this._currentMapPosition.y);*/
-
     this._scale = this._currentScale;
     this._mapPosition.x = this._currentMapPosition.x;
     this._mapPosition.y = this._currentMapPosition.y;

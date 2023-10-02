@@ -195,8 +195,6 @@ export class UserService extends FirestoreService<UserInterface, UserModel> {
   }
 
   async logout(): Promise<void> {
-    this._user = null;
-    this._isLoggedIn.next(false);
     return signOut(this.auth);
   }
 

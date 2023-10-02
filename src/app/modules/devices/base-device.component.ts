@@ -16,7 +16,7 @@ import {OverlayPanel} from "primeng/overlaypanel";
 import {UndefinedVarError} from "@errors";
 import {MessageService} from "primeng/api";
 import BaseComponent from "@base-component";
-import {CompareUtils} from "@alkemist/compare-engine";
+import {TypeHelper} from "@alkemist/smart-tools";
 
 @Directive()
 export default abstract class BaseDeviceComponent<
@@ -126,7 +126,7 @@ export default abstract class BaseDeviceComponent<
 
     //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
 
-    this.infoCommandValues = CompareUtils.deepClone(infoCommandValues as IV);
+    this.infoCommandValues = TypeHelper.deepClone(infoCommandValues as IV);
     this.updateInfoCommandValues(infoCommandValues);
   }
 

@@ -20,7 +20,9 @@
   },
   "private": true,
   "dependencies": {
-    "@alkemist/compare-engine": "^1.1.17",
+    "@alkemist/ng-form-supervisor": "^1.1.14",
+    "@alkemist/ng-state-manager": "^1.0.0",
+    "@alkemist/smart-tools": "^1.0.1",
     "@angular/animations": "^16.0.0",
     "@angular/common": "^16.0.0",
     "@angular/compiler": "^16.0.0",
@@ -34,7 +36,6 @@
     "@ngxs/logger-plugin": "^3.8.0",
     "@ngxs/storage-plugin": "^3.8.0",
     "@ngxs/store": "^3.8.0",
-    "add": "^2.0.6",
     "buffer": "^6.0.3",
     "crossoriginworker": "^1.1.0",
     "dotenv": "^16.0.3",

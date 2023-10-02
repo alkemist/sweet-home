@@ -4,7 +4,7 @@ import {Subject} from 'rxjs';
 import {MathHelper} from './math.helper';
 import {OverlayPanel} from 'primeng/overlaypanel';
 import BaseDeviceComponent from "@base-device-component";
-import {CompareUtils} from "@alkemist/compare-engine";
+import {TypeHelper} from "@alkemist/smart-tools";
 
 export class DeviceSupervisor {
   private _isDragging = false;
@@ -25,7 +25,7 @@ export class DeviceSupervisor {
 
     this._overlayPanel = _componentRef.instance.overlayPanel;
     this._hammer = new Hammer(this._componentRef.location.nativeElement);
-    this._deviceSize = CompareUtils.deepClone(_componentRef.instance.size);
+    this._deviceSize = TypeHelper.deepClone(_componentRef.instance.size);
 
     this.changeOrientation(_mapSize, _isLandscape);
 
@@ -60,7 +60,7 @@ export class DeviceSupervisor {
     this._mapSize = _mapSize;
 
     this._devicePosition = MathHelper.orientationConverterPointToMap(
-      CompareUtils.deepClone(this._device.position),
+      TypeHelper.deepClone(this._device.position),
       this._mapSize,
       this._deviceSize,
       this._isLandscape,
@@ -82,7 +82,7 @@ export class DeviceSupervisor {
       if (!this._isDragging) {
         this._isDragging = true;
         //console.log('-- Begin drag', this._devicePosition);
-        this._currentPosition = CompareUtils.deepClone(this._devicePosition);
+        this._currentPosition = TypeHelper.deepClone(this._devicePosition);
       }
 
       let position: CoordinateInterface = {
