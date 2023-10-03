@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "dev": "npm run config -- --environment=dev && ng serve --port=4201",
     "start": "npm run config -- --environment=dev && ng serve --ssl",
     "serve": "npm run start -- --no-live-reload",
     "start-live": "npm run start -- --host 0.0.0.0 --disable-host-check",
