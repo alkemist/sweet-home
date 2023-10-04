@@ -23,13 +23,13 @@
     rxjs "^7.8.1"
     zone.js "^0.13.1"
 
-"@alkemist/ng-state-manager@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@alkemist/ng-state-manager/-/ng-state-manager-1.0.0.tgz#c5b3339e0dd941f9e40923cf078d4004b35fa79c"
-  integrity sha512-IyrYIfQ9lB1vZifJiJfuWXuhNdy5dkpTEdVsof/YBWJakN5Wmf4gTjuyGoQxri+1+cN1InDT2maybalflr9aEA==
+"@alkemist/ng-state-manager@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@alkemist/ng-state-manager/-/ng-state-manager-1.0.1.tgz#0480e38acdfa5c864a0f8e2295826565c4a0ef04"
+  integrity sha512-/xCPo4tsq3MwyMIPqT5zSUsz/M2hiIG05MxDjiLDPnItsnlPUP03VlK6HGkyGmvSgcAgmhL44/gQuMIONzuk1Q==
   dependencies:
     "@alkemist/compare-engine" "^1.2.8"
-    "@alkemist/smart-tools" "^1.0.1"
+    "@alkemist/smart-tools" "^1.0.2"
     "@angular/common" "^16.x"
     "@angular/compiler" "^16.x"
     "@angular/compiler-cli" "^16.x"
@@ -39,10 +39,10 @@
     rxjs "^7.8.1"
     zone.js "^0.13.1"
 
-"@alkemist/smart-tools@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@alkemist/smart-tools/-/smart-tools-1.0.1.tgz#7e16ba7a45116a0eee0b39ab780813a0da41d23e"
-  integrity sha512-2+250JHxfsvYUJesIdVnhoCmFBjcofhGzC6dIcu6p6BnMDrt4ragC3jsK5Nfx6SMRtwqPDAHL/V6TleUgQFgzA==
+"@alkemist/smart-tools@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@alkemist/smart-tools/-/smart-tools-1.0.2.tgz#784775a33a41f00a088c4f69e9736092df7eeda7"
+  integrity sha512-6DvMlDj6uEWiPK3AdQklohrhSSOD6fXYHdsBiasmntZ2CSvXdn8zHBrNw6d8msESi3W5M2Hrjs2dqvzSdec54A==
 
 "@ampproject/remapping@2.2.1", "@ampproject/remapping@^2.1.0", "@ampproject/remapping@^2.2.0":
   version "2.2.1"
