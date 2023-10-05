@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import { Directive, signal, WritableSignal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ThermostatCommandAction, ThermostatExtendCommandInfo, ThermostatGlobalCommandInfo } from '@devices';
 import { ZigbeeBatteryCommandValues, ZigbeeBatteryComponent } from '../zigbee-battery-component.directive';
@@ -20,11 +20,12 @@ export abstract class DeviceThermostatComponent
 
   thermostatControl = new FormControl<number>(0);
   thermostatStep = 0.5;
-  protected override infoCommandValues: ThermostatCommandValues = {
-    ...super.infoCommandValues,
+
+  override infoCommandValues: WritableSignal<ThermostatCommandValues> = signal<ThermostatCommandValues>({
+    ...super.infoCommandSignalValues,
     thermostat: 0,
     room: 0,
-  };
+  });
 
   override openModal() {
     super.openModal();
@@ -61,21 +62,27 @@ export abstract class DeviceThermostatComponent
   setThermostat(value: number) {
     // console.log(`-- [${this.name}] Set thermostat`, value);
     this.execUpdateSlider('thermostat', value).then(_ => {
-      this.infoCommandValues.thermostat = value;
+      this.infoCommandValues.set({
+        ...this.infoCommandValues(),
+        thermostat: value,
+      })
     })
   }
 
   override updateInfoCommandValues(values: Record<ThermostatGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
 
-    this.infoCommandValues.thermostat = MathHelper.round(values.thermostat as number, 2);
-    this.infoCommandValues.room = MathHelper.round(values.room as number, 2);
+    this.infoCommandValues.set({
+      ...this.infoCommandValues(),
+      thermostat: MathHelper.round(values.thermostat as number, 2),
+      room: MathHelper.round(values.room as number, 2),
+    })
 
     if (!this.modalOpened) {
-      this.thermostatControl.setValue(this.infoCommandValues.thermostat, { emitEvent: false });
+      this.thermostatControl.setValue(this.infoCommandValues().thermostat, { emitEvent: false });
     }
 
-    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues);
+    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues());
   }
 
   upVolumeButton = () => {

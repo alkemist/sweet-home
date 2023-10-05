@@ -1,15 +1,23 @@
-import {DocumentModel, DocumentStoredInterface, HasIdInterface, HasIdWithInterface} from "@models";
-import {LoggerService} from "@services";
-import {first, Observable} from "rxjs";
-import {ArrayHelper, TimeHelper} from "@tools";
-import {orderBy} from "firebase/firestore";
-import {Store} from "@ngxs/store";
-import {DocumentNotFoundError} from "@errors";
-import {AddDocument, FillDocuments, InvalideDocuments, RemoveDocument, UpdateDocument} from "../stores/document.action";
-import {FirestoreService} from "./firestore.service";
-import {MessageService} from "primeng/api";
-import {JsonService} from "./json.service";
-import {environment} from "../../environments/environment";
+import { DocumentModel, DocumentStoredInterface, HasIdInterface, HasIdWithInterface } from "@models";
+import { LoggerService } from "@services";
+import { first, Observable } from "rxjs";
+import { ArrayHelper, TimeHelper } from "@tools";
+import { orderBy } from "firebase/firestore";
+import { Store } from "@ngxs/store";
+import { DocumentNotFoundError } from "@errors";
+import {
+  AddDocument,
+  FillDocuments,
+  InvalideDocuments,
+  RemoveDocument,
+  UpdateDocument
+} from "../stores/document.action";
+import { FirestoreService } from "./firestore.service";
+import { MessageService } from "primeng/api";
+import { JsonService } from "./json.service";
+import { environment } from "../../environments/environment";
+import { StateManager } from '@alkemist/ng-state-manager';
+import { signal } from '@angular/core';
 
 export abstract class DatastoreService<
   I extends DocumentStoredInterface,
@@ -26,6 +34,10 @@ export abstract class DatastoreService<
   protected maxHourOutdated = 24;
   protected loaded: boolean = false;
 
+
+  protected signalLastUpdated = signal<Date | null>(null);
+  protected signallAll = signal<I[]>([]);
+
   protected constructor(messageService: MessageService,
                         protected override loggerService: LoggerService,
                         jsonService: JsonService,
@@ -33,11 +45,17 @@ export abstract class DatastoreService<
                         collectionNameTranslated: string,
                         type: (new (data: I) => M),
                         protected store: Store,
+                        protected stateManager: StateManager,
                         protected addAction: (new (payload: I) => AddDocument<I>),
                         protected updateAction: (new (payload: I) => UpdateDocument<I>),
                         protected removeAction: (new (payload: HasIdInterface) => RemoveDocument<HasIdInterface>),
                         protected fillAction: (new (payload: I[]) => FillDocuments<I>),
                         protected invalideAction: (new () => InvalideDocuments<I>),
+                        protected addAction2: (new (payload: I) => AddDocument<I>),
+                        protected updateAction2: (new (payload: I) => UpdateDocument<I>),
+                        protected removeAction2: (new (payload: HasIdInterface) => RemoveDocument<HasIdInterface>),
+                        protected fillAction2: (new (payload: I[]) => FillDocuments<I>),
+                        protected invalideAction2: (new () => InvalideDocuments<I>),
   ) {
     super(messageService, loggerService, jsonService, collectionName, collectionNameTranslated, type);
     this.initLastUpdated();
@@ -149,7 +167,7 @@ export abstract class DatastoreService<
     this.store.dispatch(new this.invalideAction());
     this.messageService.add({
       severity: "success",
-      detail: `${this.collectionNameTranslated} ${$localize`store cleaned`}`
+      detail: `${ this.collectionNameTranslated } ${ $localize`store cleaned` }`
     });
   }
 

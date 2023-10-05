@@ -1,68 +1,68 @@
 <div #content (click)="openModal()" [pTooltip]="name"
      [tooltipDisabled]="isEditMode || isDragging"
      tooltipEvent="hover" tooltipPosition="top">
-    <div *ngIf="initialized$()" class="flex flex-row gap-2">
-        <div *ngIf="state !== MultimediaState.offline" class="map-icon-value flex flex-row align-content-center gap-1">
-            <div class="icon">
-                <i class="fa fa-volume-up"></i>
-            </div>
-            <div class="value">
-                {{ infoCommandValues.volume }}%
-            </div>
-        </div>
-        <div *ngIf="state !== MultimediaState.stopped && state !== MultimediaState.offline"
-             class="flex flex-row align-content-center gap-1">
-            <div class="icon">
-                <i *ngIf="state === MultimediaState.playing" class="fa fa-play color-light"></i>
-                <i *ngIf="state === MultimediaState.paused" class="fa fa-pause color-warn"></i>
-            </div>
-        </div>
-        <div *ngIf="infoCommandValues.muted" class="flex flex-row align-content-center gap-1">
-            <div class="icon">
-                <i class="fa fa-volume-mute"></i>
-            </div>
-        </div>
+  <div *ngIf="initialized$()" class="flex flex-row gap-2">
+    <div *ngIf="state !== MultimediaState.offline" class="map-icon-value flex flex-row align-content-center gap-1">
+      <div class="icon">
+        <i class="fa fa-volume-up"></i>
+      </div>
+      <div class="value">
+        {{ infoCommandValues().volume }}%
+      </div>
     </div>
+    <div *ngIf="state !== MultimediaState.stopped && state !== MultimediaState.offline"
+         class="flex flex-row align-content-center gap-1">
+      <div class="icon">
+        <i *ngIf="state === MultimediaState.playing" class="fa fa-play color-light"></i>
+        <i *ngIf="state === MultimediaState.paused" class="fa fa-pause color-warn"></i>
+      </div>
+    </div>
+    <div *ngIf="infoCommandValues().muted" class="flex flex-row align-content-center gap-1">
+      <div class="icon">
+        <i class="fa fa-volume-mute"></i>
+      </div>
+    </div>
+  </div>
 </div>
 <p-overlayPanel #overlayPanel [appendTo]="content" [dismissable]="false">
-    {{ name }}
+  {{ name }}
 </p-overlayPanel>
 <p-dialog (onHide)="closeModal()" [(visible)]="modalOpened" [dismissableMask]="true" [draggable]="false"
           [header]="name" [modal]="true" [resizable]="false"
           appendTo="body" position="bottom"
           styleClass="device-modal">
-    <div class="flex flex-column gap-5">
-        <div *ngIf="hasTitle" class="flex justify-content-center align-items-center gap-5">
-            <span class="text-center">{{ infoCommandValues.artist}}</span>
-            <span>/</span>
-            <span class="text-center">{{ infoCommandValues.title}}</span>
-        </div>
-        <div *ngIf="hasTvSound" class="flex flex-row justify-content-center align-items-center gap-3">
-            <p-button [disabled]="true" icon="fa fa-television"
-                      styleClass="p-button-rounded p-button-success"></p-button>
-        </div>
-        <div *ngIf="!hasTvSound" class="flex flex-row justify-content-center align-items-center gap-3">
-            <p-toggleButton [formControl]="repeatControl" offIcon="pi pi-refresh"
-                            onIcon="pi pi-refresh"></p-toggleButton>
-            <p-button (click)="previous()" *ngIf="state !== MultimediaState.stopped" icon="pi pi-step-backward-alt"
-                      styleClass="p-button-rounded p-button-success p-button-text"></p-button>
-            <p-button (click)="play()" *ngIf="state !== MultimediaState.playing" icon="pi pi-play"
-                      styleClass="p-button-rounded p-button-success"></p-button>
-            <p-button (click)="pause()" *ngIf="state === MultimediaState.playing" icon="pi pi-pause"
-                      styleClass="p-button-rounded p-button-success"></p-button>
-            <p-button (click)="next()" *ngIf="state !== MultimediaState.stopped" icon="pi pi-step-forward-alt"
-                      styleClass="p-button-rounded p-button-success p-button-text"></p-button>
-            <p-toggleButton [formControl]="shuffleControl" offIcon="fa fa-exchange"
-                            onIcon="fa fa-exchange"></p-toggleButton>
-        </div>
-        <div class="flex flex-column gap-3">
-            <div class="flex justify-content-center ">{{ volumeControl.value }}%</div>
-            <div class="flex flex-row align-items-center gap-3">
-                <p-slider [formControl]="volumeControl" [max]="parameterValues.volumeMax" [min]="0"
-                          class="flex-1"></p-slider>
-                <p-toggleButton [formControl]="muteControl" offIcon="fa fa-volume-up"
-                                onIcon="fa fa-volume-mute"></p-toggleButton>
-            </div>
-        </div>
+  <div class="flex flex-column gap-5">
+    <div *ngIf="hasTitle" class="flex justify-content-center align-items-center gap-5">
+      <span class="text-center">{{ infoCommandValues().artist}}</span>
+      <span>/</span>
+      <span class="text-center">{{ infoCommandValues().title}}</span>
     </div>
+    <div *ngIf="hasTvSound" class="flex flex-row justify-content-center align-items-center gap-3">
+      <p-button [disabled]="true" icon="fa fa-television"
+                styleClass="p-button-rounded p-button-success"></p-button>
+    </div>
+    <div *ngIf="!hasTvSound" class="flex flex-row justify-content-center align-items-center gap-3">
+      <p-toggleButton [formControl]="repeatControl" offIcon="pi pi-refresh"
+                      onIcon="pi pi-refresh"></p-toggleButton>
+      <p-button (click)="previous()" *ngIf="state !== MultimediaState.stopped" icon="pi pi-step-backward-alt"
+                styleClass="p-button-rounded p-button-success p-button-text"></p-button>
+      <p-button (click)="play()" *ngIf="state !== MultimediaState.playing" icon="pi pi-play"
+                styleClass="p-button-rounded p-button-success"></p-button>
+      <p-button (click)="pause()" *ngIf="state === MultimediaState.playing" icon="pi pi-pause"
+                styleClass="p-button-rounded p-button-success"></p-button>
+      <p-button (click)="next()" *ngIf="state !== MultimediaState.stopped" icon="pi pi-step-forward-alt"
+                styleClass="p-button-rounded p-button-success p-button-text"></p-button>
+      <p-toggleButton [formControl]="shuffleControl" offIcon="fa fa-exchange"
+                      onIcon="fa fa-exchange"></p-toggleButton>
+    </div>
+    <div class="flex flex-column gap-3">
+      <div class="flex justify-content-center ">{{ volumeControl.value }}%</div>
+      <div class="flex flex-row align-items-center gap-3">
+        <p-slider [formControl]="volumeControl" [max]="parameterValues.volumeMax" [min]="0"
+                  class="flex-1"></p-slider>
+        <p-toggleButton [formControl]="muteControl" offIcon="fa fa-volume-up"
+                        onIcon="fa fa-volume-mute"></p-toggleButton>
+      </div>
+    </div>
+  </div>
 </p-dialog>

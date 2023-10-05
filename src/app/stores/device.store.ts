@@ -1,39 +1,54 @@
-import { DeviceStoredInterface } from '@models';
-import { AddDocument, FillDocuments, InvalideDocuments } from './document.action';
-import { State, Action, Select, Observe, StateContext } from '@alkemist/ng-state-manager';
+import { DeviceStoredInterface, HasIdInterface } from '@models';
+import { Action, Select, State, StateContext } from '@alkemist/ng-state-manager';
 import { ValueRecord } from '@alkemist/smart-tools';
-import { AddDevice, FillDevices, InvalideDevices, RemoveDevice, UpdateDevice } from './device.action';
+import { AddDevice, FillDevices, RemoveDevice, UpdateDevice } from './device.action';
 import { environment } from '../../environments/environment';
+import { AddDocument, FillDocuments, InvalideDocuments, RemoveDocument, UpdateDocument } from './document.action';
 
 export namespace Device {
-  export interface StateInterface extends ValueRecord{
+  export interface StateInterface extends ValueRecord {
     all: DeviceStoredInterface[];
     lastUpdated: Date | null;
   }
 
-  export class Fill {
+  export class Fill extends FillDocuments<DeviceStoredInterface> {
     static readonly log: string = '[Device] Filled';
-    constructor(public payload: DeviceStoredInterface[]) {}
+
+    constructor(public override payload: DeviceStoredInterface[]) {
+      super(payload);
+    }
   }
 
-  export class Add {
+  export class Add extends AddDocument<DeviceStoredInterface> {
     static readonly log: string = '[Device] Added';
-    constructor(public payload: DeviceStoredInterface) {}
+
+    constructor(public override payload: DeviceStoredInterface) {
+      super(payload);
+    }
   }
 
-  export class Update {
+  export class Update extends UpdateDocument<DeviceStoredInterface> {
     static readonly log: string = '[Device] Added';
-    constructor(public payload: DeviceStoredInterface) {}
+
+    constructor(public override payload: DeviceStoredInterface) {
+      super(payload);
+    }
   }
 
-  export class Remove {
+  export class Remove extends RemoveDocument<HasIdInterface> {
     static readonly log: string = '[Device] Removed';
-    constructor(public payload: DeviceStoredInterface) {}
+
+    constructor(public override payload: HasIdInterface) {
+      super(payload);
+    }
   }
 
-  export class Invalide {
+  export class Invalide extends InvalideDocuments<DeviceStoredInterface> {
     static readonly log: string = '[Device] Invalided';
-    constructor(public payload: void) {}
+
+    constructor(public payload: void) {
+      super();
+    }
   }
 
   @State({
@@ -59,10 +74,9 @@ export namespace Device {
 
     @Action(Fill)
     fill({
-           getState,
-           patchState
-         }: StateContext<StateInterface>, {payload}: FillDevices) {
-      patchState({
+           setState
+         }: StateContext<StateInterface>, { payload }: FillDevices) {
+      setState({
         all: payload,
         lastUpdated: environment["APP_OFFLINE"] ? null : new Date()
       });
@@ -70,43 +84,29 @@ export namespace Device {
 
     @Action(Invalide)
     invalidate({
-                 patchState
+                 setState
                }: StateContext<StateInterface>, {}: FillDevices) {
-      patchState({
+      setState({
         all: [],
         lastUpdated: null
       });
     }
 
     @Action(Add)
-    add({setState}: StateContext<StateInterface>, {payload}: AddDevice) {
-      /*setState(
-        patch({
-          all: append([payload])
-        })
-      );*/
+    add({ addItem }: StateContext<StateInterface>, { payload }: AddDevice) {
+      addItem('all', payload);
     }
 
     @Action(Remove)
-    remove({setState}: StateContext<StateInterface>, {payload}: RemoveDevice) {
-      /*setState(
-        patch({
-          all: removeItem<DeviceStoredInterface>((item?: DeviceStoredInterface) => item?.id === payload.id)
-        })
-      );*/
+    remove({ removeItem }: StateContext<StateInterface>, { payload }: RemoveDevice) {
+      removeItem<DeviceStoredInterface>('all', item => item.id === payload.id);
     }
 
     @Action(Update)
     update({
-             getState,
-             patchState,
-             setState
-           }: StateContext<StateInterface>, {payload}: UpdateDevice) {
-      /*setState(
-        patch({
-          all: updateItem<DeviceStoredInterface>((item?: DeviceStoredInterface) => item?.id === payload.id, payload)
-        })
-      );*/
+             patchItem
+           }: StateContext<StateInterface>, { payload }: UpdateDevice) {
+      patchItem<DeviceStoredInterface>('all', item => item.id === payload.id, payload)
     }
   }
 }

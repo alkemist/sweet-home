@@ -1,7 +1,7 @@
-import {AfterContentInit, AfterViewInit, Directive, OnDestroy, OnInit} from "@angular/core";
-import {ZigbeeCommandInfo, ZigbeeCommandValues, ZigbeeComponent} from "./zigbee-component.directive";
-import {MathHelper} from "@tools";
-import {environment} from "../../../../environments/environment";
+import { AfterContentInit, AfterViewInit, Directive, OnDestroy, OnInit, signal, WritableSignal } from "@angular/core";
+import { ZigbeeCommandInfo, ZigbeeCommandValues, ZigbeeComponent } from "./zigbee-component.directive";
+import { MathHelper } from "@tools";
+import { environment } from "../../../../environments/environment";
 
 export type ZigbeeBatteryCommandInfo = "battery";
 
@@ -24,23 +24,23 @@ export abstract class ZigbeeBatteryComponent<
   implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
 
   batteryLowMin = 20;
-  protected override infoCommandValues: IV = {
+  protected override infoCommandValues: WritableSignal<IV> = signal<IV>({
+    ...super.infoCommandSignalValues,
     battery: 100,
-    signal: 0,
-  } as IV;
+  } as IV);
 
   get hasLowBattery(): boolean {
-    return this.infoCommandValues.battery < this.batteryLowMin;
+    return this.infoCommandValues().battery < this.batteryLowMin;
   }
 
   get batteryIcon(): string {
-    if (this.infoCommandValues.battery < this.batteryLowMin) {
+    if (this.infoCommandValues().battery < this.batteryLowMin) {
       return "fa-battery-empty";
-    } else if (this.infoCommandValues.battery < 30) {
+    } else if (this.infoCommandValues().battery < 30) {
       return "fa-battery-quarter";
-    } else if (this.infoCommandValues.battery < 60) {
+    } else if (this.infoCommandValues().battery < 60) {
       return "fa-battery-half ";
-    } else if (this.infoCommandValues.battery < 80) {
+    } else if (this.infoCommandValues().battery < 80) {
       return "fa-battery-three-quarters ";
     }
 
@@ -50,7 +50,7 @@ export abstract class ZigbeeBatteryComponent<
   override updateInfoCommandValues(values: Record<ZigbeeBatteryGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
 
-    this.infoCommandValues.battery = environment["APP_OFFLINE"]
+    this.infoCommandValues().battery = environment["APP_OFFLINE"]
       ? 100
       : MathHelper.round(values.battery as number, 0);
   }

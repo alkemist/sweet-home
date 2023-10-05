@@ -1,11 +1,11 @@
-import {Injectable} from "@angular/core";
-import {JSONRPCClient} from "json-rpc-2.0";
-import {UserService} from "./user.service";
-import {JeedomCommandResultInterface} from "@models";
-import {JeedomRoomInterface} from "../models/jeedom/jeedom-room.interface";
-import {LoggerService} from "./logger.service";
-import {JeedomApiError, JeedomRequestError, UnknownJeedomError, UserHasNotTokenError} from "@errors";
-import {environment} from "../../environments/environment";
+import { Injectable } from "@angular/core";
+import { JSONRPCClient } from "json-rpc-2.0";
+import { UserService } from "./user.service";
+import { JeedomCommandResultInterface } from "@models";
+import { JeedomRoomInterface } from "../models/jeedom/jeedom-room.interface";
+import { LoggerService } from "./logger.service";
+import { JeedomApiError, JeedomRequestError, UnknownJeedomError, UserHasNotTokenError } from "@errors";
+import { environment } from "../../environments/environment";
 
 @Injectable({
   providedIn: "root"
@@ -17,13 +17,13 @@ export class JeedomService {
     private userService: UserService,
     private loggerService: LoggerService
   ) {
-    const jeedomApiUrl = `${environment["JEEDOM_HOST"]}/core/api/jeeApi.php`;
+    const jeedomApiUrl = `${ environment["JEEDOM_HOST"] }/core/api/jeeApi.php`;
 
-    this.api = new JSONRPCClient((jsonRPCRequest) => {
+    this.api = new JSONRPCClient(async (jsonRPCRequest) => {
         return fetch(jeedomApiUrl, {
           method: "POST",
           body: JSON.stringify(jsonRPCRequest),
-        }).then((response) => {
+        }).then(async (response) => {
           if (response.status === 200) {
             return response
               .json()
@@ -40,7 +40,6 @@ export class JeedomService {
           return Promise.resolve();
         }).catch((e) => {
           this.loggerService.error(new UnknownJeedomError(e));
-          throw e;
         });
       }
     );
@@ -51,17 +50,17 @@ export class JeedomService {
   }
 
   execInfoCommands(commandIds: number[]): Promise<Record<number, JeedomCommandResultInterface> | null> {
-    return this.request("cmd::execCmd", {id: commandIds}) as
+    return this.request("cmd::execCmd", { id: commandIds }) as
       Promise<Record<number, JeedomCommandResultInterface>>;
   }
 
   execActionCommand(commandId: number, options?: unknown): Promise<JeedomCommandResultInterface | null> {
-    return this.request("cmd::execCmd", {id: commandId, options}) as
+    return this.request("cmd::execCmd", { id: commandId, options }) as
       Promise<JeedomCommandResultInterface>;
   }
 
   private request(method: string, params: Record<string, any> = {}): PromiseLike<any> {
-    const apikey = this.userService.getJeedomApiKey();
+    const apikey = this.userService.getJeedomApiKey()
 
     if (environment["APP_OFFLINE"]) {
       return Promise.resolve({});

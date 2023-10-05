@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import { Directive, signal, WritableSignal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { OnOffCommandAction, OnOffExtendCommandInfo, OnOffGlobalCommandInfo, OnOffParamValue } from '@devices';
 import { ZigbeeCommandValues, ZigbeeComponent } from '../zigbee-component.directive';
@@ -19,10 +19,12 @@ export abstract class DeviceOnOffComponent
     ZigbeeOnOffCommandValues,
     string, string, string,
     OnOffParamValue, ZigbeeOnOffParameterValues> {
-  override infoCommandValues: ZigbeeOnOffCommandValues = {
-    ...super.infoCommandValues,
+
+  override infoCommandValues: WritableSignal<ZigbeeOnOffCommandValues> = signal<ZigbeeOnOffCommandValues>({
+    ...super.infoCommandSignalValues,
     state: false,
-  };
+  });
+
   size = {
     w: 50,
     h: 50
@@ -31,7 +33,7 @@ export abstract class DeviceOnOffComponent
   onOffControl = new FormControl<boolean>(false);
 
   get stateClass() {
-    return this.infoCommandValues.state ? 'color-light' : 'color-disabled';
+    return this.infoCommandValues().state ? 'color-light' : 'color-disabled';
   }
 
   get iconClass() {
@@ -69,17 +71,23 @@ export abstract class DeviceOnOffComponent
 
   execToggle() {
     this.execUpdateValue('toggle').then(_ => {
-      this.infoCommandValues['state'] = !this.infoCommandValues['state'];
+      this.infoCommandValues.set({
+        ...this.infoCommandValues(),
+        state: !this.infoCommandValues().state,
+      })
     })
   }
 
   override updateInfoCommandValues(values: Record<OnOffGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
 
-    this.infoCommandValues.state = values.state === 1;
+    this.infoCommandValues.set({
+      ...this.infoCommandValues(),
+      state: values.state === 1,
+    })
 
-    this.onOffControl.setValue(this.infoCommandValues.state, { emitEvent: false });
+    this.onOffControl.setValue(this.infoCommandValues().state, { emitEvent: false });
 
-    // console.log(`-- [${ this.name }] Updated info command values`, values, this.infoCommandValues);
+    // console.log(`-- [${ this.name }] Updated info command values`, values, this.infoCommandValues());
   }
 }

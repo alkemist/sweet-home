@@ -1,5 +1,5 @@
-import {AfterContentInit, AfterViewInit, Directive, OnDestroy, OnInit} from '@angular/core';
-import {MathHelper} from '@tools';
+import { AfterContentInit, AfterViewInit, Directive, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
+import { MathHelper } from '@tools';
 import BaseDeviceComponent from "@base-device-component";
 
 export type ZigbeeCommandInfo = 'signal';
@@ -19,13 +19,12 @@ export abstract class ZigbeeComponent<
 > extends BaseDeviceComponent <IE, AE, IV, I, A, C, P, PV>
   implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
 
-  protected override infoCommandValues: IV = {
-    ...super.infoCommandValues,
+  protected override infoCommandValues: WritableSignal<IV> = signal<IV>({
     signal: 0,
-  } as IV;
+  } as IV);
 
   get signalPercent() {
-    return MathHelper.round(this.infoCommandValues.signal * 100 / 255, 0);
+    return MathHelper.round(this.infoCommandValues().signal * 100 / 255, 0);
   }
 
   override updateInfoCommandValues(values: Record<ZigbeeCommandInfo, string | number | boolean | null>) {
