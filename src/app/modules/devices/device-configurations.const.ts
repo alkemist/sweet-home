@@ -4,7 +4,7 @@ import {
   GlobalDeviceDefinitions,
   GroupedDeviceDefinitions
 } from "./device-configurations.type";
-import {DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum, PartialRecord} from "@models";
+import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum, PartialRecord } from "@models";
 import {
   ChromecastParams,
   MultimediaChromecastInfoCommandFilters,
@@ -16,7 +16,6 @@ import {
 } from "./wifi";
 import {
   OnOffParams,
-  zigbeeLinkerOnOffActionCommandFilters,
   zigbeeLinkerOnOffInfoCommandFilters,
   zigbeeLinkerOnOffMoesActionCommandFilters,
   zigbeeLinkerThermometerInfoCommandFilters,
@@ -30,6 +29,12 @@ import {
   zigbeeOfficialThermostatInfoCommandFilters,
   zigbeeOfficialThermostatMoesInfoCommandFilters
 } from "./zigbee";
+import { zigbeeLinkerOnOffLidlActionCommandFilters } from './zigbee/on-off/lidl/on-off-lidl.const';
+import {
+  zigbeeLinkerOnOffNousActionCommandFilters,
+  zigbeeLinkerOnOffNousInfoCommandFilters
+} from './zigbee/on-off/nous/on-off-nous.const';
+import { zigbeeLinkerOnOffLSchneiderActionCommandFilters } from './zigbee/on-off/schneider/on-off-schneider.const';
 
 export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinitions<DeviceConnectivityEnum, DeviceCategoryEnum> =
   {
@@ -61,7 +66,6 @@ export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinition
       },
       [DeviceCategoryEnum.OnOff]: {
         infoCommandFilters: zigbeeLinkerOnOffInfoCommandFilters,
-        actionCommandFilters: zigbeeLinkerOnOffActionCommandFilters,
         customParams: OnOffParams,
       },
     }
@@ -81,6 +85,13 @@ export const deviceDefinitionsByConnectivityCategoryType:
         actionCommandFilters: wifiMultimediaSonosActionCommandFilters,
         configurationFilters: wifiMultimediaSonosConfigurationFilters
       },
+    },
+    [DeviceCategoryEnum.Test]: {
+      [DeviceTypeEnum.Test]: {
+        infoCommandFilters: {},
+        actionCommandFilters: {},
+        configurationFilters: {}
+      }
     }
   },
   [DeviceConnectivityEnum.ZigbeeOfficial]: {
@@ -97,7 +108,16 @@ export const deviceDefinitionsByConnectivityCategoryType:
     },
     [DeviceCategoryEnum.OnOff]: {
       [DeviceTypeEnum.Lidl]: {},
-      [DeviceTypeEnum.Moes]: {}
+      [DeviceTypeEnum.Moes]: {},
+      [DeviceTypeEnum.Nous]: {},
+      [DeviceTypeEnum.Schneider]: {}
+    },
+    [DeviceCategoryEnum.Test]: {
+      [DeviceTypeEnum.Test]: {
+        infoCommandFilters: {},
+        actionCommandFilters: {},
+        configurationFilters: {}
+      }
     }
   },
   [DeviceConnectivityEnum.ZigbeeLinker]: {
@@ -115,10 +135,22 @@ export const deviceDefinitionsByConnectivityCategoryType:
       [DeviceTypeEnum.Aqara]: {}
     },
     [DeviceCategoryEnum.OnOff]: {
-      [DeviceTypeEnum.Lidl]: {},
+      [DeviceTypeEnum.Lidl]: {
+        actionCommandFilters: zigbeeLinkerOnOffLidlActionCommandFilters
+      },
       [DeviceTypeEnum.Moes]: {
         actionCommandFilters: zigbeeLinkerOnOffMoesActionCommandFilters
+      },
+      [DeviceTypeEnum.Schneider]: {
+        actionCommandFilters: zigbeeLinkerOnOffLSchneiderActionCommandFilters
+      },
+      [DeviceTypeEnum.Nous]: {
+        infoCommandFilters: zigbeeLinkerOnOffNousInfoCommandFilters,
+        actionCommandFilters: zigbeeLinkerOnOffNousActionCommandFilters
       }
+    },
+    [DeviceCategoryEnum.Test]: {
+      [DeviceTypeEnum.Test]: {}
     }
   }
 }
@@ -126,12 +158,12 @@ export const deviceDefinitionsByConnectivityCategoryType:
 const mergeDefinitions = ()
   : GlobalDeviceConfigurations<DeviceConnectivityEnum, DeviceCategoryEnum, DeviceTypeEnum> => {
   return Object.entries(deviceDefinitionsByConnectivityCategoryType).reduce(
-    (resultByConnectivity, [connectivityKey, deviceConfigurationsByCategory]) => {
+    (resultByConnectivity, [ connectivityKey, deviceConfigurationsByCategory ]) => {
       resultByConnectivity[connectivityKey as DeviceConnectivityEnum] =
         Object.entries(deviceConfigurationsByCategory).reduce(
-          (resultByCategory, [categoryKey, deviceConfigurationsByType]) => {
+          (resultByCategory, [ categoryKey, deviceConfigurationsByType ]) => {
             resultByCategory[categoryKey as DeviceCategoryEnum] = Object.entries(deviceConfigurationsByType).reduce(
-              (resultByType, [typeKey, deviceConfigurationByTypes]) => {
+              (resultByType, [ typeKey, deviceConfigurationByTypes ]) => {
                 const parent = deviceConfigurationsByConnectivityCategory[connectivityKey as DeviceConnectivityEnum][categoryKey as DeviceCategoryEnum];
                 resultByType[typeKey as DeviceTypeEnum] = {
                   infoCommandFilters: {

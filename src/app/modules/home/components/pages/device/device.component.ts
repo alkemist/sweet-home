@@ -1,10 +1,10 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from "@angular/core";
-import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {ObjectHelper, slugify} from "@tools";
-import {ConfirmationService, FilterService, MessageService} from "primeng/api";
-import {AppService, ComponentClassByType, DeviceService} from "@services";
-import {KeyValue} from "@angular/common";
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from "@angular/core";
+import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ObjectHelper, slugify } from "@tools";
+import { ConfirmationService, FilterService, MessageService } from "primeng/api";
+import { AppService, ComponentClassByType, DeviceService } from "@services";
+import { KeyValue } from "@angular/common";
 import {
 	CoordinateFormInterface,
 	DeviceCategoryEnum,
@@ -19,302 +19,304 @@ import {
 	SmartArrayModel,
 } from "@models";
 import BaseComponent from "@base-component";
-import {deviceConfigurations} from "@devices";
+import { deviceConfigurations } from "@devices";
 
 @Component({
-	selector: "app-device",
-	templateUrl: "./device.component.html",
-	styleUrls: ["./device.component.scss"],
-	host: {
-		class: "page-container"
-	},
-	changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: "app-device",
+  templateUrl: "./device.component.html",
+  styleUrls: [ "./device.component.scss" ],
+  host: {
+    class: "page-container"
+  },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy {
-	device: DeviceModel | null = null;
-	deviceConnectivitiesIterable = new SmartArrayModel<string, string>(DeviceConnectivityEnum, true);
-	deviceCategoriesIterable = new SmartArrayModel<string, string>(DeviceCategoryEnum, true);
-	deviceTypesIterable = new SmartArrayModel<string, string>(DeviceTypeEnum, true);
-	deviceTypes: KeyValue<string, string>[] = [];
+  device: DeviceModel | null = null;
+  deviceConnectivitiesIterable = new SmartArrayModel<string, string>(DeviceConnectivityEnum, true);
+  deviceCategoriesIterable = new SmartArrayModel<string, string>(DeviceCategoryEnum, true);
+  deviceTypesIterable = new SmartArrayModel<string, string>(DeviceTypeEnum, true);
+  deviceTypes: KeyValue<string, string>[] = [];
 
-	form: FormGroup<DeviceFormInterface> = new FormGroup<DeviceFormInterface>({
-		id: new FormControl<string | null | undefined>(""),
-		connectivity: new FormControl<DeviceConnectivityEnum | null>(null, [Validators.required]),
-		category: new FormControl<DeviceCategoryEnum | null>(null, [Validators.required]),
-		type: new FormControl<DeviceTypeEnum | null>(null, [Validators.required]),
-		name: new FormControl<string>("", [Validators.required]),
-		jeedomId: new FormControl<number | null>(null, [Validators.required]),
-		position: new FormGroup<CoordinateFormInterface>({
-			x: new FormControl<number | null>(10, [Validators.required]),
-			y: new FormControl<number | null>(10, [Validators.required]),
-		}),
-		infoCommandIds: new FormArray<FormGroup<KeyValueFormInterface<number>>>([]),
-		actionCommandIds: new FormArray<FormGroup<KeyValueFormInterface<number>>>([]),
-		configurationValues: new FormArray<FormGroup<KeyValueFormInterface<string>>>([]),
-		parameterValues: new FormArray<FormGroup<KeyValueFormInterface<string>>>([]),
-	});
-	loading = true;
-	error: string = "";
-	importDeviceControl = new FormControl<JeedomDeviceModel | string | null>(null);
-	jeedomRooms: JeedomRoomModel[] = [];
-	filteredJeedomRooms: JeedomRoomModel[] = [];
+  form: FormGroup<DeviceFormInterface> = new FormGroup<DeviceFormInterface>({
+    id: new FormControl<string | null | undefined>(""),
+    connectivity: new FormControl<DeviceConnectivityEnum | null>(null, [ Validators.required ]),
+    category: new FormControl<DeviceCategoryEnum | null>(null, [ Validators.required ]),
+    type: new FormControl<DeviceTypeEnum | null>(null, [ Validators.required ]),
+    name: new FormControl<string>("", [ Validators.required ]),
+    jeedomId: new FormControl<number | null>(null, [ Validators.required ]),
+    position: new FormGroup<CoordinateFormInterface>({
+      x: new FormControl<number | null>(10, [ Validators.required ]),
+      y: new FormControl<number | null>(10, [ Validators.required ]),
+    }),
+    infoCommandIds: new FormArray<FormGroup<KeyValueFormInterface<number>>>([]),
+    actionCommandIds: new FormArray<FormGroup<KeyValueFormInterface<number>>>([]),
+    configurationValues: new FormArray<FormGroup<KeyValueFormInterface<string>>>([]),
+    parameterValues: new FormArray<FormGroup<KeyValueFormInterface<string>>>([]),
+  });
+  loading = true;
+  error: string = "";
+  importDeviceControl = new FormControl<JeedomDeviceModel | string | null>(null);
+  jeedomRooms: JeedomRoomModel[] = [];
+  filteredJeedomRooms: JeedomRoomModel[] = [];
 
-	constructor(
-		private activatedRoute: ActivatedRoute,
-		private deviceService: DeviceService,
-		private routerService: Router,
-		private confirmationService: ConfirmationService,
-		private messageService: MessageService,
-		private appService: AppService,
-		private filterService: FilterService
-	) {
-		super();
-		this.sub = this.category.valueChanges.subscribe((category) => {
-			if (category !== null && ComponentClassByType[category]) {
-				this.deviceTypes = Object.keys(ComponentClassByType[category]).map((key) => {
-					return {
-						key,
-						value: this.deviceTypesIterable.get(key)
-					} as KeyValue<string, string>;
-				});
-			}
-		});
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private deviceService: DeviceService,
+    private routerService: Router,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService,
+    private appService: AppService,
+    private filterService: FilterService
+  ) {
+    super();
+    this.sub = this.category.valueChanges.subscribe((category) => {
+      if (category !== null && ComponentClassByType[category]) {
+        this.deviceTypes = Object.keys(ComponentClassByType[category]).map((key) => {
+          return {
+            key,
+            value: this.deviceTypesIterable.get(key)
+          } as KeyValue<string, string>;
+        });
+      }
+    });
 
-		this.sub = this.importDeviceControl.valueChanges.subscribe((jeedomDevice) => {
-			if (jeedomDevice && jeedomDevice instanceof JeedomDeviceModel
-				&& this.connectivity.value && this.category.value && this.type.value) {
+    this.sub = this.importDeviceControl.valueChanges.subscribe((jeedomDevice) => {
+      if (jeedomDevice && jeedomDevice instanceof JeedomDeviceModel
+        && this.connectivity.value && this.category.value && this.type.value) {
 
-				this.jeedomId.setValue(jeedomDevice.id);
-				if (!this.name.value) {
-					this.name.setValue(jeedomDevice.name);
-				}
+        this.jeedomId.setValue(jeedomDevice.id);
+        if (!this.name.value) {
+          this.name.setValue(jeedomDevice.name);
+        }
 
-				this.infoCommandIds.clear();
-				this.actionCommandIds.clear();
-				this.configurationValues.clear();
+        this.infoCommandIds.clear();
+        this.actionCommandIds.clear();
+        this.configurationValues.clear();
 
-				const parameterValues = new SmartArrayModel(this.parameterValues.value as KeyValue<string, string>[]);
-				this.parameterValues.clear();
+        const parameterValues = new SmartArrayModel(this.parameterValues.value as KeyValue<string, string>[]);
+        this.parameterValues.clear();
 
-				const deviceCommands: Record<string, string>[] = jeedomDevice.commands
-					.map(command => ObjectHelper.objectToRecord<string>(command));
+        const deviceCommands: Record<string, string>[] = jeedomDevice.commands
+          .map(command => ObjectHelper.objectToRecord<string>(command));
 
-				const configurations = deviceConfigurations[this.connectivity.value]![this.category.value]![this.type.value];
+        const configurations = deviceConfigurations[this.connectivity.value]![this.category.value]![this.type.value];
 
-				if (configurations) {
-					Object.entries(configurations.infoCommandFilters).forEach(([commandId, commandFilter]) => {
-						const command = deviceCommands.find((command) => {
-							return Object.entries(commandFilter).every(([key, value]) => command[key] === value);
-						});
+        if (configurations) {
+          Object.entries(configurations.infoCommandFilters).forEach(([ commandId, commandFilter ]) => {
+            const command = deviceCommands.find((command) => {
+              return Object.entries(commandFilter).every(([ key, value ]) => command[key] === value);
+            });
 
-						if (command) {
-							this.addInfoCommand({key: commandId, value: parseInt(command["id"], 10)});
-						}
-					});
+            if (command) {
+              this.addInfoCommand({ key: commandId, value: parseInt(command["id"], 10) });
+            }
+          });
 
-					Object.entries(configurations.actionCommandFilters).forEach(([commandId, commandFilter]) => {
-						const command = deviceCommands.find((command) => {
-							return Object.entries(commandFilter).every(([key, value]) => command[key] === value);
-						});
+          Object.entries(configurations.actionCommandFilters).forEach(([ commandId, commandFilter ]) => {
+            const command = deviceCommands.find((command) => {
+              return Object.entries(commandFilter).every(([ key, value ]) => command[key] === value);
+            });
 
-						if (command) {
-							this.addActionCommand({key: commandId, value: parseInt(command["id"], 10)});
-						}
-					});
+            if (command) {
+              this.addActionCommand({ key: commandId, value: parseInt(command["id"], 10) });
+            }
+          });
 
-					Object.entries(configurations.configurationFilters).forEach(([configurationId, commandFilter]) => {
-						const value = jeedomDevice.values[commandFilter];
+          Object.entries(configurations.configurationFilters).forEach(([ configurationId, commandFilter ]) => {
+            const value = jeedomDevice.values[commandFilter];
 
-						if (value) {
-							this.addConfigurationValue({key: configurationId, value: value});
-						}
-					});
+            if (value) {
+              this.addConfigurationValue({ key: configurationId, value: value });
+            }
+          });
 
-					configurations.customParameters.forEach((paramName) => {
-						this.addParameterValue({key: paramName, value: parameterValues.get(paramName) ?? ""});
-					});
-				}
+          configurations.customParameters.forEach((paramName) => {
+            this.addParameterValue({ key: paramName, value: parameterValues.get(paramName) ?? "" });
+          });
 
-				this.importDeviceControl.setValue("", {emitEvent: false});
-			}
-		});
-	}
+          console.log("Jeedom Device", jeedomDevice);
+        }
 
-	get connectivity() {
-		return this.form.controls.connectivity;
-	}
+        this.importDeviceControl.setValue("", { emitEvent: false });
+      }
+    });
+  }
 
-	get category() {
-		return this.form.controls.category;
-	}
+  get connectivity() {
+    return this.form.controls.connectivity;
+  }
 
-	get type() {
-		return this.form.controls.type;
-	}
+  get category() {
+    return this.form.controls.category;
+  }
 
-	get name() {
-		return this.form.controls.name;
-	}
+  get type() {
+    return this.form.controls.type;
+  }
 
-	get jeedomId() {
-		return this.form.controls.jeedomId as FormControl<number>;
-	}
+  get name() {
+    return this.form.controls.name;
+  }
 
-	get position() {
-		return this.form.controls.position;
-	}
+  get jeedomId() {
+    return this.form.controls.jeedomId as FormControl<number>;
+  }
 
-	get configurationValues() {
-		return this.form.controls.configurationValues;
-	}
+  get position() {
+    return this.form.controls.position;
+  }
 
-	get parameterValues() {
-		return this.form.controls.parameterValues;
-	}
+  get configurationValues() {
+    return this.form.controls.configurationValues;
+  }
 
-	get infoCommandIds() {
-		return this.form.controls.infoCommandIds;
-	}
+  get parameterValues() {
+    return this.form.controls.parameterValues;
+  }
 
-	get actionCommandIds() {
-		return this.form.controls.actionCommandIds;
-	}
+  get infoCommandIds() {
+    return this.form.controls.infoCommandIds;
+  }
 
-	async ngOnInit(): Promise<void> {
-		this.loadData();
-	}
+  get actionCommandIds() {
+    return this.form.controls.actionCommandIds;
+  }
 
-	loadData() {
-		this.sub = this.activatedRoute.data.subscribe(
-			((data) => {
-				if (data && data["device"]) {
-					this.device = data["device"] as DeviceModel;
-					this.appService.setSubTitle(this.device.name);
+  async ngOnInit(): Promise<void> {
+    this.loadData();
+  }
 
-					this.device.infoCommandIds.forEach(() => this.addInfoCommand());
-					this.device.actionCommandIds.forEach(() => this.addActionCommand());
-					this.device.configurationValues.forEach(() => this.addConfigurationValue());
-					this.device.parameterValues.forEach(() => this.addParameterValue());
+  loadData() {
+    this.sub = this.activatedRoute.data.subscribe(
+      ((data) => {
+        if (data && data["device"]) {
+          this.device = data["device"] as DeviceModel;
+          this.appService.setSubTitle(this.device.name);
 
-					this.form.setValue(this.device.toForm());
-				} else {
-					this.appService.setSubTitle();
-				}
+          this.device.infoCommandIds.forEach(() => this.addInfoCommand());
+          this.device.actionCommandIds.forEach(() => this.addActionCommand());
+          this.device.configurationValues.forEach(() => this.addConfigurationValue());
+          this.device.parameterValues.forEach(() => this.addParameterValue());
 
-				this.loading = false;
-			}));
-	}
+          this.form.setValue(this.device.toForm());
+        } else {
+          this.appService.setSubTitle();
+        }
 
-	addParameterValue(keyValue?: KeyValue<string, string>) {
-		this.parameterValues.push(
-			this.addCommandForm(keyValue)
-		);
-	}
+        this.loading = false;
+      }));
+  }
 
-	addInfoCommand(keyValue?: KeyValue<string, number>) {
-		this.infoCommandIds.push(
-			this.addCommandForm(keyValue)
-		);
-	}
+  addParameterValue(keyValue?: KeyValue<string, string>) {
+    this.parameterValues.push(
+      this.addCommandForm(keyValue)
+    );
+  }
 
-	addActionCommand(keyValue?: KeyValue<string, number>) {
-		this.actionCommandIds.push(
-			this.addCommandForm(keyValue)
-		);
-	}
+  addInfoCommand(keyValue?: KeyValue<string, number>) {
+    this.infoCommandIds.push(
+      this.addCommandForm(keyValue)
+    );
+  }
 
-	addConfigurationValue(keyValue?: KeyValue<string, string>) {
-		this.configurationValues.push(
-			this.addCommandForm(keyValue)
-		);
-	}
+  addActionCommand(keyValue?: KeyValue<string, number>) {
+    this.actionCommandIds.push(
+      this.addCommandForm(keyValue)
+    );
+  }
 
-	addCommandForm<T>(keyValue?: KeyValue<string, T>) {
-		return new FormGroup({
-			key: new FormControl<string | null>(keyValue?.key ?? null, [Validators.required]),
-			value: new FormControl<T | null>(keyValue?.value ?? null),
-		});
-	}
+  addConfigurationValue(keyValue?: KeyValue<string, string>) {
+    this.configurationValues.push(
+      this.addCommandForm(keyValue)
+    );
+  }
 
-	async handleSubmit(): Promise<void> {
-		this.form.markAllAsTouched();
+  addCommandForm<T>(keyValue?: KeyValue<string, T>) {
+    return new FormGroup({
+      key: new FormControl<string | null>(keyValue?.key ?? null, [ Validators.required ]),
+      value: new FormControl<T | null>(keyValue?.value ?? null),
+    });
+  }
 
-		if (this.form.valid) {
-			const formData = this.form.value as DeviceFrontInterface;
-			const checkExist = !this.device || slugify(formData.name) !== slugify(this.device.name);
+  async handleSubmit(): Promise<void> {
+    this.form.markAllAsTouched();
 
-			if (checkExist) {
-				this.deviceService.exist(formData.name).then(async exist => {
-					if (exist) {
-						return this.name.setErrors({"exist": true});
-					}
-					await this.submit(formData);
-				});
-			} else {
-				await this.submit(formData);
-			}
-		}
-	}
+    if (this.form.valid) {
+      const formData = this.form.value as DeviceFrontInterface;
+      const checkExist = !this.device || slugify(formData.name) !== slugify(this.device.name);
 
-	async submit(formData: DeviceFrontInterface): Promise<void> {
-		this.loading = true;
-		const device = DeviceModel.importFormData(formData);
+      if (checkExist) {
+        this.deviceService.exist(formData.name).then(async exist => {
+          if (exist) {
+            return this.name.setErrors({ "exist": true });
+          }
+          await this.submit(formData);
+        });
+      } else {
+        await this.submit(formData);
+      }
+    }
+  }
 
-		if (this.device) {
-			this.deviceService.update(device).then(async _ => {
-				this.device = device;
-				this.loading = false;
-				this.messageService.add({
-					severity: "success",
-					detail: $localize`Device updated`
-				});
-				await this.routerService.navigate(["../"], {relativeTo: this.activatedRoute});
-			});
-		} else {
-			await this.deviceService.add(device).then(async _ => {
-				this.device = device;
-				this.loading = false;
-				this.messageService.add({
-					severity: "success",
-					detail: $localize`Device added`,
-				});
-				await this.routerService.navigate(["../"], {relativeTo: this.activatedRoute});
-			});
-		}
-	}
+  async submit(formData: DeviceFrontInterface): Promise<void> {
+    this.loading = true;
+    const device = DeviceModel.importFormData(formData);
 
-	async remove(): Promise<void> {
-		this.confirmationService.confirm({
-			key: "device",
-			message: $localize`Are you sure you want to delete it ?`,
-			accept: () => {
-				this.loading = true;
-				this.deviceService.remove(this.device!).then(async () => {
-					this.loading = false;
-					this.messageService.add({
-						severity: "success",
-						detail: $localize`Device deleted`
-					});
-					await this.routerService.navigate(["../"], {relativeTo: this.activatedRoute});
-				});
-			}
-		});
-	}
+    if (this.device) {
+      this.deviceService.update(device).then(async _ => {
+        this.device = device;
+        this.loading = false;
+        this.messageService.add({
+          severity: "success",
+          detail: $localize`Device updated`
+        });
+        await this.routerService.navigate([ "../" ], { relativeTo: this.activatedRoute });
+      });
+    } else {
+      await this.deviceService.add(device).then(async _ => {
+        this.device = device;
+        this.loading = false;
+        this.messageService.add({
+          severity: "success",
+          detail: $localize`Device added`,
+        });
+        await this.routerService.navigate([ "../" ], { relativeTo: this.activatedRoute });
+      });
+    }
+  }
 
-	async filterJeedomDevices(event: { query: string }) {
-		if (this.jeedomRooms.length === 0) {
-			this.jeedomRooms = await this.deviceService.availableDevices();
-		}
-		this.filteredJeedomRooms = [];
-		this.jeedomRooms.forEach((room) => {
-			const filteredDevices: JeedomDeviceModel[] =
-				this.filterService.filter(room.devices, ["name", "id"], event.query, "contains");
+  async remove(): Promise<void> {
+    this.confirmationService.confirm({
+      key: "device",
+      message: $localize`Are you sure you want to delete it ?`,
+      accept: () => {
+        this.loading = true;
+        this.deviceService.remove(this.device!).then(async () => {
+          this.loading = false;
+          this.messageService.add({
+            severity: "success",
+            detail: $localize`Device deleted`
+          });
+          await this.routerService.navigate([ "../" ], { relativeTo: this.activatedRoute });
+        });
+      }
+    });
+  }
 
-			if (filteredDevices.length > 0) {
-				this.filteredJeedomRooms.push(
-					new JeedomRoomModel(room.id, room.name, filteredDevices)
-				);
-			}
-		});
-	}
+  async filterJeedomDevices(event: { query: string }) {
+    if (this.jeedomRooms.length === 0) {
+      this.jeedomRooms = await this.deviceService.availableDevices();
+    }
+    this.filteredJeedomRooms = [];
+    this.jeedomRooms.forEach((room) => {
+      const filteredDevices: JeedomDeviceModel[] =
+        this.filterService.filter(room.devices, [ "name", "id" ], event.query, "contains");
+
+      if (filteredDevices.length > 0) {
+        this.filteredJeedomRooms.push(
+          new JeedomRoomModel(room.id, room.name, filteredDevices)
+        );
+      }
+    });
+  }
 }

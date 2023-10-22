@@ -5,8 +5,8 @@ import {
   JeedomDeviceModel,
   JeedomRoomModel
 } from '@models';
-import { inject, Injectable, signal } from '@angular/core';
-import { AddDevice, Device, DeviceState, FillDevices, InvalideDevices, RemoveDevice, UpdateDevice } from '@stores';
+import { inject, Injectable } from '@angular/core';
+import { AddDevice, DeviceState, FillDevices, InvalideDevices, RemoveDevice, UpdateDevice } from '@stores';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
@@ -17,7 +17,6 @@ import { MessageService } from 'primeng/api';
 import { UnknownCommandIdError } from '@errors';
 import { JsonService } from './json.service';
 import BaseDeviceComponent from "@base-device-component";
-import { Observe, StateManager } from '@alkemist/ng-state-manager';
 
 
 @Injectable({
@@ -25,22 +24,23 @@ import { Observe, StateManager } from '@alkemist/ng-state-manager';
 })
 export class DeviceService extends DatastoreService<DeviceStoredInterface, DeviceModel> {
   @Select(DeviceState.lastUpdated) override lastUpdated$?: Observable<Date>;
-  @Observe(Device.StateModel, Device.StateModel.lastUpdated)
-  override signalLastUpdated = signal<Date | null>(null);
+  //@Observe(Device.StateModel, Device.StateModel.lastUpdated)
+  //override signalLastUpdated = signal<Date | null>(null);
   // Données du store
   @Select(DeviceState.all) protected override all$?: Observable<DeviceStoredInterface[]>;
-  @Observe(Device.StateModel, Device.StateModel.all)
-  protected override signallAll = signal<DeviceStoredInterface[]>([]);
+  //@Observe(Device.StateModel, Device.StateModel.all)
+  //protected override signallAll = signal<DeviceStoredInterface[]>([]);
 
   constructor(messageService: MessageService,
               protected override loggerService: LoggerService,
               jsonService: JsonService,
               store: Store,
-              stateManager: StateManager,
+              //stateManager: StateManager,
               protected jeedomService: JeedomService) {
-    super(messageService, loggerService, jsonService, 'device', $localize`device`, DeviceModel, store, stateManager,
+    super(messageService, loggerService, jsonService, 'device', $localize`device`, DeviceModel, store,
+      //stateManager,
       AddDevice, UpdateDevice, RemoveDevice, FillDevices, InvalideDevices,
-      Device.Add, Device.Update, Device.Remove, Device.Fill, Device.Invalide
+      //Device.Add, Device.Update, Device.Remove, Device.Fill, Device.Invalide
     );
   }
 

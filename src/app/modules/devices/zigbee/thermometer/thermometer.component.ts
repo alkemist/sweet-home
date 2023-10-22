@@ -34,8 +34,6 @@ export abstract class DeviceThermometerComponent
       pression: MathHelper.round(values.pression as number, 0),
     })
 
-    if (this.name === 'Temp. balcon') {
-      console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues());
-    }
+    // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues());
   }
 }

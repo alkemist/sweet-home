@@ -1,10 +1,5 @@
 import { ChangeDetectionStrategy, Component, signal, WritableSignal } from "@angular/core";
-import {
-  DeviceMultimediaComponent,
-  MultimediaCommandValues,
-  MultimediaParameterValues,
-  MultimediaState
-} from "../multimedia.component";
+import { DeviceMultimediaComponent, MultimediaState } from "../multimedia.component";
 import {
   ChromecastCommandAction,
   ChromecastCommandInfo,
@@ -12,17 +7,9 @@ import {
   ChromecastExtendCommandInfo,
   ChromecastExtendParamValue,
   ChromecastGlobalCommandInfo
-} from "./chromecast.const";
+} from './chromecast.type';
+import { ChromecastCommandValues, ChromecastParameterValues } from './chromecast.interface';
 
-interface ChromecastCommandValues extends MultimediaCommandValues {
-  online: boolean,
-  player: string,
-  display: string,
-}
-
-export interface ChromecastParameterValues extends MultimediaParameterValues {
-  disableVolume: boolean,
-}
 
 @Component({
   selector: "app-device-chromecast",

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { DeviceOnOffComponent } from "../on-off.component";
 
 @Component({
-  selector: "app-device-on-off-lidl",
+  selector: "app-device-on-off-schneider",
   templateUrl: "../on-off.component.html",
   styleUrls: [
     "../../../base-device.component.scss",
@@ -11,6 +11,6 @@ import { DeviceOnOffComponent } from "../on-off.component";
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DeviceOnOffLidlComponent extends DeviceOnOffComponent {
+export class DeviceOnOffSchneiderComponent extends DeviceOnOffComponent {
 
 }

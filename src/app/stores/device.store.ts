@@ -1,12 +1,5 @@
-import { DeviceStoredInterface, HasIdInterface } from '@models';
-import { Action, Select, State, StateContext } from '@alkemist/ng-state-manager';
-import { ValueRecord } from '@alkemist/smart-tools';
-import { AddDevice, FillDevices, RemoveDevice, UpdateDevice } from './device.action';
-import { environment } from '../../environments/environment';
-import { AddDocument, FillDocuments, InvalideDocuments, RemoveDocument, UpdateDocument } from './document.action';
-
 export namespace Device {
-  export interface StateInterface extends ValueRecord {
+  /*export interface StateInterface extends ValueRecord {
     all: DeviceStoredInterface[];
     lastUpdated: Date | null;
   }
@@ -108,5 +101,5 @@ export namespace Device {
            }: StateContext<StateInterface>, { payload }: UpdateDevice) {
       patchItem<DeviceStoredInterface>('all', item => item.id === payload.id, payload)
     }
-  }
+  }*/
 }

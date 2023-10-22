@@ -16,7 +16,6 @@ import { FirestoreService } from "./firestore.service";
 import { MessageService } from "primeng/api";
 import { JsonService } from "./json.service";
 import { environment } from "../../environments/environment";
-import { StateManager } from '@alkemist/ng-state-manager';
 import { signal } from '@angular/core';
 
 export abstract class DatastoreService<
@@ -33,8 +32,7 @@ export abstract class DatastoreService<
   protected lastUpdated?: Date;
   protected maxHourOutdated = 24;
   protected loaded: boolean = false;
-
-
+  
   protected signalLastUpdated = signal<Date | null>(null);
   protected signallAll = signal<I[]>([]);
 
@@ -45,17 +43,17 @@ export abstract class DatastoreService<
                         collectionNameTranslated: string,
                         type: (new (data: I) => M),
                         protected store: Store,
-                        protected stateManager: StateManager,
+                        //protected stateManager: StateManager,
                         protected addAction: (new (payload: I) => AddDocument<I>),
                         protected updateAction: (new (payload: I) => UpdateDocument<I>),
                         protected removeAction: (new (payload: HasIdInterface) => RemoveDocument<HasIdInterface>),
                         protected fillAction: (new (payload: I[]) => FillDocuments<I>),
                         protected invalideAction: (new () => InvalideDocuments<I>),
-                        protected addAction2: (new (payload: I) => AddDocument<I>),
+                        /*protected addAction2: (new (payload: I) => AddDocument<I>),
                         protected updateAction2: (new (payload: I) => UpdateDocument<I>),
                         protected removeAction2: (new (payload: HasIdInterface) => RemoveDocument<HasIdInterface>),
                         protected fillAction2: (new (payload: I[]) => FillDocuments<I>),
-                        protected invalideAction2: (new () => InvalideDocuments<I>),
+                        protected invalideAction2: (new () => InvalideDocuments<I>),*/
   ) {
     super(messageService, loggerService, jsonService, collectionName, collectionNameTranslated, type);
     this.initLastUpdated();

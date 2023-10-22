@@ -1,26 +1,23 @@
 import { Directive, signal, WritableSignal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { OnOffCommandAction, OnOffExtendCommandInfo, OnOffGlobalCommandInfo, OnOffParamValue } from '@devices';
-import { ZigbeeCommandValues, ZigbeeComponent } from '../zigbee-component.directive';
+import { ZigbeeComponent } from '../zigbee-component.directive';
+import { ZigbeeOnOffCommandValues, ZigbeeOnOffParameterValues } from './on-off.interface';
 
-interface ZigbeeOnOffCommandValues extends ZigbeeCommandValues {
-  state: boolean,
-}
-
-interface ZigbeeOnOffParameterValues extends Record<OnOffParamValue | string, string | number | boolean | null> {
-  security: boolean,
-  icon: string
-}
 
 @Directive()
-export abstract class DeviceOnOffComponent
+export abstract class DeviceOnOffComponent<
+  IE extends OnOffExtendCommandInfo = OnOffExtendCommandInfo,
+  AE extends OnOffCommandAction = OnOffCommandAction,
+  IV extends ZigbeeOnOffCommandValues = ZigbeeOnOffCommandValues
+>
   extends ZigbeeComponent<
-    OnOffExtendCommandInfo, OnOffCommandAction,
-    ZigbeeOnOffCommandValues,
+    IE, AE,
+    IV,
     string, string, string,
     OnOffParamValue, ZigbeeOnOffParameterValues> {
 
-  override infoCommandValues: WritableSignal<ZigbeeOnOffCommandValues> = signal<ZigbeeOnOffCommandValues>({
+  override infoCommandValues: WritableSignal<IV> = signal<IV>({
     ...super.infoCommandSignalValues,
     state: false,
   });
@@ -37,7 +34,7 @@ export abstract class DeviceOnOffComponent
   }
 
   get iconClass() {
-    return this.parameterValues.icon ?? 'fa-bolt';
+    return this.parameterValues.icon && this.parameterValues.icon !== '' ? this.parameterValues.icon : 'fa-bolt';
   }
 
   override setParameterValues(values: Record<OnOffParamValue, string | undefined>) {
@@ -88,6 +85,6 @@ export abstract class DeviceOnOffComponent
 
     this.onOffControl.setValue(this.infoCommandValues().state, { emitEvent: false });
 
-    // console.log(`-- [${ this.name }] Updated info command values`, values, this.infoCommandValues());
+    console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues());
   }
 }

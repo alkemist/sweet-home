@@ -1,3 +1,4 @@
+//export * from './light';
 export * from './on-off';
 export * from './thermostat';
 export * from './thermometer';

@@ -9,14 +9,18 @@ export enum DeviceCategoryEnum {
   Thermometer = 'thermometer',
   OnOff = 'on-off',
   Multimedia = 'multimedia',
+  Test = 'test',
 }
 
 export enum DeviceTypeEnum {
   Aqara = 'aqara',
   Moes = 'moes',
   Lidl = 'lidle',
+  Nous = 'nous',
+  Schneider = 'schneider',
   Chromecast = 'chromecast',
   Sonos = 'sonos',
+  Test = 'test',
 }
 
 

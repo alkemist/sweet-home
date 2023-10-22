@@ -22,8 +22,8 @@
       <div class="icon">
         <i class="fa fa-cloud"></i><!--umbrella-->
       </div>
-      <div class="value">
-        {{ infoCommandValues().pression }} hPA
+      <div class="value" title="hPA">
+        {{ infoCommandValues().pression }}
       </div>
     </div>
     <div *ngIf="!isEditMode && hasLowBattery"

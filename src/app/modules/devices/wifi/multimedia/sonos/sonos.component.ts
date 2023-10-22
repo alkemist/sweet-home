@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal, WritableSignal } from "@angular/core";
-import { DeviceMultimediaComponent, MultimediaCommandValues, MultimediaState } from "../multimedia.component";
+import { DeviceMultimediaComponent, MultimediaState } from "../multimedia.component";
+import { FormControl } from "@angular/forms";
 import {
   SonosCommandAction,
   SonosCommandInfo,
@@ -7,15 +8,8 @@ import {
   SonosExtendCommandAction,
   SonosExtendCommandInfo,
   SonosGlobalCommandInfo
-} from "./sonos.const";
-import { FormControl } from "@angular/forms";
-
-interface SonosCommandValues extends MultimediaCommandValues {
-  state: string,
-  shuffle: boolean,
-  repeat: boolean,
-  album: string,
-}
+} from './sonos.type';
+import { SonosCommandValues } from './sonos.interface';
 
 @Component({
   selector: "app-device-sonos",

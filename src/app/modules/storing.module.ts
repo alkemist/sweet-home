@@ -5,7 +5,6 @@ import { NgxsStoragePluginModule } from "@ngxs/storage-plugin";
 import { NgxsModule } from "@ngxs/store";
 import { DeviceState } from "@stores";
 import { environment } from "../../environments/environment";
-import { StateManager } from '@alkemist/ng-state-manager';
 
 
 const states = [
@@ -28,7 +27,7 @@ const states = [
     //StateManagerModule.forRoot(),
   ],
   providers: [
-    StateManager
+    //StateManager
   ],
   exports: [
     NgxsModule
