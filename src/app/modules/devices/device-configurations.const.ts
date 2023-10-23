@@ -7,6 +7,8 @@ import {
 import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum, PartialRecord } from "@models";
 import {
   ChromecastParams,
+  DeviceChromecastComponent,
+  DeviceSonosComponent,
   MultimediaChromecastInfoCommandFilters,
   MultimediaParams,
   wifiMultimediaChromecastActionCommandFilters,
@@ -15,6 +17,13 @@ import {
   wifiMultimediaSonosInfoCommandFilters
 } from "./wifi";
 import {
+  DeviceOnOffLidlComponent,
+  DeviceOnOffMoesComponent,
+  DeviceOnOffNousComponent,
+  DeviceOnOffSchneiderComponent,
+  DeviceThermometerAqaraComponent,
+  DeviceThermostatAqaraComponent,
+  DeviceThermostatMoesComponent,
   OnOffParams,
   zigbeeLinkerOnOffInfoCommandFilters,
   zigbeeLinkerOnOffMoesActionCommandFilters,
@@ -29,12 +38,19 @@ import {
   zigbeeOfficialThermostatInfoCommandFilters,
   zigbeeOfficialThermostatMoesInfoCommandFilters
 } from "./zigbee";
-import { zigbeeLinkerOnOffLidlActionCommandFilters } from './zigbee/on-off/lidl/on-off-lidl.const';
 import {
   zigbeeLinkerOnOffNousActionCommandFilters,
   zigbeeLinkerOnOffNousInfoCommandFilters
 } from './zigbee/on-off/nous/on-off-nous.const';
-import { zigbeeLinkerOnOffLSchneiderActionCommandFilters } from './zigbee/on-off/schneider/on-off-schneider.const';
+import { Type } from '@angular/core';
+import BaseDeviceComponent from '@base-device-component';
+import { DeviceTestComponent } from './test.component';
+import {
+  LightParams,
+  zigbeeLinkerLightActionCommandFilters,
+  zigbeeLinkerLightInfoCommandFilters
+} from './zigbee/light';
+import { DeviceLightEgloComponent } from './zigbee/light/eglo/light-eglo.component';
 
 export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinitions<DeviceConnectivityEnum, DeviceCategoryEnum> =
   {
@@ -67,6 +83,11 @@ export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinition
       [DeviceCategoryEnum.OnOff]: {
         infoCommandFilters: zigbeeLinkerOnOffInfoCommandFilters,
         customParams: OnOffParams,
+      },
+      [DeviceCategoryEnum.Light]: {
+        infoCommandFilters: zigbeeLinkerLightInfoCommandFilters,
+        actionCommandFilters: zigbeeLinkerLightActionCommandFilters,
+        customParams: LightParams,
       },
     }
   };
@@ -112,6 +133,9 @@ export const deviceDefinitionsByConnectivityCategoryType:
       [DeviceTypeEnum.Nous]: {},
       [DeviceTypeEnum.Schneider]: {}
     },
+    [DeviceCategoryEnum.Light]: {
+      [DeviceTypeEnum.Eglo]: {},
+    },
     [DeviceCategoryEnum.Test]: {
       [DeviceTypeEnum.Test]: {
         infoCommandFilters: {},
@@ -135,23 +159,48 @@ export const deviceDefinitionsByConnectivityCategoryType:
       [DeviceTypeEnum.Aqara]: {}
     },
     [DeviceCategoryEnum.OnOff]: {
-      [DeviceTypeEnum.Lidl]: {
-        actionCommandFilters: zigbeeLinkerOnOffLidlActionCommandFilters
-      },
+      [DeviceTypeEnum.Lidl]: {},
       [DeviceTypeEnum.Moes]: {
         actionCommandFilters: zigbeeLinkerOnOffMoesActionCommandFilters
       },
-      [DeviceTypeEnum.Schneider]: {
-        actionCommandFilters: zigbeeLinkerOnOffLSchneiderActionCommandFilters
-      },
+      [DeviceTypeEnum.Schneider]: {},
       [DeviceTypeEnum.Nous]: {
         infoCommandFilters: zigbeeLinkerOnOffNousInfoCommandFilters,
         actionCommandFilters: zigbeeLinkerOnOffNousActionCommandFilters
       }
     },
+    [DeviceCategoryEnum.Light]: {
+      [DeviceTypeEnum.Eglo]: {},
+    },
     [DeviceCategoryEnum.Test]: {
       [DeviceTypeEnum.Test]: {}
     }
+  }
+}
+
+export const ComponentClassByType: Record<DeviceCategoryEnum, Partial<Record<DeviceTypeEnum, Type<BaseDeviceComponent>>>> = {
+  [DeviceCategoryEnum.Thermostat]: {
+    [DeviceTypeEnum.Aqara]: DeviceThermostatAqaraComponent,
+    [DeviceTypeEnum.Moes]: DeviceThermostatMoesComponent,
+  },
+  [DeviceCategoryEnum.Thermometer]: {
+    [DeviceTypeEnum.Aqara]: DeviceThermometerAqaraComponent,
+  },
+  [DeviceCategoryEnum.OnOff]: {
+    [DeviceTypeEnum.Lidl]: DeviceOnOffLidlComponent,
+    [DeviceTypeEnum.Moes]: DeviceOnOffMoesComponent,
+    [DeviceTypeEnum.Nous]: DeviceOnOffNousComponent,
+    [DeviceTypeEnum.Schneider]: DeviceOnOffSchneiderComponent,
+  },
+  [DeviceCategoryEnum.Light]: {
+    [DeviceTypeEnum.Eglo]: DeviceLightEgloComponent,
+  },
+  [DeviceCategoryEnum.Multimedia]: {
+    [DeviceTypeEnum.Chromecast]: DeviceChromecastComponent,
+    [DeviceTypeEnum.Sonos]: DeviceSonosComponent,
+  },
+  [DeviceCategoryEnum.Test]: {
+    [DeviceTypeEnum.Test]: DeviceTestComponent,
   }
 }
 

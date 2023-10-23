@@ -90,7 +90,7 @@
             <div class="p-float-label flex">
               <p-autoComplete (completeMethod)="filterJeedomDevices($event)"
                               [formControl]="importDeviceControl"
-                              [group]="true" [suggestions]="filteredJeedomRooms" class="w-12"
+                              [group]="true" [suggestions]="filteredJeedomRooms()" class="w-12"
                               field="name" optionGroupChildren="devices" optionGroupLabel="name"></p-autoComplete>
               <label i18n>Import</label>
             </div>

@@ -1,32 +1,13 @@
-import { ElementRef, Injectable, Type, ViewContainerRef } from '@angular/core';
-import {
-  CoordinateInterface,
-  DeviceCategoryEnum,
-  DeviceModel,
-  DeviceTypeEnum,
-  SizeInterface,
-  SmartLoaderModel,
-  SmartMapModel
-} from '@models';
+import { ElementRef, Injectable, ViewContainerRef } from '@angular/core';
+import { CoordinateInterface, DeviceModel, SizeInterface, SmartLoaderModel, SmartMapModel } from '@models';
 import 'hammerjs';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
 import { DeviceSupervisor, DocumentHelper, MathHelper } from '@tools';
 import { LoggerService } from './index';
-import {
-  DeviceChromecastComponent,
-  DeviceOnOffLidlComponent,
-  DeviceOnOffMoesComponent,
-  DeviceOnOffNousComponent,
-  DeviceOnOffSchneiderComponent,
-  DeviceSonosComponent,
-  DeviceThermometerAqaraComponent,
-  DeviceThermostatAqaraComponent,
-  DeviceThermostatMoesComponent
-} from '@devices';
 import { UnexpectedError } from '@errors';
 import BaseDeviceComponent from "@base-device-component";
 import { TypeHelper } from "@alkemist/smart-tools";
-import { DeviceTestComponent } from '../modules/devices/test.component';
+import { ComponentClassByType } from '@devices';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +31,7 @@ export class MapBuilder {
   private _supervisors = new SmartMapModel<string, DeviceSupervisor>();
   private _hammerEnabled = true;
   private _isEditMode = false;
+  private _isConfigMode = false;
   private _isDragging = false;
   private _planElement?: HTMLImageElement;
 
@@ -158,6 +140,10 @@ export class MapBuilder {
     return this._isEditMode;
   }
 
+  isConfigMode() {
+    return this._isConfigMode;
+  }
+
   isDraggging() {
     return this._isDragging;
   }
@@ -253,6 +239,10 @@ export class MapBuilder {
         editMode,
         this._scale
       ));
+  }
+
+  switchConfigMode(configMode: boolean) {
+    this._isConfigMode = configMode;
   }
 
   onResize() {
@@ -434,27 +424,4 @@ interface WheelEventCustom extends WheelEvent {
 interface MouseEventCustom extends MouseEvent {
   toElement: Element;
   relatedTarget: Element;
-}
-
-export const ComponentClassByType: Record<DeviceCategoryEnum, Partial<Record<DeviceTypeEnum, Type<BaseDeviceComponent>>>> = {
-  [DeviceCategoryEnum.Thermostat]: {
-    [DeviceTypeEnum.Aqara]: DeviceThermostatAqaraComponent,
-    [DeviceTypeEnum.Moes]: DeviceThermostatMoesComponent,
-  },
-  [DeviceCategoryEnum.Thermometer]: {
-    [DeviceTypeEnum.Aqara]: DeviceThermometerAqaraComponent,
-  },
-  [DeviceCategoryEnum.OnOff]: {
-    [DeviceTypeEnum.Lidl]: DeviceOnOffLidlComponent,
-    [DeviceTypeEnum.Moes]: DeviceOnOffMoesComponent,
-    [DeviceTypeEnum.Nous]: DeviceOnOffNousComponent,
-    [DeviceTypeEnum.Schneider]: DeviceOnOffSchneiderComponent,
-  },
-  [DeviceCategoryEnum.Multimedia]: {
-    [DeviceTypeEnum.Chromecast]: DeviceChromecastComponent,
-    [DeviceTypeEnum.Sonos]: DeviceSonosComponent,
-  },
-  [DeviceCategoryEnum.Test]: {
-    [DeviceTypeEnum.Test]: DeviceTestComponent,
-  }
 }

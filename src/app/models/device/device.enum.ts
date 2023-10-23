@@ -8,6 +8,7 @@ export enum DeviceCategoryEnum {
   Thermostat = 'thermostat',
   Thermometer = 'thermometer',
   OnOff = 'on-off',
+  Light = 'light',
   Multimedia = 'multimedia',
   Test = 'test',
 }
@@ -17,6 +18,7 @@ export enum DeviceTypeEnum {
   Moes = 'moes',
   Lidl = 'lidle',
   Nous = 'nous',
+  Eglo = 'eglo',
   Schneider = 'schneider',
   Chromecast = 'chromecast',
   Sonos = 'sonos',

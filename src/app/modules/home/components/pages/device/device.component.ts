@@ -1,25 +1,26 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal } from "@angular/core";
 import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ObjectHelper, slugify } from "@tools";
 import { ConfirmationService, FilterService, MessageService } from "primeng/api";
-import { AppService, ComponentClassByType, DeviceService } from "@services";
+import { AppService, DeviceService } from "@services";
 import { KeyValue } from "@angular/common";
 import {
-	CoordinateFormInterface,
-	DeviceCategoryEnum,
-	DeviceConnectivityEnum,
-	DeviceFormInterface,
-	DeviceFrontInterface,
-	DeviceModel,
-	DeviceTypeEnum,
-	JeedomDeviceModel,
-	JeedomRoomModel,
-	KeyValueFormInterface,
-	SmartArrayModel,
+  CoordinateFormInterface,
+  DeviceCategoryEnum,
+  DeviceConnectivityEnum,
+  DeviceFormInterface,
+  DeviceFrontInterface,
+  DeviceModel,
+  DeviceTypeEnum,
+  JeedomDeviceModel,
+  JeedomRoomModel,
+  KeyValueFormInterface,
+  SmartArrayModel,
 } from "@models";
 import BaseComponent from "@base-component";
-import { deviceConfigurations } from "@devices";
+import { ComponentClassByType, deviceConfigurations } from "@devices";
+import { ConsoleHelper } from '@alkemist/smart-tools';
 
 @Component({
   selector: "app-device",
@@ -57,7 +58,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
   error: string = "";
   importDeviceControl = new FormControl<JeedomDeviceModel | string | null>(null);
   jeedomRooms: JeedomRoomModel[] = [];
-  filteredJeedomRooms: JeedomRoomModel[] = [];
+  filteredJeedomRooms = signal<JeedomRoomModel[]>([]);
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -134,7 +135,9 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
             this.addParameterValue({ key: paramName, value: parameterValues.get(paramName) ?? "" });
           });
 
-          console.log("Jeedom Device", jeedomDevice);
+          ConsoleHelper.group(`[${ jeedomDevice.id }][${ jeedomDevice.name }]`, [
+            jeedomDevice
+          ])
         }
 
         this.importDeviceControl.setValue("", { emitEvent: false });
@@ -307,16 +310,17 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     if (this.jeedomRooms.length === 0) {
       this.jeedomRooms = await this.deviceService.availableDevices();
     }
-    this.filteredJeedomRooms = [];
+    const filteredJeedomRooms: JeedomRoomModel[] = [];
     this.jeedomRooms.forEach((room) => {
       const filteredDevices: JeedomDeviceModel[] =
         this.filterService.filter(room.devices, [ "name", "id" ], event.query, "contains");
 
       if (filteredDevices.length > 0) {
-        this.filteredJeedomRooms.push(
+        filteredJeedomRooms.push(
           new JeedomRoomModel(room.id, room.name, filteredDevices)
         );
       }
     });
+    this.filteredJeedomRooms.set(filteredJeedomRooms);
   }
 }

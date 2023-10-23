@@ -50,8 +50,11 @@ export abstract class ZigbeeBatteryComponent<
   override updateInfoCommandValues(values: Record<ZigbeeBatteryGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
 
-    this.infoCommandValues().battery = environment["APP_OFFLINE"]
-      ? 100
-      : MathHelper.round(values.battery as number, 0);
+    this.infoCommandValues.set({
+      ...this.infoCommandValues(),
+      battery: environment["APP_OFFLINE"]
+        ? 100
+        : MathHelper.round(values.battery as number, 0),
+    })
   }
 }

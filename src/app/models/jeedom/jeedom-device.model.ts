@@ -1,5 +1,5 @@
-import {JeedomDeviceType} from './jeedom-device.interface';
-import {JeedomCommandInterface} from './jeedom-command.interface';
+import { JeedomDeviceType } from './jeedom-device.interface';
+import { JeedomCommandInterface } from './jeedom-command.interface';
 
 export class JeedomDeviceModel {
   private readonly _id: number;

@@ -68,7 +68,7 @@ export abstract class DeviceMultimediaComponent<
         takeUntilDestroyed(this)
       )
       .subscribe((volume) => {
-        if (volume) {
+        if (volume !== null) {
           void this.setVolume(volume);
         }
       });
@@ -98,7 +98,12 @@ export abstract class DeviceMultimediaComponent<
 
   async setVolume(volume: number): Promise<void> {
     await this.execUpdateSlider("volume", volume);
-    this.infoCommandValues().volume = volume;
+
+    this.infoCommandValues.set({
+      ...this.infoCommandValues(),
+      volume: volume,
+    })
+
   }
 
   async setMute(action: "mute" | "unmute"): Promise<void> {
@@ -140,8 +145,11 @@ export abstract class DeviceMultimediaComponent<
   }
 
   override updateInfoCommandValues(values: Record<MultimediaCommandInfo, string | number | boolean | null>) {
-    this.infoCommandValues().volume = values.volume as number ?? 0;
-    this.infoCommandValues().muted = values.muted === 1;
+    this.infoCommandValues.set({
+      ...this.infoCommandValues(),
+      volume: values.volume as number ?? 0,
+      muted: values.muted === 1
+    })
 
     this.volumeControl.setValue(this.infoCommandValues().volume, { emitEvent: false });
     this.muteControl.setValue(this.infoCommandValues().muted, { emitEvent: false });

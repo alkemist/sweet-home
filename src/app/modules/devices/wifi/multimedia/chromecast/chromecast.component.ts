@@ -80,7 +80,10 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
   override updateInfoCommandValues(values: Record<ChromecastGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
 
-    this.infoCommandValues().online = values.online === 1;
+    this.infoCommandValues.set({
+      ...this.infoCommandValues(),
+      online: values.online === 1,
+    })
 
     if (!this.infoCommandValues().online) {
       this.state = MultimediaState.offline;

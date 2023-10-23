@@ -1,4 +1,4 @@
-import { DeviceCommands } from '@devices';
+import { DeviceCommands, OnOffParamValue } from '@devices';
 import { OnOffCommandAction, OnOffCommandInfo } from './on-off.type';
 import { zigbeeInfoCommandFilters } from '../zigbee.const';
 
@@ -8,9 +8,9 @@ export const zigbeeOfficialOnOffInfoCommandFilters: DeviceCommands<OnOffCommandI
 };
 
 export const zigbeeOfficialOnOffActionCommandFilters: DeviceCommands<OnOffCommandAction> = {
-  on: { generic_type: 'LIGHT_ON' },
-  off: { generic_type: 'LIGHT_OFF' },
-  toggle: { generic_type: 'LIGHT_TOGGLE' },
+  on: { generic_type: 'ENERGY_ON' },
+  off: { generic_type: 'ENERGY_OFF' },
+  toggle: { logicalId: 'state___TOGGLE' },
 };
 
 export const zigbeeLinkerOnOffInfoCommandFilters: DeviceCommands<OnOffCommandInfo> = {
@@ -18,4 +18,4 @@ export const zigbeeLinkerOnOffInfoCommandFilters: DeviceCommands<OnOffCommandInf
   state: { generic_type: 'ENERGY_STATE' },
 };
 
-export const OnOffParams = [ 'security', 'icon' ];
+export const OnOffParams: OnOffParamValue[] = [ 'security', 'icon' ];

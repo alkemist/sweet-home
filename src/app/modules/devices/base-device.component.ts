@@ -72,6 +72,10 @@ export default abstract class BaseDeviceComponent<
     return this.mapBuilder.isEditMode();
   };
 
+  get isConfigMode() {
+    return this.mapBuilder.isConfigMode();
+  };
+
   get isDragging() {
     return this.mapBuilder.isDraggging();
   }

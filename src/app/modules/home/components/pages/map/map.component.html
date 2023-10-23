@@ -8,6 +8,9 @@
   <div class="actions flex align-items-center justify-content-end gap-4">
     <p-progressSpinner *ngIf="apiLoading" animationDuration="2s" fill="var(--surface-ground)" strokeWidth="8"
                        styleClass="w-2rem h-2rem"></p-progressSpinner>
+    <i class="fa icon-big fa-cog"></i>
+    <p-inputSwitch [formControl]="switchConfigModeFormControl"></p-inputSwitch>
+    <i class="fa icon-big fa-pencil"></i>
     <p-inputSwitch [formControl]="switchEditModeFormControl"></p-inputSwitch>
   </div>
 </blockable-div>

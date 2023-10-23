@@ -11,6 +11,7 @@ import {
 import { SharingModule } from '../sharing.module';
 import { DeviceChromecastComponent, DeviceSonosComponent } from './wifi';
 import { DeviceTestComponent } from './test.component';
+import { DeviceLightEgloComponent } from './zigbee/light/eglo/light-eglo.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { DeviceTestComponent } from './test.component';
     DeviceOnOffMoesComponent,
     DeviceOnOffNousComponent,
     DeviceOnOffSchneiderComponent,
+    DeviceLightEgloComponent,
     DeviceChromecastComponent,
     DeviceSonosComponent,
     DeviceTestComponent

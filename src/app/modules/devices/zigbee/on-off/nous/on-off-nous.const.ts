@@ -1,4 +1,9 @@
-import { DeviceCommands, zigbeeInfoCommandFilters, zigbeeLinkerOnOffInfoCommandFilters } from '@devices';
+import {
+  DeviceCommands,
+  zigbeeInfoCommandFilters,
+  zigbeeLinkerOnOffInfoCommandFilters,
+  zigbeeOfficialOnOffActionCommandFilters
+} from '@devices';
 import { OnOffNousGlobalCommandAction, OnOffNousGlobalCommandInfo } from './on-off-nous.type';
 
 export const zigbeeLinkerOnOffNousInfoCommandFilters: DeviceCommands<OnOffNousGlobalCommandInfo> = {
@@ -8,9 +13,7 @@ export const zigbeeLinkerOnOffNousInfoCommandFilters: DeviceCommands<OnOffNousGl
 };
 
 export const zigbeeLinkerOnOffNousActionCommandFilters: DeviceCommands<OnOffNousGlobalCommandAction> = {
-  on: { generic_type: 'ENERGY_ON' },
-  off: { generic_type: 'ENERGY_OFF' },
-  toggle: { logicalId: 'state___TOGGLE' },
+  ...zigbeeOfficialOnOffActionCommandFilters,
   indicator: { logicalId: 'indicator_mode___select' },
 };
 
