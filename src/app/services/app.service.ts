@@ -1,6 +1,6 @@
-import {Title} from "@angular/platform-browser";
-import {Injectable} from "@angular/core";
-import {environment} from "../../environments/environment";
+import { Title } from "@angular/platform-browser";
+import { Injectable } from "@angular/core";
+import { environment } from "../../environments/environment";
 import "../global"
 
 @Injectable({
@@ -17,18 +17,18 @@ export class AppService {
       this.pageTitle = title;
 
       if (title !== undefined) {
-        this.titleService.setTitle(`${environment["APP_NAME"]} - ${title}`);
+        this.titleService.setTitle(`${ title }`);
       } else {
-        this.titleService.setTitle(`${environment["APP_NAME"]}`);
+        this.titleService.setTitle(`${ environment["APP_NAME"] }`);
       }
     }
   }
 
   setSubTitle(subTitle?: string) {
     if (subTitle !== undefined) {
-      this.titleService.setTitle(`${environment["APP_NAME"]} - ${this.pageTitle} - ${subTitle}`);
+      this.titleService.setTitle(`${ this.pageTitle } - ${ subTitle }`);
     } else {
-      this.titleService.setTitle(`${environment["APP_NAME"]} - ${this.pageTitle}`);
+      this.titleService.setTitle(`${ this.pageTitle }`);
     }
   }
 }
