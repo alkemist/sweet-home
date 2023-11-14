@@ -2,7 +2,7 @@ import { Directive, signal, WritableSignal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { OnOffCommandAction, OnOffExtendCommandInfo, OnOffGlobalCommandInfo, OnOffParamValue } from '@devices';
 import { ZigbeeComponent } from '../zigbee-component.directive';
-import { ZigbeeOnOffCommandValues, OnOffParameterValues } from './on-off.interface';
+import { OnOffParameterValues, ZigbeeOnOffCommandValues } from './on-off.interface';
 
 
 @Directive()
@@ -75,8 +75,7 @@ export abstract class DeviceOnOffComponent<
     })
   }
 
-  override updateInfoCommandValues(values: Record<OnOffGlobalCommandInfo, string | number | boolean | null>) {
-    super.updateInfoCommandValues(values);
+  updateInfoCommandValues(values: Record<OnOffGlobalCommandInfo, string | number | boolean | null>) {
 
     this.infoCommandValues.set({
       ...this.infoCommandValues(),

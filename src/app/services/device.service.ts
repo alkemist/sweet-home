@@ -114,6 +114,17 @@ export class DeviceService extends DatastoreService<DeviceStoredInterface, Devic
 
     return this.jeedomService.execActionCommand(commandId, commandValue)
   }
+
+  execHistory(commandId: number, commandName: string): Promise<any | null> {
+    if (!commandId) {
+      this.loggerService.error(
+        new UnknownCommandIdError(commandName)
+      );
+      return Promise.resolve(null);
+    }
+
+    return this.jeedomService.execHistoryCommand(commandId)
+  }
 }
 
 export const deviceResolver: ResolveFn<DeviceModel | undefined> =

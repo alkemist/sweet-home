@@ -101,9 +101,7 @@ export abstract class DeviceLightComponent
     });
   }
 
-  override updateInfoCommandValues(values: Record<LightGlobalCommandInfo, string | number | boolean | null>) {
-    super.updateInfoCommandValues(values);
-
+  updateInfoCommandValues(values: Record<LightGlobalCommandInfo, string | number | boolean | null>) {
     this.infoCommandValues.set({
       ...this.infoCommandValues(),
       state: values.state === 1,

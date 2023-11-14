@@ -34,6 +34,7 @@ export default abstract class BaseDeviceComponent<
   @HostBinding("style.top") y = "0px";
   @Input() name: string = "";
   @Input() actionInfoIds = new SmartArrayModel<IE, number>();
+  @Input() actionInfoIds2 = new SmartArrayModel<I, number>();
   @Input() actionCommandIds = new SmartArrayModel<A, number>();
   @Input() configurationValues = new SmartArrayModel<C, string>();
   @Output() loaded = new EventEmitter<boolean>();
@@ -181,5 +182,12 @@ export default abstract class BaseDeviceComponent<
         reject(e);
       });
     });
+  }
+
+  protected async execHistory(commandInfo: I) {
+    console.log('execHistory query', commandInfo, this.actionInfoIds2.get(commandInfo))
+    const result = await this.deviceService.execHistory(this.actionInfoIds2.get(commandInfo), commandInfo);
+    console.log("execHistory result", result);
+    return result;
   }
 }

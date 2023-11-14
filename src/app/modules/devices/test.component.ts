@@ -15,7 +15,7 @@ export class DeviceTestComponent
     h: 100
   };
 
-  override updateInfoCommandValues(values: Record<any, string | number | boolean | null>) {
+  updateInfoCommandValues(values: Record<any, string | number | boolean | null>) {
     console.log(`-- [${ this.name }] Updated info command values`, values, this.infoCommandValues());
   }
 }

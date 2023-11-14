@@ -1,21 +1,26 @@
 import { Directive, signal, WritableSignal } from '@angular/core';
 import {
-  OnOffParamValue,
+  ThermometerCommandInfo,
   ThermometerExtendCommandInfo,
   ThermometerGlobalCommandInfo,
   ThermometerParamValue
 } from '@devices';
-import { ZigbeeBatteryCommandValues, ZigbeeBatteryComponent } from '../zigbee-battery-component.directive';
+import { ZigbeeBatteryComponent } from '../zigbee-battery-component.directive';
 import { MathHelper } from '@tools';
 import { ThermometerCommandValues, ThermometerParameterValues } from './thermometer.interface';
-import { OnOffParameterValues } from '../on-off/on-off.interface';
-
 
 
 @Directive()
 export abstract class DeviceThermometerComponent
   extends ZigbeeBatteryComponent<
-    ThermometerExtendCommandInfo, string, ThermometerCommandValues, string, string, string, ThermometerParamValue, ThermometerParameterValues
+    ThermometerExtendCommandInfo,
+    never,
+    ThermometerCommandValues,
+    ThermometerCommandInfo,
+    never,
+    never,
+    ThermometerParamValue,
+    ThermometerParameterValues
   > {
   size = {
     w: 120,
@@ -33,6 +38,15 @@ export abstract class DeviceThermometerComponent
     super.setParameterValues(values);
     this.parameterValues.pression = parseInt(values.pression ?? '0') === 1;
   };
+
+  override async openModal() {
+    if (!this.isUserAction()) {
+      return;
+    }
+
+    const historyPression = await this.execHistory('pression');
+    this.modalOpened = true;
+  }
 
   override updateInfoCommandValues(values: Record<ThermometerGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);

@@ -15,3 +15,5 @@ export const zigbeeLinkerThermometerInfoCommandFilters: DeviceCommands<Thermomet
   humidity: {generic_type: 'HUMIDITY'},
   pression: {generic_type: 'PRESSURE'},
 };
+
+export const ThermometerParams = [ 'pression' ];

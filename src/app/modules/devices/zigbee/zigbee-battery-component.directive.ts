@@ -48,9 +48,7 @@ export abstract class ZigbeeBatteryComponent<
     return "fa-battery";
   }
 
-  override updateInfoCommandValues(values: Record<ZigbeeBatteryGlobalCommandInfo, string | number | boolean | null>) {
-    super.updateInfoCommandValues(values);
-
+  updateInfoCommandValues(values: Record<ZigbeeBatteryGlobalCommandInfo, string | number | boolean | null>) {
     this.infoCommandValues.set({
       ...this.infoCommandValues(),
       battery: environment["APP_OFFLINE"]

@@ -26,7 +26,4 @@ export abstract class ZigbeeComponent<
   get signalPercent() {
     return MathHelper.round(this.infoCommandValues().signal * 100 / 255, 0);
   }
-
-  override updateInfoCommandValues(values: Record<ZigbeeCommandInfo, string | number | boolean | null>) {
-  }
 }

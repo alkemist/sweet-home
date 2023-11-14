@@ -1,4 +1,4 @@
-<div #content [pTooltip]="name"
+<div #content [pTooltip]="name" (click)="openModal()"
      [tooltipDisabled]="isEditMode || isDragging"
      tooltipEvent="hover" tooltipPosition="top">
   <div *ngIf="initialized$()" class="flex flex-column gap-2">
@@ -53,3 +53,11 @@
     </div>
   </div>
 </p-overlayPanel>
+<p-dialog (onHide)="closeModal()" [(visible)]="modalOpened" [dismissableMask]="true" [draggable]="false"
+          [header]="name" [modal]="true" [resizable]="false"
+          appendTo="body" position="bottom"
+          styleClass="device-modal">
+  <div class="flex flex-column">
+
+  </div>
+</p-dialog>

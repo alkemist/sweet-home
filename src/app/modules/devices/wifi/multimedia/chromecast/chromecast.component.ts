@@ -22,10 +22,14 @@ import { ChromecastCommandValues, ChromecastParameterValues } from './chromecast
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeviceChromecastComponent extends DeviceMultimediaComponent<
-  ChromecastExtendCommandInfo, ChromecastExtendCommandAction,
+  ChromecastExtendCommandInfo,
+  ChromecastExtendCommandAction,
   ChromecastCommandValues,
-  ChromecastCommandInfo, ChromecastCommandAction, string,
-  ChromecastExtendParamValue, ChromecastParameterValues
+  ChromecastCommandInfo,
+  ChromecastCommandAction,
+  string,
+  ChromecastExtendParamValue,
+  ChromecastParameterValues
 > {
   size = {
     w: 130,

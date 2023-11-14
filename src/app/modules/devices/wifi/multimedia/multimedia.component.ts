@@ -25,9 +25,12 @@ export interface MultimediaParameterValues extends Record<MultimediaParamValue |
 
 @Directive()
 export abstract class DeviceMultimediaComponent<
-  IE extends MultimediaCommandInfo, AE extends MultimediaCommandAction,
+  IE extends MultimediaCommandInfo,
+  AE extends MultimediaCommandAction,
   IV extends MultimediaCommandValues = MultimediaCommandValues,
-  I extends string = string, A extends string = string, C extends string = string,
+  I extends string = string,
+  A extends string = string,
+  C extends string = string,
   P extends MultimediaParamValue = MultimediaParamValue,
   PV extends MultimediaParameterValues = MultimediaParameterValues,
 >
@@ -144,7 +147,7 @@ export abstract class DeviceMultimediaComponent<
     document.addEventListener("volumedownbutton", this.downVolumeButton, false);
   }
 
-  override updateInfoCommandValues(values: Record<MultimediaCommandInfo, string | number | boolean | null>) {
+  updateInfoCommandValues(values: Record<MultimediaCommandInfo, string | number | boolean | null>) {
     this.infoCommandValues.set({
       ...this.infoCommandValues(),
       volume: values.volume as number ?? 0,

@@ -54,12 +54,12 @@ export class JeedomService {
       Promise<Record<number, JeedomCommandResultInterface>>;
   }
 
-  execHistoryCommand(commandId: number, startTime: string, endTime: string): Promise<any> {
+  execHistoryCommand(commandId: number, startTime: string = '', endTime: string = ''): Promise<any> {
     return this.request("cmd::getHistory", { id: commandId, startTime, endTime }) as
       Promise<any>;
   }
 
-  execTendanceCommand(commandId: number, startTime: string, endTime: string): Promise<any> {
+  execTendanceCommand(commandId: number, startTime: string = '', endTime: string = ''): Promise<any> {
     return this.request("cmd::getTendance", { id: commandId, startTime, endTime }) as
       Promise<any>;
   }

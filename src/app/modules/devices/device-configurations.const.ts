@@ -24,7 +24,7 @@ import {
   DeviceThermometerAqaraComponent,
   DeviceThermostatAqaraComponent,
   DeviceThermostatMoesComponent,
-  OnOffParams,
+  OnOffParams, ThermometerParams,
   zigbeeLinkerOnOffInfoCommandFilters,
   zigbeeLinkerOnOffMoesActionCommandFilters,
   zigbeeLinkerThermometerInfoCommandFilters,
@@ -66,6 +66,7 @@ export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinition
       },
       [DeviceCategoryEnum.Thermometer]: {
         infoCommandFilters: zigbeeOfficialThermometerInfoCommandFilters,
+        customParams: ThermometerParams,
       },
       [DeviceCategoryEnum.OnOff]: {
         infoCommandFilters: zigbeeOfficialOnOffInfoCommandFilters,
@@ -79,6 +80,7 @@ export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinition
       },
       [DeviceCategoryEnum.Thermometer]: {
         infoCommandFilters: zigbeeLinkerThermometerInfoCommandFilters,
+        customParams: ThermometerParams,
       },
       [DeviceCategoryEnum.OnOff]: {
         infoCommandFilters: zigbeeLinkerOnOffInfoCommandFilters,
