@@ -18,7 +18,7 @@
         {{ infoCommandValues().humidity }} %
       </div>
     </div>
-    <div *ngIf="infoCommandValues().pression" class="map-icon-value flex flex-row align-content-center gap-1">
+    <div *ngIf="infoCommandValues().pression && parameterValues.pression" class="map-icon-value flex flex-row align-content-center gap-1">
       <div class="icon">
         <i class="fa fa-cloud"></i><!--umbrella-->
       </div>

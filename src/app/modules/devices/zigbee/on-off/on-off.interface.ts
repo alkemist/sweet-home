@@ -5,7 +5,7 @@ export interface ZigbeeOnOffCommandValues extends ZigbeeCommandValues {
   state: boolean,
 }
 
-export interface ZigbeeOnOffParameterValues extends Record<OnOffParamValue | string, string | number | boolean | null> {
+export interface OnOffParameterValues extends Record<OnOffParamValue | string, string | number | boolean | null> {
   security: boolean,
   icon: string
 }

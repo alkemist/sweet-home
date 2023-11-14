@@ -14,7 +14,8 @@ export interface ZigbeeBatteryCommandValues extends ZigbeeCommandValues {
 
 @Directive()
 export abstract class ZigbeeBatteryComponent<
-  IE extends ZigbeeBatteryExtendCommandInfo = ZigbeeBatteryExtendCommandInfo, AE extends string = string,
+  IE extends ZigbeeBatteryExtendCommandInfo = ZigbeeBatteryExtendCommandInfo,
+  AE extends string = string,
   IV extends ZigbeeBatteryCommandValues = ZigbeeBatteryCommandValues,
   I extends string = IE, A extends string = AE,
   C extends string = string,

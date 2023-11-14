@@ -2,7 +2,7 @@ import { Directive, signal, WritableSignal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { OnOffCommandAction, OnOffExtendCommandInfo, OnOffGlobalCommandInfo, OnOffParamValue } from '@devices';
 import { ZigbeeComponent } from '../zigbee-component.directive';
-import { ZigbeeOnOffCommandValues, ZigbeeOnOffParameterValues } from './on-off.interface';
+import { ZigbeeOnOffCommandValues, OnOffParameterValues } from './on-off.interface';
 
 
 @Directive()
@@ -15,7 +15,7 @@ export abstract class DeviceOnOffComponent<
     IE, AE,
     IV,
     string, string, string,
-    OnOffParamValue, ZigbeeOnOffParameterValues> {
+    OnOffParamValue, OnOffParameterValues> {
 
   override infoCommandValues: WritableSignal<IV> = signal<IV>({
     ...super.infoCommandSignalValues,
