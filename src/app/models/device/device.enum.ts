@@ -19,6 +19,8 @@ export enum DeviceTypeEnum {
   Lidl = 'lidle',
   Nous = 'nous',
   Eglo = 'eglo',
+  Philips = 'philips',
+  Sonoff = 'sonoff',
   Schneider = 'schneider',
   Chromecast = 'chromecast',
   Sonos = 'sonos',

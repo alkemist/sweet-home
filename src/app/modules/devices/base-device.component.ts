@@ -22,8 +22,8 @@ import BaseComponent from "@base-component";
 @Directive()
 export default abstract class BaseDeviceComponent<
   IE extends string = string, AE extends string = string,
-  IV extends Record<IE, string | number | boolean | null> = Record<IE, string | number | boolean | null>,
   I extends string = IE, A extends string = AE, C extends string = string,
+  IV extends Record<I, string | number | boolean | null> = Record<I, string | number | boolean | null>,
   P extends string = string,
   PV extends Record<P, string | number | boolean | null> = Record<P, string | number | boolean | null>,
 > extends BaseComponent implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
@@ -33,8 +33,7 @@ export default abstract class BaseDeviceComponent<
   @HostBinding("style.left") x = "0px";
   @HostBinding("style.top") y = "0px";
   @Input() name: string = "";
-  @Input() actionInfoIds = new SmartArrayModel<IE, number>();
-  @Input() actionInfoIds2 = new SmartArrayModel<I, number>();
+  @Input() actionInfoIds = new SmartArrayModel<I, number>();
   @Input() actionCommandIds = new SmartArrayModel<A, number>();
   @Input() configurationValues = new SmartArrayModel<C, string>();
   @Output() loaded = new EventEmitter<boolean>();
@@ -127,17 +126,17 @@ export default abstract class BaseDeviceComponent<
     //console.log(`-- [${this.name}] Update info command values`, values, this.initialized);
     const currentInfoCommandValues = this.infoCommandValues();
 
-    const infoCommandValues: Record<IE, string | number | boolean | null> = this.actionInfoIds.reduce((result, current) => {
-      result[current.key as IE] = (values[current.value]
+    const infoCommandValues: Record<I, string | number | boolean | null> = this.actionInfoIds.reduce((result, current) => {
+      result[current.key as I] = (values[current.value]
         ? values[current.value].value
         : currentInfoCommandValues[current.key] ?? null);
       return result;
-    }, {} as Record<IE, string | number | boolean | null>);
+    }, {} as Record<I, string | number | boolean | null>);
 
     //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues());
 
     this.infoCommandValues.set(infoCommandValues as IV);
-    this.updateInfoCommandValues(infoCommandValues);
+    this.updateInfoCommandValues(infoCommandValues as IV);
   }
 
   patchInfoCommandValues(values: Partial<IV>) {
@@ -149,7 +148,7 @@ export default abstract class BaseDeviceComponent<
     )
   }
 
-  abstract updateInfoCommandValues(values: Record<IE, string | number | boolean | null>): void
+  abstract updateInfoCommandValues(values: IV): void
 
   protected execUpdateSlider(commandAction: A, commandValue: number) {
     return this.execUpdateValue(
@@ -184,10 +183,7 @@ export default abstract class BaseDeviceComponent<
     });
   }
 
-  protected async execHistory(commandInfo: I) {
-    console.log('execHistory query', commandInfo, this.actionInfoIds2.get(commandInfo))
-    const result = await this.deviceService.execHistory(this.actionInfoIds2.get(commandInfo), commandInfo);
-    console.log("execHistory result", result);
-    return result;
+  protected async execHistory(commandInfo: I, dateStart: string = '', dateEnd: string = '') {
+    return this.deviceService.execHistory(this.actionInfoIds.get(commandInfo), commandInfo, dateStart, dateEnd);
   }
 }

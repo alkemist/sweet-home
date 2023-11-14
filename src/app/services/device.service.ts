@@ -17,6 +17,7 @@ import { MessageService } from 'primeng/api';
 import { UnknownCommandIdError } from '@errors';
 import { JsonService } from './json.service';
 import BaseDeviceComponent from "@base-device-component";
+import { JeedomHistoryInterface } from '../models/jeedom/jeedom-history.interface';
 
 
 @Injectable({
@@ -115,15 +116,15 @@ export class DeviceService extends DatastoreService<DeviceStoredInterface, Devic
     return this.jeedomService.execActionCommand(commandId, commandValue)
   }
 
-  execHistory(commandId: number, commandName: string): Promise<any | null> {
+  execHistory(commandId: number, commandName: string, dateStart: string = '', dateEnd: string = ''): Promise<JeedomHistoryInterface[]> {
     if (!commandId) {
       this.loggerService.error(
         new UnknownCommandIdError(commandName)
       );
-      return Promise.resolve(null);
+      return Promise.resolve([]);
     }
 
-    return this.jeedomService.execHistoryCommand(commandId)
+    return this.jeedomService.execHistoryCommand(commandId, dateStart, dateEnd)
   }
 }
 

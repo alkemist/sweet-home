@@ -1,4 +1,4 @@
-import { MultimediaCommandValues } from '../multimedia.component';
+import { MultimediaCommandValues } from '../multimedia.interface';
 
 export interface SonosCommandValues extends MultimediaCommandValues {
   state: string,

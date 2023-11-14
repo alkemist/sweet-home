@@ -23,6 +23,8 @@ import { ValdemortModule } from 'ngx-valdemort';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { SliderModule } from 'primeng/slider';
 import { ToggleButtonModule } from 'primeng/togglebutton';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { CalendarModule } from 'primeng/calendar';
 
 const modules = [
   ToolbarModule,
@@ -46,6 +48,8 @@ const modules = [
   OverlayPanelModule,
   SliderModule,
   ToggleButtonModule,
+  SelectButtonModule,
+  CalendarModule,
 
   ValdemortModule,
 ];

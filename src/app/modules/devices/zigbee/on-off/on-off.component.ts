@@ -55,7 +55,7 @@ export abstract class DeviceOnOffComponent<
   }
 
   toggle() {
-    if (this.parameterValues.security || this.isConfigMode) {
+    if ((this.parameterValues.security || this.isConfigMode) && this.infoCommandValues().state) {
       this.openModal();
       return;
     }

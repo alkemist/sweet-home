@@ -1,21 +1,39 @@
 import { Directive, signal, WritableSignal } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ZigbeeLightCommandValues, ZigbeeLightParameterValues } from './light.interface';
-import { LightCommandAction, LightExtendCommandInfo, LightGlobalCommandInfo, LightParamValue } from './light.type';
+import {
+  LightCommandAction,
+  LightCommandValueInfo,
+  LightExtendCommandInfo,
+  LightGlobalCommandInfo,
+  LightParamValue
+} from './light.type';
 import { ZigbeeComponent } from '../zigbee-component.directive';
 import { debounceTime } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Directive()
-export abstract class DeviceLightComponent
+export abstract class DeviceLightComponent<
+  IE extends LightExtendCommandInfo = LightExtendCommandInfo,
+  AE extends LightCommandAction = LightCommandAction,
+  IV extends ZigbeeLightCommandValues = ZigbeeLightCommandValues,
+  I extends string = string,
+  P extends LightParamValue = LightParamValue,
+  PV extends ZigbeeLightParameterValues = ZigbeeLightParameterValues
+>
   extends ZigbeeComponent<
-    LightExtendCommandInfo, LightCommandAction,
-    ZigbeeLightCommandValues,
-    string, string, string,
-    LightParamValue, ZigbeeLightParameterValues> {
+    IE,
+    AE,
+    IV,
+    string,
+    string,
+    string,
+    P,
+    PV
+  > {
 
-  override infoCommandValues: WritableSignal<ZigbeeLightCommandValues> = signal<ZigbeeLightCommandValues>({
+  override infoCommandValues: WritableSignal<IV> = signal<IV>({
     ...super.infoCommandSignalValues,
     state: false,
   });
@@ -27,7 +45,8 @@ export abstract class DeviceLightComponent
 
   lightControl = new FormControl<boolean>(false);
   brightnessControl = new FormControl<number>(0);
-  colorControl = new FormControl<number>(0);
+  temperatureControl = new FormControl<number>(0);
+  colorControl = new FormControl<string>('');
 
   get stateClass() {
     return this.infoCommandValues().state ? 'color-light' : 'color-disabled';
@@ -60,19 +79,31 @@ export abstract class DeviceLightComponent
           void this.setAction('brightness', brightness);
         }
       });
-    this.colorControl.valueChanges
+
+    this.temperatureControl.valueChanges
       .pipe(
         debounceTime(1000),
         takeUntilDestroyed(this)
       )
       .subscribe((color) => {
         if (color !== null) {
-          void this.setAction('color', color);
+          void this.setAction('temperature', color);
         }
+      });
+
+    this.colorControl.valueChanges
+      .pipe(
+        debounceTime(1000),
+        takeUntilDestroyed(this)
+      )
+      .subscribe((color) => {
+        /*if (color !== null) {
+          void this.setAction('color', color);
+        }*/
       });
   }
 
-  async setAction(action: 'brightness' | 'color', value: number) {
+  async setAction(action: LightCommandValueInfo, value: number) {
     await this.execUpdateSlider(action, value)
     this.infoCommandValues.set({
       ...this.infoCommandValues(),
@@ -108,6 +139,7 @@ export abstract class DeviceLightComponent
     })
 
     this.brightnessControl.setValue(this.infoCommandValues().brightness, { emitEvent: false });
+    this.temperatureControl.setValue(this.infoCommandValues().temperature, { emitEvent: false });
     this.colorControl.setValue(this.infoCommandValues().color, { emitEvent: false });
     this.lightControl.setValue(this.infoCommandValues().state, { emitEvent: false });
 

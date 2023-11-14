@@ -4,37 +4,22 @@ import { FormControl } from "@angular/forms";
 import { debounceTime } from "rxjs";
 import BaseDeviceComponent from "@base-device-component";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { MultimediaCommandValues, MultimediaParameterValues } from './multimedia.interface';
+import { MultimediaState } from "./multimedia.enum";
 
-export enum MultimediaState {
-  offline,
-  playing,
-  paused,
-  stopped
-}
-
-export interface MultimediaCommandValues extends Record<MultimediaCommandInfo | string, string | number | boolean | null> {
-  volume: number,
-  muted: boolean,
-  title: string,
-  artist: string,
-}
-
-export interface MultimediaParameterValues extends Record<MultimediaParamValue | string, string | number | boolean | null> {
-  volumeMax: number,
-}
 
 @Directive()
 export abstract class DeviceMultimediaComponent<
   IE extends MultimediaCommandInfo,
   AE extends MultimediaCommandAction,
-  IV extends MultimediaCommandValues = MultimediaCommandValues,
   I extends string = string,
   A extends string = string,
   C extends string = string,
+  IV extends MultimediaCommandValues = MultimediaCommandValues,
   P extends MultimediaParamValue = MultimediaParamValue,
   PV extends MultimediaParameterValues = MultimediaParameterValues,
 >
-  extends BaseDeviceComponent<IE, AE, IV, I, A | MultimediaCommandAction, C, P, PV> {
+  extends BaseDeviceComponent<IE, AE, I, A | MultimediaCommandAction, C, IV, P, PV> {
 
   volumeControl = new FormControl<number>(0);
   muteControl = new FormControl<boolean>(false);

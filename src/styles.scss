@@ -173,6 +173,10 @@ p-dropdown.ng-touched.p-invalid > div {
   &.device-modal {
     min-width: 300px;
 
+    &.max-width {
+      width: 100%;
+    }
+
     @media screen and (max-width: $mobile-breakpoint-width) {
       width: 100%;
     }

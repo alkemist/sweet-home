@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, signal, WritableSignal } from "@angular/core";
-import { DeviceMultimediaComponent, MultimediaState } from "../multimedia.component";
+import { DeviceMultimediaComponent } from "../multimedia.component";
 import {
   ChromecastCommandAction,
   ChromecastCommandInfo,
@@ -9,6 +9,7 @@ import {
   ChromecastGlobalCommandInfo
 } from './chromecast.type';
 import { ChromecastCommandValues, ChromecastParameterValues } from './chromecast.interface';
+import { MultimediaState } from '../multimedia.enum';
 
 
 @Component({
@@ -24,10 +25,10 @@ import { ChromecastCommandValues, ChromecastParameterValues } from './chromecast
 export class DeviceChromecastComponent extends DeviceMultimediaComponent<
   ChromecastExtendCommandInfo,
   ChromecastExtendCommandAction,
-  ChromecastCommandValues,
   ChromecastCommandInfo,
   ChromecastCommandAction,
-  string,
+  never,
+  ChromecastCommandValues,
   ChromecastExtendParamValue,
   ChromecastParameterValues
 > {

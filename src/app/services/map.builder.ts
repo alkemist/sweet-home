@@ -196,7 +196,6 @@ export class MapBuilder {
 
       componentInstance.name = device.name;
       componentInstance.actionInfoIds = device.infoCommandIds;
-      componentInstance.actionInfoIds2 = device.infoCommandIds2;
       componentInstance.actionCommandIds = device.actionCommandIds;
       componentInstance.configurationValues = device.configurationValues;
       componentInstance.setParameterValues(device.parameterValues.toRecord());

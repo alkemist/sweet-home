@@ -6,6 +6,8 @@ import { JeedomRoomInterface } from "../models/jeedom/jeedom-room.interface";
 import { LoggerService } from "./logger.service";
 import { JeedomApiError, JeedomRequestError, UnknownJeedomError, UserHasNotTokenError } from "@errors";
 import { environment } from "../../environments/environment";
+import { JeedomStatisticInterface } from '../models/jeedom/jeedom-statistic.interface';
+import { JeedomHistoryInterface } from '../models/jeedom/jeedom-history.interface';
 
 @Injectable({
   providedIn: "root"
@@ -54,13 +56,22 @@ export class JeedomService {
       Promise<Record<number, JeedomCommandResultInterface>>;
   }
 
-  execHistoryCommand(commandId: number, startTime: string = '', endTime: string = ''): Promise<any> {
-    return this.request("cmd::getHistory", { id: commandId, startTime, endTime }) as
-      Promise<any>;
+  execHistoryCommand(commandId: number, dateStart: string = '', dateEnd: string = ''): Promise<JeedomHistoryInterface[]> {
+    return this.request("cmd::getHistory", {
+        id: commandId,
+        startTime: dateStart,
+        endTime: dateEnd
+      }
+    ) as Promise<JeedomHistoryInterface[]>;
   }
 
-  execTendanceCommand(commandId: number, startTime: string = '', endTime: string = ''): Promise<any> {
-    return this.request("cmd::getTendance", { id: commandId, startTime, endTime }) as
+  execTrendCommand(commandId: number, dateStart: string = '', dateEnd: string = ''): Promise<number> {
+    return this.request("cmd::getTendance", { id: commandId, dateStart, dateEnd }) as
+      Promise<number>;
+  }
+
+  execStatisticCommand(commandId: number, dateStart: string = '', dateEnd: string = ''): Promise<JeedomStatisticInterface> {
+    return this.request("cmd::getStatistique", { id: commandId, dateStart, dateEnd }) as
       Promise<any>;
   }
 

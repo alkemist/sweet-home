@@ -1,4 +1,4 @@
-<div #content [pTooltip]="name" (click)="openModal()"
+<div #content (click)="openModal()" [pTooltip]="name"
      [tooltipDisabled]="isEditMode || isDragging"
      tooltipEvent="hover" tooltipPosition="top">
   <div *ngIf="initialized$()" class="flex flex-column gap-2">
@@ -18,14 +18,14 @@
         {{ infoCommandValues().humidity }} %
       </div>
     </div>
-    <div *ngIf="infoCommandValues().pression && parameterValues.pression" class="map-icon-value flex flex-row align-content-center gap-1">
+    <!--<div *ngIf="infoCommandValues().pression && parameterValues.pression" class="map-icon-value flex flex-row align-content-center gap-1">
       <div class="icon">
-        <i class="fa fa-cloud"></i><!--umbrella-->
+        <i class="fa fa-cloud"></i>
       </div>
       <div class="value" title="hPA">
         {{ infoCommandValues().pression }}
       </div>
-    </div>
+    </div>-->
     <div *ngIf="!isEditMode && hasLowBattery"
          class="flex flex-row align-content-center gap-2 color-danger icon-big">
       <i class="fa fa-exclamation-triangle"></i><i class="fa fa-battery-empty"></i>
@@ -56,8 +56,19 @@
 <p-dialog (onHide)="closeModal()" [(visible)]="modalOpened" [dismissableMask]="true" [draggable]="false"
           [header]="name" [modal]="true" [resizable]="false"
           appendTo="body" position="bottom"
-          styleClass="device-modal">
-  <div class="flex flex-column">
-
+          styleClass="device-modal max-width">
+  <div class="flex flex-column gap-2">
+    <div *ngIf="historyLoaded()">
+      <div class="flex flex-row justify-content-center align-items-center gap-2">
+        <p-selectButton [formControl]="zoomControl" [multiple]="true" [options]="zooms" optionLabel="label"
+                        optionValue="value"></p-selectButton>
+        <p-calendar [formControl]="dateControl" [maxDate]="now" [readonlyInput]="true" [showButtonBar]="true"
+                    selectionMode="range"></p-calendar>
+      </div>
+      <p-chart [data]="chartData()" [options]="chartOptions" type="line"></p-chart>
+    </div>
+    <div class="flex flex-row justify-content-center align-items-center">
+      <p-progressSpinner *ngIf="!historyLoaded()"></p-progressSpinner>
+    </div>
   </div>
 </p-dialog>

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, signal, WritableSignal } from "@angular/core";
-import { DeviceMultimediaComponent, MultimediaState } from "../multimedia.component";
+import { DeviceMultimediaComponent } from "../multimedia.component";
 import { FormControl } from "@angular/forms";
 import {
   SonosCommandAction,
@@ -10,6 +10,7 @@ import {
   SonosGlobalCommandInfo
 } from './sonos.type';
 import { SonosCommandValues } from './sonos.interface';
+import { MultimediaState } from '../multimedia.enum';
 
 @Component({
   selector: "app-device-sonos",
@@ -23,9 +24,12 @@ import { SonosCommandValues } from './sonos.interface';
 })
 export class DeviceSonosComponent
   extends DeviceMultimediaComponent<
-    SonosExtendCommandInfo, SonosExtendCommandAction,
-    SonosCommandValues,
-    SonosCommandInfo, SonosCommandAction, SonosConfiguration
+    SonosExtendCommandInfo,
+    SonosExtendCommandAction,
+    SonosCommandInfo,
+    SonosCommandAction,
+    SonosConfiguration,
+    SonosCommandValues
   > {
   size = {
     w: 130,

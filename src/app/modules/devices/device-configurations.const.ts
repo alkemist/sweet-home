@@ -24,7 +24,7 @@ import {
   DeviceThermometerAqaraComponent,
   DeviceThermostatAqaraComponent,
   DeviceThermostatMoesComponent,
-  OnOffParams, ThermometerParams,
+  OnOffParams,
   zigbeeLinkerOnOffInfoCommandFilters,
   zigbeeLinkerOnOffMoesActionCommandFilters,
   zigbeeLinkerThermometerInfoCommandFilters,
@@ -45,12 +45,16 @@ import {
 import { Type } from '@angular/core';
 import BaseDeviceComponent from '@base-device-component';
 import { DeviceTestComponent } from './test.component';
-import {
-  LightParams,
-  zigbeeLinkerLightActionCommandFilters,
-  zigbeeLinkerLightInfoCommandFilters
-} from './zigbee/light';
+import { zigbeeLinkerLightActionCommandFilters, zigbeeLinkerLightInfoCommandFilters } from './zigbee/light';
 import { DeviceLightEgloComponent } from './zigbee/light/eglo/light-eglo.component';
+import {
+  ThermometerAqaraParams,
+  zigbeeLinkerThermometerInfoAqaraCommandFilters,
+  zigbeeOfficialThermometerAqaraInfoCommandFilters
+} from './zigbee/thermometer/aqara/thermometer.const';
+import { DeviceThermometerSonoffComponent } from './zigbee/thermometer/sonoff/thermometer-sonoff.component';
+import { DeviceLightPhilipsComponent } from './zigbee/light/philips/light-philips.component';
+import { LightEgloParams } from './zigbee/light/eglo/light-eglo.const';
 
 export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinitions<DeviceConnectivityEnum, DeviceCategoryEnum> =
   {
@@ -66,7 +70,6 @@ export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinition
       },
       [DeviceCategoryEnum.Thermometer]: {
         infoCommandFilters: zigbeeOfficialThermometerInfoCommandFilters,
-        customParams: ThermometerParams,
       },
       [DeviceCategoryEnum.OnOff]: {
         infoCommandFilters: zigbeeOfficialOnOffInfoCommandFilters,
@@ -80,7 +83,6 @@ export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinition
       },
       [DeviceCategoryEnum.Thermometer]: {
         infoCommandFilters: zigbeeLinkerThermometerInfoCommandFilters,
-        customParams: ThermometerParams,
       },
       [DeviceCategoryEnum.OnOff]: {
         infoCommandFilters: zigbeeLinkerOnOffInfoCommandFilters,
@@ -89,7 +91,6 @@ export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinition
       [DeviceCategoryEnum.Light]: {
         infoCommandFilters: zigbeeLinkerLightInfoCommandFilters,
         actionCommandFilters: zigbeeLinkerLightActionCommandFilters,
-        customParams: LightParams,
       },
     }
   };
@@ -127,7 +128,11 @@ export const deviceDefinitionsByConnectivityCategoryType:
       },
     },
     [DeviceCategoryEnum.Thermometer]: {
-      [DeviceTypeEnum.Aqara]: {}
+      [DeviceTypeEnum.Aqara]: {
+        infoCommandFilters: zigbeeOfficialThermometerAqaraInfoCommandFilters,
+        customParams: ThermometerAqaraParams,
+      },
+      [DeviceTypeEnum.Sonoff]: {}
     },
     [DeviceCategoryEnum.OnOff]: {
       [DeviceTypeEnum.Lidl]: {},
@@ -136,7 +141,10 @@ export const deviceDefinitionsByConnectivityCategoryType:
       [DeviceTypeEnum.Schneider]: {}
     },
     [DeviceCategoryEnum.Light]: {
-      [DeviceTypeEnum.Eglo]: {},
+      [DeviceTypeEnum.Eglo]: {
+        customParams: LightEgloParams,
+      },
+      [DeviceTypeEnum.Philips]: {},
     },
     [DeviceCategoryEnum.Test]: {
       [DeviceTypeEnum.Test]: {
@@ -158,7 +166,11 @@ export const deviceDefinitionsByConnectivityCategoryType:
       },
     },
     [DeviceCategoryEnum.Thermometer]: {
-      [DeviceTypeEnum.Aqara]: {}
+      [DeviceTypeEnum.Aqara]: {
+        infoCommandFilters: zigbeeLinkerThermometerInfoAqaraCommandFilters,
+        customParams: ThermometerAqaraParams,
+      },
+      [DeviceTypeEnum.Sonoff]: {}
     },
     [DeviceCategoryEnum.OnOff]: {
       [DeviceTypeEnum.Lidl]: {},
@@ -172,7 +184,10 @@ export const deviceDefinitionsByConnectivityCategoryType:
       }
     },
     [DeviceCategoryEnum.Light]: {
-      [DeviceTypeEnum.Eglo]: {},
+      [DeviceTypeEnum.Eglo]: {
+        customParams: LightEgloParams,
+      },
+      [DeviceTypeEnum.Philips]: {},
     },
     [DeviceCategoryEnum.Test]: {
       [DeviceTypeEnum.Test]: {}
@@ -187,6 +202,7 @@ export const ComponentClassByType: Record<DeviceCategoryEnum, Partial<Record<Dev
   },
   [DeviceCategoryEnum.Thermometer]: {
     [DeviceTypeEnum.Aqara]: DeviceThermometerAqaraComponent,
+    [DeviceTypeEnum.Sonoff]: DeviceThermometerSonoffComponent,
   },
   [DeviceCategoryEnum.OnOff]: {
     [DeviceTypeEnum.Lidl]: DeviceOnOffLidlComponent,
@@ -196,6 +212,7 @@ export const ComponentClassByType: Record<DeviceCategoryEnum, Partial<Record<Dev
   },
   [DeviceCategoryEnum.Light]: {
     [DeviceTypeEnum.Eglo]: DeviceLightEgloComponent,
+    [DeviceTypeEnum.Philips]: DeviceLightPhilipsComponent,
   },
   [DeviceCategoryEnum.Multimedia]: {
     [DeviceTypeEnum.Chromecast]: DeviceChromecastComponent,
