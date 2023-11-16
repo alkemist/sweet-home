@@ -76,10 +76,22 @@ form {
   }
 }
 
-p-inputNumber, p-autoComplete {
+p-inputNumber {
   & > span, & > span > input {
     width: 100%;
   }
+}
+
+p-autoComplete, p-chips {
+  .p-component {
+    &, input {
+      width: 100%;
+    }
+  }
+}
+
+p-chips ul {
+  width: 100%;
 }
 
 .p-inputtext.ng-touched.p-invalid,
@@ -211,6 +223,9 @@ p-dropdown.ng-touched.p-invalid > div {
   }
 }
 
+p-chart > div {
+  height: 100%;
+}
 
 .p-toast {
   &, .p-element {
@@ -252,3 +267,6 @@ p-dropdown.ng-touched.p-invalid > div {
   }
 }
 
+.h-100 {
+  height: 100%;
+}

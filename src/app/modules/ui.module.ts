@@ -25,6 +25,9 @@ import { SliderModule } from 'primeng/slider';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { CalendarModule } from 'primeng/calendar';
+import { ChipsModule } from 'primeng/chips';
+import { SidebarModule } from 'primeng/sidebar';
+import { PanelMenuModule } from 'primeng/panelmenu';
 
 const modules = [
   ToolbarModule,
@@ -50,6 +53,9 @@ const modules = [
   ToggleButtonModule,
   SelectButtonModule,
   CalendarModule,
+  ChipsModule,
+  SidebarModule,
+  PanelMenuModule,
 
   ValdemortModule,
 ];

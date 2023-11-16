@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { DeviceThermometerComponent } from "../thermometer.component";
 import { ThermometerParamValue } from '../../../index';
-import { MathHelper } from '@tools';
 import {
   ThermometerAqaraCommandInfo,
   ThermometerAqaraExtendCommandInfo,
@@ -9,6 +8,7 @@ import {
   ThermometerAqaraParamValue
 } from './thermometer.type';
 import { ThermometerAqaraCommandValues, ThermometerParameterValues } from './thermometer.interface';
+import { MathHelper } from '@alkemist/smart-tools';
 
 
 @Component({

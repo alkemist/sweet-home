@@ -1,7 +1,7 @@
 import { DatabaseError, DocumentNotFoundError, EmptyDocumentIdError, QuotaExceededError } from "@errors";
 import { FirestoreDataConverter } from "@firebase/firestore";
 import { LoggerService } from "@services";
-import { generatePushID, slugify } from "@tools";
+import { generatePushID } from "@tools";
 import {
   collection,
   CollectionReference,
@@ -21,6 +21,7 @@ import { objectConverter } from "../converters/object.converter";
 import { MessageService } from "primeng/api";
 import { JsonService } from "./json.service";
 import { environment } from "../../environments/environment";
+import { StringHelper } from '@alkemist/smart-tools';
 
 
 export abstract class FirestoreService<
@@ -46,7 +47,7 @@ export abstract class FirestoreService<
       return false;
     }
 
-    const slug = slugify(name);
+    const slug = StringHelper.slugify(name);
 
     let dataObjectDocument = null;
     try {

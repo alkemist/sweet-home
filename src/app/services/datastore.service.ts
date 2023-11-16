@@ -1,7 +1,6 @@
 import { DocumentModel, DocumentStoredInterface, HasIdInterface, HasIdWithInterface } from "@models";
 import { LoggerService } from "@services";
 import { first, Observable } from "rxjs";
-import { ArrayHelper, TimeHelper } from "@tools";
 import { orderBy } from "firebase/firestore";
 import { Store } from "@ngxs/store";
 import { DocumentNotFoundError } from "@errors";
@@ -17,6 +16,7 @@ import { MessageService } from "primeng/api";
 import { JsonService } from "./json.service";
 import { environment } from "../../environments/environment";
 import { signal } from '@angular/core';
+import { ArrayHelper, DateHelper } from '@alkemist/smart-tools';
 
 export abstract class DatastoreService<
   I extends DocumentStoredInterface,
@@ -32,7 +32,7 @@ export abstract class DatastoreService<
   protected lastUpdated?: Date;
   protected maxHourOutdated = 24;
   protected loaded: boolean = false;
-  
+
   protected signalLastUpdated = signal<Date | null>(null);
   protected signallAll = signal<I[]>([]);
 
@@ -81,7 +81,7 @@ export abstract class DatastoreService<
       return true;
     }
 
-    const nbHours = TimeHelper.calcHoursAfter(this.lastUpdated);
+    const nbHours = DateHelper.calcHoursAfter(this.lastUpdated);
     return nbHours >= this.maxHourOutdated;
   }
 

@@ -56,6 +56,13 @@
   dependencies:
     "@angular/core" "^16.2.7"
 
+"@alkemist/smart-tools@^1.1.9":
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/@alkemist/smart-tools/-/smart-tools-1.1.9.tgz#fba6d730514febcad51be08f7390ab8862bfc323"
+  integrity sha512-GrRzOduv8106SJAOWC00inqLogCOSOzrGrGcCHwZt6lge0jHpI+JINzpFawhT9HV3KdCNFmnOIEzKVpLQfb9Rg==
+  dependencies:
+    "@angular/core" "^16.2.7"
+
 "@ampproject/remapping@2.2.1", "@ampproject/remapping@^2.1.0", "@ampproject/remapping@^2.2.0":
   version "2.2.1"
   resolved "https://registry.npmjs.org/@ampproject/remapping/-/remapping-2.2.1.tgz"

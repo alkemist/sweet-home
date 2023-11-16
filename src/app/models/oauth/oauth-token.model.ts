@@ -1,5 +1,5 @@
-import {DateHelper} from "@tools";
-import {HttpHeaders} from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
+import { DateHelper } from '@alkemist/smart-tools';
 
 export interface OauthTokenInterface {
   token: string
@@ -28,7 +28,7 @@ export class OauthTokenModel {
 
   toHeaders(contentType?: string) {
     const headers: Record<string, string> = {
-      'Authorization': `${this._tokenType} ${this._token}`,
+      'Authorization': `${ this._tokenType } ${ this._token }`,
       //'Access-Control-Allow-Origin': 'https://my-sweet-home.netlify.app/',
       //'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, cache-control, pragma, expires',
       //'Access-Control-Allow-Credentials': 'true'

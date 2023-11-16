@@ -21,7 +21,7 @@
         <div class="flex-column col-4">
           <div class="p-float-label flex">
             <p-dropdown [autoDisplayFirst]="false"
-                        [options]="deviceConnectivitiesIterable" appendTo="body" class="flex-1"
+                        [options]="deviceConnectivities" appendTo="body" class="flex-1"
                         formControlName="connectivity"
                         i18n-placeholder inputId="connectivity"
                         optionLabel="value" optionValue="key" placeholder="Select a connectivity"
@@ -37,7 +37,7 @@
         <div class="flex-column col-4">
           <div class="p-float-label flex">
             <p-dropdown [autoDisplayFirst]="false"
-                        [options]="deviceCategoriesIterable" appendTo="body" class="flex-1"
+                        [options]="deviceCategories" appendTo="body" class="flex-1"
                         formControlName="category"
                         i18n-placeholder inputId="category"
                         optionLabel="value" optionValue="key" placeholder="Select a category"
@@ -53,7 +53,7 @@
         <div *ngIf="category.value" class="flex-column col-4">
           <div class="p-float-label flex">
             <p-dropdown [autoDisplayFirst]="false"
-                        [options]="deviceTypes" appendTo="body" class="flex-1"
+                        [options]="currentDeviceTypes" appendTo="body" class="flex-1"
                         formControlName="type"
                         i18n-placeholder
                         inputId="type"

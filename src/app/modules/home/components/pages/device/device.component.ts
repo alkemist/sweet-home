@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal } from "@angular/core";
 import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ObjectHelper, slugify } from "@tools";
 import { ConfirmationService, FilterService, MessageService } from "primeng/api";
 import { AppService, DeviceService } from "@services";
 import { KeyValue } from "@angular/common";
@@ -16,11 +15,10 @@ import {
   JeedomDeviceModel,
   JeedomRoomModel,
   KeyValueFormInterface,
-  SmartArrayModel,
 } from "@models";
 import BaseComponent from "@base-component";
 import { ComponentClassByType, deviceConfigurations } from "@devices";
-import { ConsoleHelper } from '@alkemist/smart-tools';
+import { ArrayHelper, ConsoleHelper, ObjectHelper, SmartMap, StringHelper } from '@alkemist/smart-tools';
 
 @Component({
   templateUrl: "./device.component.html",
@@ -32,10 +30,10 @@ import { ConsoleHelper } from '@alkemist/smart-tools';
 })
 export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy {
   device: DeviceModel | null = null;
-  deviceConnectivitiesIterable = new SmartArrayModel<string, string>(DeviceConnectivityEnum, true);
-  deviceCategoriesIterable = new SmartArrayModel<string, string>(DeviceCategoryEnum, true);
-  deviceTypesIterable = new SmartArrayModel<string, string>(DeviceTypeEnum, true);
-  deviceTypes: KeyValue<string, string>[] = [];
+  deviceConnectivities = ArrayHelper.enumToArray(DeviceConnectivityEnum);
+  deviceCategories = ArrayHelper.enumToArray(DeviceCategoryEnum);
+  deviceTypes = ArrayHelper.enumToArray(DeviceTypeEnum);
+  currentDeviceTypes: KeyValue<string, string>[] = [];
 
   form: FormGroup<DeviceFormInterface> = new FormGroup<DeviceFormInterface>({
     id: new FormControl<string | null | undefined>(""),
@@ -71,12 +69,9 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     super();
     this.sub = this.category.valueChanges.subscribe((category) => {
       if (category !== null && ComponentClassByType[category]) {
-        this.deviceTypes = Object.keys(ComponentClassByType[category]).map((key) => {
-          return {
-            key,
-            value: this.deviceTypesIterable.get(key)
-          } as KeyValue<string, string>;
-        });
+        this.currentDeviceTypes = Object.keys(ComponentClassByType[category]).map((key) =>
+          this.deviceTypes.find((kv => kv.key === key)
+          ) as KeyValue<string, string>);
       }
     });
 
@@ -93,7 +88,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
         this.actionCommandIds.clear();
         this.configurationValues.clear();
 
-        const parameterValues = new SmartArrayModel(this.parameterValues.value as KeyValue<string, string>[]);
+        const parameterValues = SmartMap.fromKeyValues(this.parameterValues.value as KeyValue<string, string>[]);
         this.parameterValues.clear();
 
         const deviceCommands: Record<string, string>[] = jeedomDevice.commands
@@ -245,7 +240,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
 
     if (this.form.valid) {
       const formData = this.form.value as DeviceFrontInterface;
-      const checkExist = !this.device || slugify(formData.name) !== slugify(this.device.name);
+      const checkExist = !this.device || StringHelper.slugify(formData.name) !== StringHelper.slugify(this.device.name);
 
       if (checkExist) {
         this.deviceService.exist(formData.name).then(async exist => {
@@ -305,7 +300,9 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     });
   }
 
-  async filterJeedomDevices(event: { query: string }) {
+  async filterJeedomDevices(event: {
+    query: string
+  }) {
     if (this.jeedomRooms.length === 0) {
       this.jeedomRooms = await this.deviceService.availableDevices();
     }

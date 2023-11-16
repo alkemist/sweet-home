@@ -1,9 +1,8 @@
 import { DocumentModel, HasIdInterface } from '../document';
 import { CoordinateInterface } from '../coordinate';
 import { DeviceBackInterface, DeviceFrontInterface, DeviceStoredInterface } from './device.interface';
-import { slugify } from '@tools';
-import { SmartArrayModel } from '../smart';
 import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum } from './device.enum';
+import { SmartMap, StringHelper } from '@alkemist/smart-tools';
 
 export class DeviceModel extends DocumentModel implements HasIdInterface {
   constructor(device: DeviceStoredInterface) {
@@ -12,11 +11,10 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
     this._connectivity = device.connectivity ?? null;
     this._category = device.category ?? null;
     this._type = device.type ?? null;
-    this._infoCommandIds = new SmartArrayModel<string, number>(device.infoCommandIds);
-    this._infoCommandIds = new SmartArrayModel<string, number>(device.infoCommandIds);
-    this._actionCommandIds = new SmartArrayModel<string, number>(device.actionCommandIds);
-    this._configurationValues = new SmartArrayModel<string, string>(device.configurationValues);
-    this._parameterValues = new SmartArrayModel<string, string>(device.parameterValues);
+    this._infoCommandIds = SmartMap.fromRecord(device.infoCommandIds ?? {});
+    this._actionCommandIds = SmartMap.fromRecord(device.actionCommandIds ?? {});
+    this._configurationValues = SmartMap.fromRecord(device.configurationValues ?? {});
+    this._parameterValues = SmartMap.fromRecord(device.parameterValues ?? {});
     this._position = device.position ?? { x: 0, y: 0 };
   }
 
@@ -36,25 +34,25 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
     return this._jeedomId;
   }
 
-  protected _infoCommandIds: SmartArrayModel<string, number>;
+  protected _infoCommandIds: SmartMap<number>;
 
   get infoCommandIds() {
     return this._infoCommandIds;
   }
 
-  protected _actionCommandIds: SmartArrayModel<string, number>;
+  protected _actionCommandIds: SmartMap<number>;
 
   get actionCommandIds() {
     return this._actionCommandIds;
   }
 
-  protected _configurationValues: SmartArrayModel<string, string>;
+  protected _configurationValues: SmartMap<string>;
 
   get configurationValues() {
     return this._configurationValues;
   }
 
-  protected _parameterValues: SmartArrayModel<string, string>;
+  protected _parameterValues: SmartMap<string>;
 
   get parameterValues() {
     return this._parameterValues;
@@ -79,7 +77,7 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
   protected _connectivity: DeviceConnectivityEnum | null;
 
   get connectivity() {
-    return this._connectivity ?? '';
+    return this._connectivity;
   }
 
   protected _category: DeviceCategoryEnum | null;
@@ -128,16 +126,16 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
     const deviceData: DeviceStoredInterface = {
       id: formData.id,
       name: formData.name,
-      slug: slugify(formData.name),
+      slug: StringHelper.slugify(formData.name),
       connectivity: formData.connectivity,
       category: formData.category,
       type: formData.type,
       jeedomId: formData.jeedomId,
       position: formData.position,
-      infoCommandIds: new SmartArrayModel<string, number>(formData.infoCommandIds).toRecord(),
-      actionCommandIds: new SmartArrayModel<string, number>(formData.actionCommandIds).toRecord(),
-      configurationValues: new SmartArrayModel<string, string>(formData.configurationValues).toRecord(),
-      parameterValues: new SmartArrayModel<string, string>(formData.parameterValues).toRecord(),
+      infoCommandIds: SmartMap.fromKeyValues(formData.infoCommandIds).toRecord(),
+      actionCommandIds: SmartMap.fromKeyValues(formData.actionCommandIds).toRecord(),
+      configurationValues: SmartMap.fromKeyValues(formData.configurationValues).toRecord(),
+      parameterValues: SmartMap.fromKeyValues(formData.parameterValues).toRecord(),
     }
 
     return new DeviceModel(deviceData)
@@ -166,10 +164,10 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
       type: this._type,
       jeedomId: this._jeedomId,
       position: this._position,
-      infoCommandIds: this._infoCommandIds,
-      actionCommandIds: this._actionCommandIds,
-      configurationValues: this._configurationValues,
-      parameterValues: this._parameterValues,
+      infoCommandIds: this._infoCommandIds.toKeyValues(),
+      actionCommandIds: this._actionCommandIds.toKeyValues(),
+      configurationValues: this._configurationValues.toKeyValues(),
+      parameterValues: this._parameterValues.toKeyValues(),
     };
   }
 }

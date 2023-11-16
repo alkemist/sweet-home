@@ -1,7 +1,7 @@
 import { AfterContentInit, AfterViewInit, Directive, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
-import { MathHelper } from '@tools';
 import BaseDeviceComponent from "@base-device-component";
 import { DeviceCommandHistory } from '@models';
+import { MathHelper } from '@alkemist/smart-tools';
 
 export type ZigbeeCommandInfo = 'signal';
 
@@ -32,7 +32,6 @@ export abstract class ZigbeeComponent<
   }
 
   protected addDeviceCommandHistory(commandName: I) {
-    console.log("actionInfoIds", this.actionInfoIds);
     this.deviceCommands.push({
       deviceName: this.name,
       commandName: commandName,

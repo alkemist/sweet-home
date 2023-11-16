@@ -1,12 +1,12 @@
 import { ElementRef, Injectable, ViewContainerRef } from '@angular/core';
-import { CoordinateInterface, DeviceModel, SizeInterface, SmartLoaderModel, SmartMapModel } from '@models';
+import { CoordinateInterface, DeviceModel, SizeInterface, SmartLoaderModel } from '@models';
 import 'hammerjs';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
-import { DeviceSupervisor, DocumentHelper, MathHelper } from '@tools';
+import { DeviceSupervisor, MapHelper } from '@tools';
 import { LoggerService } from './index';
 import { UnexpectedError } from '@errors';
 import BaseDeviceComponent from "@base-device-component";
-import { TypeHelper } from "@alkemist/smart-tools";
+import { DocumentHelper, MathHelper, SmartMap, TypeHelper } from "@alkemist/smart-tools";
 import { ComponentClassByType } from '@devices';
 
 @Injectable({
@@ -28,7 +28,7 @@ export class MapBuilder {
   private _currentMapPosition: CoordinateInterface = { x: 0, y: 0 };
   private _mapPosition: CoordinateInterface = { x: 0, y: 0 };
   private _traversableElements: Element[] = [];
-  private _supervisors = new SmartMapModel<string, DeviceSupervisor>();
+  private _supervisors = new SmartMap<DeviceSupervisor>();
   private _hammerEnabled = true;
   private _isEditMode = false;
   private _isConfigMode = false;
@@ -127,7 +127,7 @@ export class MapBuilder {
     this._currentMapPosition = { x: 0, y: 0 };
     this._mapPosition = { x: 0, y: 0 };
     this._traversableElements = [];
-    this._supervisors = new SmartMapModel<string, DeviceSupervisor>();
+    this._supervisors = new SmartMap<DeviceSupervisor>();
     this._hammerEnabled = true;
     this._isEditMode = false;
     this._isDragging = false;
@@ -187,7 +187,7 @@ export class MapBuilder {
       const componentRef = this.viewContainer.createComponent(componentConstructor);
       const componentInstance = componentRef.instance;
 
-      componentInstance.setPosition(MathHelper.orientationConverterPointToMap(
+      componentInstance.setPosition(MapHelper.orientationConverterPointToMap(
         device.position,
         this._mapSize,
         componentInstance.size,
@@ -227,7 +227,7 @@ export class MapBuilder {
   }
 
   getComponents(): BaseDeviceComponent[] {
-    return this._supervisors.toArray().map((supervisor) => supervisor.getComponent());
+    return this._supervisors.getValues().map((supervisor) => supervisor.getComponent());
   }
 
   switchEditMode(editMode: boolean) {

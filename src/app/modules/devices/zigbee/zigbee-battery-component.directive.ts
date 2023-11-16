@@ -1,6 +1,5 @@
 import { AfterContentInit, AfterViewInit, Directive, OnDestroy, OnInit, signal, WritableSignal } from "@angular/core";
 import { ZigbeeComponent } from "./zigbee-component.directive";
-import { MathHelper } from "@tools";
 import { environment } from "../../../../environments/environment";
 import { ZigbeeBatteryCommandValues } from './zigbee.interface';
 import {
@@ -8,6 +7,7 @@ import {
   ZigbeeBatteryExtendCommandInfo,
   ZigbeeBatteryGlobalCommandInfo
 } from './zigbee.type';
+import { MathHelper } from '@alkemist/smart-tools';
 
 
 @Directive()

@@ -1,12 +1,20 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  signal,
+  SimpleChanges
+} from '@angular/core';
 import BaseComponent from '@base-component';
 import { DeviceService } from '@services';
 import { FormControl } from '@angular/forms';
 import dateFormat from 'dateformat';
-import { ArrayHelper, DateHelper, MathHelper } from '@tools';
 import { ChartData, ChartDataset, ChartOptions } from 'chart.js';
 import { CHART_COLORS, DateFormats, DeviceCommandHistory } from '@models';
-import { SmartMap } from '@alkemist/smart-tools';
+import { ArrayHelper, DateHelper, MathHelper, SmartMap } from '@alkemist/smart-tools';
 
 @Component({
   selector: "app-history",
@@ -14,7 +22,7 @@ import { SmartMap } from '@alkemist/smart-tools';
   styleUrls: [ "./history.component.scss" ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy {
+export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy, OnChanges {
   @Input() deviceCommands: DeviceCommandHistory[] = [];
 
   now = new Date();
@@ -65,24 +73,18 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
       }
     }
 
-    this.dateControl = new FormControl<[ Date ] | [ Date, Date ] | null>([ this.now ]);
+    this.dateControl = new FormControl<[ Date ] | [ Date, Date ] | null>([ this.now, this.now ]);
 
     this.sub = this.dateControl.valueChanges.subscribe((dates) => {
-      console.log(dates);
-      if (dates) {
+      if (dates && dates.length === 2 && dates[0] && dates[1]) {
         this.loadHistories();
       }
     })
 
-    this.loadHistories();
   }
 
   ngOnInit() {
-    /*
-    { value: '1', datetime: '2023-01-01 01:00', cmd_id: '' },
-        { value: '4', datetime: '2023-01-01 02:00', cmd_id: '' },
-        { value: '3', datetime: '2023-01-02 01:00', cmd_id: '' },
-     */
+    this.loadHistories();
   }
 
   loadHistories() {
@@ -94,8 +96,6 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
 
     const dateStartStr = dateFormat(DateHelper.dayStart(dateStart), "yyyy-mm-dd HH:MM");
     const dateEndStr = dateFormat(DateHelper.dayEnd(dateEnd), "yyyy-mm-dd HH:MM");
-
-    console.log("deviceCommands", this.deviceCommands);
 
     Promise.all(
       this.deviceCommands.map(deviceCommand => this.deviceService
@@ -124,7 +124,7 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
     dateStart.setDate(dateStart.getDate() + inc);
     dateEnd.setDate(dateEnd.getDate() + inc);
 
-    this.dateControl.setValue(this.isSameDay() ? [ dateStart ] : [ dateStart, dateEnd ]);
+    this.dateControl.setValue([ dateStart, dateEnd ]);
   }
 
   isLastDay() {
@@ -148,10 +148,13 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
       === dateFormat(this.dateControl.value[1], DateFormats.day);
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.loadHistories();
+  }
+
   private loadChart() {
     let labels: string[] = [];
     const dataSets: ChartDataset[] = [];
-    let valuesByDevice: number[][] = [];
     const valuesByDateAndDevice: SmartMap<number[]>[] = [];
     const isSameDay = this.isSameDay();
 
@@ -162,83 +165,71 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
       deviceCommand.history.forEach((history) => {
         const value = parseFloat(history.value);
 
-        if (isSameDay) {
-          values.push(value);
-          labels.push(dateFormat(history.datetime, DateFormats.hour));
-        } else {
-          const date = dateFormat(history.datetime, DateFormats.day);
-          const currentValues = valuesByDate.get(date) ?? [];
-          currentValues.push(value);
+        const date = dateFormat(history.datetime, isSameDay ? DateFormats.hour : DateFormats.day);
+        const currentValues = valuesByDate.get(date) ?? [];
+        currentValues.push(value);
 
-          valuesByDate.set(date, currentValues);
-          labels.push(date);
-        }
+        valuesByDate.set(date, currentValues);
+        labels.push(date);
       });
 
       valuesByDateAndDevice.push(valuesByDate);
-      valuesByDevice.push(values);
     });
 
+    labels = ArrayHelper.unique(labels).sort();
+
     this.deviceCommands.forEach((device, index) => {
-      let prefix = this.deviceCommands.length > 1 ? `${ device.deviceName } ` : '';
+      let commandName = this.deviceCommands.length > 1 ?
+        `${ device.deviceName } - ${ device.commandName }`
+        : `${ device.commandName } `;
+      const deviceAllValues: (number[] | undefined)[] = labels.map(date => valuesByDateAndDevice[index].get(date));
 
-      if (isSameDay) {
-        dataSets.push({
-          label: `${ prefix }Temp.`,
-          data: valuesByDevice[index],
-          ...this.deviceCommands.length === 1 ? {
-            borderColor: CHART_COLORS.yellow,
-          } : {}
-        });
-      } else {
-        const deviceAllValues: (number[] | undefined)[] = labels.map(date => valuesByDateAndDevice[index].get(date));
+      dataSets.push({
+        label: `${ commandName }`,
+        data: deviceAllValues.map(
+          dateValues => dateValues ? MathHelper.round(
+            MathHelper.sum(dateValues) / dateValues.length
+          ) : null,
+        ),
+        ...this.deviceCommands.length === 1 ? {
+          borderColor: CHART_COLORS.yellow,
+        } : {},
+        spanGaps: true,
+      });
 
+      if (this.deviceCommands.length === 1 && !isSameDay) {
         dataSets.push({
-          label: `${ prefix }Ave.`,
+          label: 'Max.',
           data: deviceAllValues.map(
-            dateValues => dateValues ? MathHelper.round(
-              MathHelper.sum(dateValues) / dateValues.length
-            ) : null,
+            dateValues => dateValues ? Math.max(...dateValues) : null,
           ),
-          ...this.deviceCommands.length === 1 ? {
-            borderColor: CHART_COLORS.yellow,
-          } : {}
+          borderColor: CHART_COLORS.red,
+          fill: false,
+          borderDash: [ 5, 5 ],
         });
 
-        if (this.deviceCommands.length === 1) {
-          dataSets.push({
-            label: 'Max.',
-            data: deviceAllValues.map(
-              dateValues => dateValues ? Math.max(...dateValues) : null,
-            ),
-            borderColor: CHART_COLORS.red,
-            fill: false,
-            borderDash: [ 5, 5 ],
-          });
-
-          dataSets.push({
-            label: 'Min.',
-            data: deviceAllValues.map(
-              dateValues => dateValues ? Math.min(...dateValues) : null,
-            ),
-            borderColor: CHART_COLORS.blue,
-            fill: false,
-            borderDash: [ 5, 5 ],
-          });
-        }
+        dataSets.push({
+          label: 'Min.',
+          data: deviceAllValues.map(
+            dateValues => dateValues ? Math.min(...dateValues) : null,
+          ),
+          borderColor: CHART_COLORS.blue,
+          fill: false,
+          borderDash: [ 5, 5 ],
+        });
       }
     })
 
     /*console.group('Load chart');
     console.log("dates", this.dateControl.value);
-    console.log("histories", this.histories);
-    console.log("format", format);
+    console.log("deviceCommands", this.deviceCommands);
     console.log("labels", labels);
-    console.log("values", values);
+    console.log("dataSets", dataSets);
+    console.log("valuesByDateAndDevice", valuesByDateAndDevice);
     console.groupEnd()*/
 
     this.chartData.set({
-      labels: ArrayHelper.unique(labels),
+      labels: labels,
       datasets: dataSets
     });
   }

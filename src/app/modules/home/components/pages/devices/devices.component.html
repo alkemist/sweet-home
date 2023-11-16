@@ -26,7 +26,7 @@
                           field="connectivity" matchMode="in">
             <ng-template let-filter="filterCallback" let-value pTemplate="filter">
               <p-multiSelect (onChange)="filter($event.value)"
-                             [ngModel]="value" [options]="deviceConnectivities" [selectionLimit]="3"
+                             [ngModel]="value" [options]="deviceConnectivities.toKeyValues()" [selectionLimit]="3"
                              [showHeader]="false"
                              optionLabel="value"
                              optionValue="key">
@@ -39,7 +39,7 @@
                           field="category" matchMode="in">
             <ng-template let-filter="filterCallback" let-value pTemplate="filter">
               <p-multiSelect (onChange)="filter($event.value)"
-                             [ngModel]="value" [options]="deviceCategories" [selectionLimit]="3"
+                             [ngModel]="value" [options]="deviceCategories.toKeyValues()" [selectionLimit]="3"
                              [showHeader]="false"
                              optionLabel="value"
                              optionValue="key">
@@ -52,7 +52,7 @@
                           field="type" matchMode="in">
             <ng-template let-filter="filterCallback" let-value pTemplate="filter">
               <p-multiSelect (onChange)="filter($event.value)"
-                             [ngModel]="value" [options]="deviceTypes" [selectionLimit]="3"
+                             [ngModel]="value" [options]="deviceTypes.toKeyValues()" [selectionLimit]="3"
                              [showHeader]="false"
                              optionLabel="value"
                              optionValue="key">

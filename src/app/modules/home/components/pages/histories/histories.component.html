@@ -1,11 +1,18 @@
-<div class="page-container__content" id="histories">
-  <div class="flex flex-column gap-2">
-    <div class="flex flex-row justify-content-center align-items-center">
-      <p-autoComplete (completeMethod)="filterDevices($event)" [formControl]="deviceControl" [suggestions]="filteredDevices()"
-                      appendTo="body" class="w-6" field="name"></p-autoComplete>
-      <p-dropdown *ngIf="commands.length > 0" [formControl]="commandControl" [options]="commands" class="w-6"
-                  optionLabel="name"></p-dropdown>
+<div class="page-container__content flex h-100" id="histories">
+  <div class="flex flex-column align-items-stretch flex-1 gap-2">
+    <div class="flex flex-row align-items-center gap-2">
+      <p-button (click)="sidebarVisible = true" icon="pi pi-plus"></p-button>
+      <div *ngIf="(selectedCommands.value ?? []).length === 0" i18n>Add a command</div>
+      <p-chips *ngIf="(selectedCommands.value ?? []).length > 0" [disabled]="true" [formControl]="selectedCommands"
+               class="flex-1">
+        <ng-template let-item pTemplate="item"> {{ item.deviceName }} - {{ item.commandName }}</ng-template>
+      </p-chips>
     </div>
-    <app-history [deviceCommands]="deviceCommands"></app-history>
+    <app-history *ngIf="(selectedCommands.value ?? []).length > 0" [deviceCommands]="selectedCommands.value ?? []"
+                 class="flex-1"></app-history>
   </div>
 </div>
+<p-sidebar [(visible)]="sidebarVisible">
+  <!--<p-tieredMenu #menu [model]="menuDevices" [popup]="false"></p-tieredMenu>-->
+  <p-panelMenu [model]="menuDevices"></p-panelMenu>
+</p-sidebar>

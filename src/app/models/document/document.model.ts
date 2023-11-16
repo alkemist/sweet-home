@@ -1,6 +1,6 @@
-import {DocumentBackInterface, DocumentFrontInterface, DocumentStoredInterface} from './document.interface';
-import {HasIdInterface} from './id.interface';
-import {slugify} from '@tools';
+import { DocumentBackInterface, DocumentFrontInterface, DocumentStoredInterface } from './document.interface';
+import { HasIdInterface } from './id.interface';
+import { StringHelper } from '@alkemist/smart-tools';
 
 
 export class DocumentModel implements HasIdInterface {
@@ -34,7 +34,7 @@ export class DocumentModel implements HasIdInterface {
 
   nameContain(search: string): boolean {
     const regexName = new RegExp(search, 'gi');
-    const regexSlug = new RegExp(slugify(search), 'gi');
+    const regexSlug = new RegExp(StringHelper.slugify(search), 'gi');
     return this.name.search(regexName) > -1 || (this.slug !== undefined && this.slug.search(regexSlug) > -1);
   }
 

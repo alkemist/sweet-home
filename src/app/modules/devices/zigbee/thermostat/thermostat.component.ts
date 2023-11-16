@@ -7,9 +7,9 @@ import {
   ThermostatGlobalCommandInfo
 } from '@devices';
 import { ZigbeeBatteryComponent } from '../zigbee-battery-component.directive';
-import { MathHelper } from '@tools';
 import { debounceTime } from 'rxjs';
 import { ThermostatCommandValues } from './thermostat.interface';
+import { MathHelper } from '@alkemist/smart-tools';
 
 
 @Directive()

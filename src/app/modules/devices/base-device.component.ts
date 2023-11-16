@@ -12,12 +12,14 @@ import {
   ViewChild,
   WritableSignal
 } from "@angular/core";
-import { CoordinateInterface, JeedomCommandResultInterface, SizeInterface, SmartArrayModel } from "@models";
+import { CoordinateInterface, JeedomCommandResultInterface, SizeInterface } from "@models";
 import { DeviceService, MapBuilder } from "@services";
 import { OverlayPanel } from "primeng/overlaypanel";
 import { UndefinedVarError } from "@errors";
 import { MessageService } from "primeng/api";
 import BaseComponent from "@base-component";
+import { KeyValue } from '@angular/common';
+import { SmartMap } from '@alkemist/smart-tools';
 
 @Directive()
 export default abstract class BaseDeviceComponent<
@@ -33,9 +35,9 @@ export default abstract class BaseDeviceComponent<
   @HostBinding("style.left") x = "0px";
   @HostBinding("style.top") y = "0px";
   @Input() name: string = "";
-  @Input() actionInfoIds = new SmartArrayModel<I, number>();
-  @Input() actionCommandIds = new SmartArrayModel<A, number>();
-  @Input() configurationValues = new SmartArrayModel<C, string>();
+  @Input() actionInfoIds = new SmartMap<number, I>();
+  @Input() actionCommandIds = new SmartMap<number, A>();
+  @Input() configurationValues = new SmartMap<string, C>();
   @Output() loaded = new EventEmitter<boolean>();
   modalOpened: boolean = false;
   initialized$ = signal<boolean>(false);
@@ -126,8 +128,8 @@ export default abstract class BaseDeviceComponent<
     //console.log(`-- [${this.name}] Update info command values`, values, this.initialized);
     const currentInfoCommandValues = this.infoCommandValues();
 
-    const infoCommandValues: Record<I, string | number | boolean | null> = this.actionInfoIds.reduce((result, current) => {
-      result[current.key as I] = (values[current.value]
+    const infoCommandValues: Record<I, string | number | boolean | null> = this.actionInfoIds.toKeyValues().reduce((result: Record<I, string | number | boolean | null>, current: KeyValue<I, any>) => {
+      result[current.key] = (values[current.value]
         ? values[current.value].value
         : currentInfoCommandValues[current.key] ?? null);
       return result;
