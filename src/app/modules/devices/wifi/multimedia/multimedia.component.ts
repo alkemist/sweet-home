@@ -12,14 +12,14 @@ import { MultimediaState } from "./multimedia.enum";
 export abstract class DeviceMultimediaComponent<
   IE extends MultimediaCommandInfo,
   AE extends MultimediaCommandAction,
-  I extends string = string,
+  I extends string,
   A extends string = string,
   C extends string = string,
   IV extends MultimediaCommandValues = MultimediaCommandValues,
   P extends MultimediaParamValue = MultimediaParamValue,
   PV extends MultimediaParameterValues = MultimediaParameterValues,
 >
-  extends BaseDeviceComponent<IE, AE, I, A | MultimediaCommandAction, C, IV, P, PV> {
+  extends BaseDeviceComponent<IE, AE, I | MultimediaCommandInfo, A | MultimediaCommandAction, C, IV, P, PV> {
 
   volumeControl = new FormControl<number>(0);
   muteControl = new FormControl<boolean>(false);
@@ -86,20 +86,12 @@ export abstract class DeviceMultimediaComponent<
 
   async setVolume(volume: number): Promise<void> {
     await this.execUpdateSlider("volume", volume);
-
-    this.infoCommandValues.set({
-      ...this.infoCommandValues(),
-      volume: volume,
-    })
-
+    this.updateInfoCommandValue('volume', volume);
   }
 
   async setMute(action: "mute" | "unmute"): Promise<void> {
     await this.execUpdateValue(action);
-    this.infoCommandValues.set({
-      ...this.infoCommandValues(),
-      muted: action === "mute",
-    });
+    this.updateInfoCommandValue('muted', action === "mute")
   }
 
   async play(): Promise<void> {
@@ -133,11 +125,10 @@ export abstract class DeviceMultimediaComponent<
   }
 
   updateInfoCommandValues(values: Record<MultimediaCommandInfo, string | number | boolean | null>) {
-    this.infoCommandValues.set({
-      ...this.infoCommandValues(),
+    this.patchInfoCommandValues({
       volume: values.volume as number ?? 0,
       muted: values.muted === 1
-    })
+    } as Partial<IV>)
 
     this.volumeControl.setValue(this.infoCommandValues().volume, { emitEvent: false });
     this.muteControl.setValue(this.infoCommandValues().muted, { emitEvent: false });

@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, signal, WritableSignal } from "@ang
 import { DeviceMultimediaComponent } from "../multimedia.component";
 import {
   ChromecastCommandAction,
-  ChromecastCommandInfo,
   ChromecastExtendCommandAction,
   ChromecastExtendCommandInfo,
   ChromecastExtendParamValue,
@@ -25,7 +24,7 @@ import { MultimediaState } from '../multimedia.enum';
 export class DeviceChromecastComponent extends DeviceMultimediaComponent<
   ChromecastExtendCommandInfo,
   ChromecastExtendCommandAction,
-  ChromecastCommandInfo,
+  ChromecastGlobalCommandInfo,
   ChromecastCommandAction,
   never,
   ChromecastCommandValues,
@@ -70,10 +69,7 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
 
   async unCast(): Promise<void> {
     await this.execUpdateValue("backdrop");
-    this.infoCommandValues.set({
-      ...this.infoCommandValues(),
-      display: "Backdrop",
-    });
+    this.updateInfoCommandValue('display', "Backdrop");
   }
 
   override openModal() {
@@ -85,10 +81,7 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
   override updateInfoCommandValues(values: Record<ChromecastGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
 
-    this.infoCommandValues.set({
-      ...this.infoCommandValues(),
-      online: values.online === 1,
-    })
+    this.updateInfoCommandValue('online', values.online === 1);
 
     if (!this.infoCommandValues().online) {
       this.state = MultimediaState.offline;

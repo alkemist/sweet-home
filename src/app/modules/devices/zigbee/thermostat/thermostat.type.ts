@@ -1,4 +1,4 @@
-import { ZigbeeBatteryExtendCommandInfo, ZigbeeBatteryGlobalCommandInfo } from '../zigbee-battery-component.directive';
+import { ZigbeeBatteryExtendCommandInfo, ZigbeeBatteryGlobalCommandInfo } from '../zigbee.type';
 
 export type ThermostatCommandInfo = 'room' | 'thermostat';
 export type ThermostatCommandAction = 'thermostat';

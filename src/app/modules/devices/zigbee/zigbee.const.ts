@@ -1,6 +1,6 @@
 import { DeviceCommands } from '@devices';
-import { ZigbeeBatteryCommandInfo } from './zigbee-battery-component.directive';
 import { ZigbeeCommandInfo } from './zigbee-component.directive';
+import { ZigbeeBatteryCommandInfo } from './zigbee.type';
 
 export const zigbeeInfoCommandFilters: DeviceCommands<ZigbeeCommandInfo> = {
   signal: { logicalId: 'linkquality' },

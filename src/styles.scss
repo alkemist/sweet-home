@@ -197,6 +197,17 @@ p-dropdown.ng-touched.p-invalid > div {
         padding: 0;
       }
     }
+
+
+  }
+
+  @media screen and (max-width: $mobile-breakpoint-width) {
+    .p-dialog-header {
+      padding: 1rem 0.5rem;
+    }
+    .p-dialog-content {
+      padding: 0 0.5rem 1rem 0.5rem;
+    }
   }
 }
 

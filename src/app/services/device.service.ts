@@ -18,6 +18,7 @@ import { UnknownCommandIdError } from '@errors';
 import { JsonService } from './json.service';
 import BaseDeviceComponent from "@base-device-component";
 import { JeedomHistoryInterface } from '../models/jeedom/jeedom-history.interface';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({
@@ -106,6 +107,10 @@ export class DeviceService extends DatastoreService<DeviceStoredInterface, Devic
   }
 
   execCommand(commandId: number, commandName: string, commandValue?: unknown): Promise<JeedomCommandResultInterface | null> {
+    if (environment["APP_OFFLINE"]) {
+      return Promise.resolve(null);
+    }
+
     if (!commandId) {
       this.loggerService.error(
         new UnknownCommandIdError(commandName)
@@ -116,7 +121,11 @@ export class DeviceService extends DatastoreService<DeviceStoredInterface, Devic
     return this.jeedomService.execActionCommand(commandId, commandValue)
   }
 
-  execHistory(commandId: number, commandName: string, dateStart: string = '', dateEnd: string = ''): Promise<JeedomHistoryInterface[]> {
+  execHistory(commandId: number, commandName: string, dateStart: string, dateEnd: string): Promise<JeedomHistoryInterface[]> {
+    if (environment["APP_OFFLINE"]) {
+      return Promise.resolve([]);
+    }
+
     if (!commandId) {
       this.loggerService.error(
         new UnknownCommandIdError(commandName)

@@ -1,6 +1,7 @@
 import { AfterContentInit, AfterViewInit, Directive, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
 import { MathHelper } from '@tools';
 import BaseDeviceComponent from "@base-device-component";
+import { DeviceCommandHistory } from '@models';
 
 export type ZigbeeCommandInfo = 'signal';
 
@@ -20,6 +21,7 @@ export abstract class ZigbeeComponent<
   PV extends Record<P, string | number | boolean | null> = Record<P, string | number | boolean | null>,
 > extends BaseDeviceComponent <IE, AE, I, A, C, IV, P, PV>
   implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
+  deviceCommands: DeviceCommandHistory[] = [];
 
   protected override infoCommandValues: WritableSignal<IV> = signal<IV>({
     signal: 0,
@@ -27,5 +29,15 @@ export abstract class ZigbeeComponent<
 
   get signalPercent() {
     return MathHelper.round(this.infoCommandValues().signal * 100 / 255, 0);
+  }
+
+  protected addDeviceCommandHistory(commandName: I) {
+    console.log("actionInfoIds", this.actionInfoIds);
+    this.deviceCommands.push({
+      deviceName: this.name,
+      commandName: commandName,
+      commandId: this.actionInfoIds.get(commandName),
+      history: []
+    });
   }
 }

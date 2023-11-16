@@ -1,16 +1,14 @@
 import { AfterContentInit, AfterViewInit, Directive, OnDestroy, OnInit, signal, WritableSignal } from "@angular/core";
-import { ZigbeeCommandInfo, ZigbeeCommandValues, ZigbeeComponent } from "./zigbee-component.directive";
+import { ZigbeeComponent } from "./zigbee-component.directive";
 import { MathHelper } from "@tools";
 import { environment } from "../../../../environments/environment";
+import { ZigbeeBatteryCommandValues } from './zigbee.interface';
+import {
+  ZigbeeBatteryCommandInfo,
+  ZigbeeBatteryExtendCommandInfo,
+  ZigbeeBatteryGlobalCommandInfo
+} from './zigbee.type';
 
-export type ZigbeeBatteryCommandInfo = "battery";
-
-export type ZigbeeBatteryExtendCommandInfo = ZigbeeBatteryCommandInfo & ZigbeeCommandInfo;
-export type ZigbeeBatteryGlobalCommandInfo = ZigbeeBatteryCommandInfo | ZigbeeCommandInfo;
-
-export interface ZigbeeBatteryCommandValues extends ZigbeeCommandValues {
-  battery: number,
-}
 
 @Directive()
 export abstract class ZigbeeBatteryComponent<
@@ -21,7 +19,7 @@ export abstract class ZigbeeBatteryComponent<
   C extends string = string,
   P extends string = string,
   PV extends Record<P, string | number | boolean | null> = Record<P, string | number | boolean | null>,
-> extends ZigbeeComponent <IE, AE, IV, I, A, C, P, PV>
+> extends ZigbeeComponent <IE, AE, IV, I | ZigbeeBatteryCommandInfo, A, C, P, PV>
   implements OnInit, AfterViewInit, AfterContentInit, OnDestroy {
 
   batteryLowMin = 20;
@@ -49,11 +47,8 @@ export abstract class ZigbeeBatteryComponent<
   }
 
   updateInfoCommandValues(values: Record<ZigbeeBatteryGlobalCommandInfo, string | number | boolean | null>) {
-    this.infoCommandValues.set({
-      ...this.infoCommandValues(),
-      battery: environment["APP_OFFLINE"]
-        ? 100
-        : MathHelper.round(values.battery as number, 0),
-    })
+    this.updateInfoCommandValue('battery', environment["APP_OFFLINE"]
+      ? 100
+      : MathHelper.round(values.battery as number, 0))
   }
 }

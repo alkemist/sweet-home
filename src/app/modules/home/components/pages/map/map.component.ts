@@ -1,15 +1,15 @@
 import { DeviceModel, SmartLoaderModel } from "@models";
 import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    ElementRef,
-    HostListener,
-    OnDestroy,
-    OnInit,
-    ViewChild,
-    ViewContainerRef
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ViewContainerRef
 } from "@angular/core";
 import { DeviceService, MapBuilder, SonosService, SpotifyService } from "@services";
 import { BehaviorSubject, filter } from "rxjs";
@@ -18,7 +18,6 @@ import { Router } from "@angular/router";
 import BaseComponent from "@base-component";
 
 @Component({
-  selector: "app-map",
   templateUrl: "./map.component.html",
   styleUrls: [ "./map.component.scss" ],
   host: {

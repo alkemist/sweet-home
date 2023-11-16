@@ -1,0 +1,15 @@
+<div *ngIf="loaded()" class="flex flex-column gap-2">
+  <div class="flex flex-row justify-content-center align-items-center">
+    <p-button (click)="addDate(-1)" [rounded]="true" [text]="true" icon="pi pi-chevron-left"></p-button>
+    <p-calendar [firstDayOfWeek]="1" [formControl]="dateControl" [maxDate]="now" [readonlyInput]="true"
+                [showButtonBar]="true" [showClear]="false"
+                appendTo="body"
+                selectionMode="range"></p-calendar>
+    <p-button (click)="addDate(1)" [disabled]="isLastDay()" [rounded]="true" [text]="true"
+              icon="pi pi-chevron-right"></p-button>
+  </div>
+  <p-chart *ngIf="dateControl.value" [data]="chartData()" [options]="chartOptions" type="line"></p-chart>
+</div>
+<div *ngIf="!loaded()" class="flex flex-row justify-content-center align-items-center loader">
+  <p-progressSpinner></p-progressSpinner>
+</div>

@@ -58,10 +58,7 @@ export class DeviceSonosComponent
       .subscribe((shuffle) => {
         if (shuffle !== null) {
           void this.execUpdateValue("shuffle").then(_ => {
-            this.infoCommandValues.set({
-              ...this.infoCommandValues(),
-              shuffle: !this.infoCommandValues().shuffle,
-            });
+            this.updateInfoCommandValue('shuffle', !this.infoCommandValues().shuffle)
           });
         }
       });
@@ -70,10 +67,7 @@ export class DeviceSonosComponent
       .subscribe((repeat) => {
         if (repeat !== null) {
           void this.execUpdateValue("repeat").then(_ => {
-            this.infoCommandValues.set({
-              ...this.infoCommandValues(),
-              repeat: !this.infoCommandValues().repeat,
-            });
+            this.updateInfoCommandValue('repeat', !this.infoCommandValues().repeat)
           });
         }
       });
@@ -88,11 +82,10 @@ export class DeviceSonosComponent
   override updateInfoCommandValues(values: Record<SonosGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
 
-    this.infoCommandValues.set({
-      ...this.infoCommandValues(),
+    this.patchInfoCommandValues({
       shuffle: values.shuffle === 1,
       repeat: values.repeat === 1,
-    });
+    })
 
     if (!this.hasTvSound) {
       if (this.infoCommandValues().state === "Lecture") {

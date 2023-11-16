@@ -15,6 +15,11 @@ export const MenuItems: MenuItem[] = [
   {
     separator: true
   },
+  {
+    label: $localize`Histories`,
+    icon: 'pi pi-chart-line',
+    routerLink: [ '/home/histories' ],
+  },
 ]
 
 export const DataModelMenuItems: DataModelMenuItem[] = [

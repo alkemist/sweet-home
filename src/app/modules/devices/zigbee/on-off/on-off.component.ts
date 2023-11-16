@@ -68,19 +68,12 @@ export abstract class DeviceOnOffComponent<
 
   execToggle() {
     this.execUpdateValue('toggle').then(_ => {
-      this.infoCommandValues.set({
-        ...this.infoCommandValues(),
-        state: !this.infoCommandValues().state,
-      })
+      this.updateInfoCommandValue('state', !this.infoCommandValues().state)
     })
   }
 
   updateInfoCommandValues(values: Record<OnOffGlobalCommandInfo, string | number | boolean | null>) {
-
-    this.infoCommandValues.set({
-      ...this.infoCommandValues(),
-      state: values.state === 1,
-    })
+    this.updateInfoCommandValue('state', values.state === 1)
 
     this.onOffControl.setValue(this.infoCommandValues().state, { emitEvent: false });
 

@@ -1,0 +1,11 @@
+<div class="page-container__content" id="histories">
+  <div class="flex flex-column gap-2">
+    <div class="flex flex-row justify-content-center align-items-center">
+      <p-autoComplete (completeMethod)="filterDevices($event)" [formControl]="deviceControl" [suggestions]="filteredDevices()"
+                      appendTo="body" class="w-6" field="name"></p-autoComplete>
+      <p-dropdown *ngIf="commands.length > 0" [formControl]="commandControl" [options]="commands" class="w-6"
+                  optionLabel="name"></p-dropdown>
+    </div>
+    <app-history [deviceCommands]="deviceCommands"></app-history>
+  </div>
+</div>

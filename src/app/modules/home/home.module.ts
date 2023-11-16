@@ -1,15 +1,16 @@
 import { NgModule } from '@angular/core';
-import { BlockableDivComponent, DeviceComponent, DevicesComponent, MapComponent } from './components';
+import { DeviceComponent, DevicesComponent, MapComponent } from './components';
 import { HomeRoutingModule } from './home-routing.module';
-import { SharingModule } from '../sharing.module';
+import { SharingModule } from '../shared/sharing.module';
 import { DevicesModule } from '../devices/devices.module';
+import { HistoriesComponent } from './components/pages/histories/histories.component';
 
 @NgModule({
   declarations: [
     MapComponent,
     DevicesComponent,
     DeviceComponent,
-    BlockableDivComponent
+    HistoriesComponent,
   ],
   imports: [
     HomeRoutingModule,

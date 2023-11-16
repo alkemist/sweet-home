@@ -74,9 +74,10 @@ export abstract class DeviceLightComponent<
         debounceTime(1000),
         takeUntilDestroyed(this)
       )
-      .subscribe((brightness) => {
+      .subscribe(async (brightness) => {
         if (brightness !== null) {
-          void this.setAction('brightness', brightness);
+          await this.execUpdateSlider('brightness', brightness)
+          this.updateInfoCommandValue('brightness', brightness);
         }
       });
 
@@ -85,9 +86,10 @@ export abstract class DeviceLightComponent<
         debounceTime(1000),
         takeUntilDestroyed(this)
       )
-      .subscribe((color) => {
-        if (color !== null) {
-          void this.setAction('temperature', color);
+      .subscribe(async (temperature) => {
+        if (temperature !== null) {
+          await this.execUpdateSlider('temperature', temperature)
+          this.updateInfoCommandValue('temperature', temperature);
         }
       });
 
@@ -104,11 +106,7 @@ export abstract class DeviceLightComponent<
   }
 
   async setAction(action: LightCommandValueInfo, value: number) {
-    await this.execUpdateSlider(action, value)
-    this.infoCommandValues.set({
-      ...this.infoCommandValues(),
-      [action]: value,
-    })
+
   }
 
   toggle() {
@@ -125,18 +123,12 @@ export abstract class DeviceLightComponent<
 
   execToggle() {
     this.execUpdateValue(this.infoCommandValues().state ? "off" : "on").then(_ => {
-      this.infoCommandValues.set({
-        ...this.infoCommandValues(),
-        state: !this.infoCommandValues().state,
-      })
+      this.updateInfoCommandValue('state', !this.infoCommandValues().state)
     });
   }
 
   updateInfoCommandValues(values: Record<LightGlobalCommandInfo, string | number | boolean | null>) {
-    this.infoCommandValues.set({
-      ...this.infoCommandValues(),
-      state: values.state === 1,
-    })
+    this.updateInfoCommandValue('state', values.state === 1)
 
     this.brightnessControl.setValue(this.infoCommandValues().brightness, { emitEvent: false });
     this.temperatureControl.setValue(this.infoCommandValues().temperature, { emitEvent: false });

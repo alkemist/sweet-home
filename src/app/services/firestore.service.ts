@@ -1,7 +1,7 @@
-import {DatabaseError, DocumentNotFoundError, EmptyDocumentIdError, QuotaExceededError} from "@errors";
-import {FirestoreDataConverter} from "@firebase/firestore";
-import {LoggerService} from "@services";
-import {generatePushID, slugify} from "@tools";
+import { DatabaseError, DocumentNotFoundError, EmptyDocumentIdError, QuotaExceededError } from "@errors";
+import { FirestoreDataConverter } from "@firebase/firestore";
+import { LoggerService } from "@services";
+import { generatePushID, slugify } from "@tools";
 import {
   collection,
   CollectionReference,
@@ -16,11 +16,11 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import {DocumentBackInterface, DocumentModel, HasIdInterface, HasIdWithInterface} from "@models";
-import {objectConverter} from "../converters/object.converter";
-import {MessageService} from "primeng/api";
-import {JsonService} from "./json.service";
-import {environment} from "../../environments/environment";
+import { DocumentBackInterface, DocumentModel, HasIdInterface, HasIdWithInterface } from "@models";
+import { objectConverter } from "../converters/object.converter";
+import { MessageService } from "primeng/api";
+import { JsonService } from "./json.service";
+import { environment } from "../../environments/environment";
 
 
 export abstract class FirestoreService<
@@ -62,7 +62,6 @@ export abstract class FirestoreService<
   public async findOneById(id: string): Promise<HasIdWithInterface<I>> {
     let docSnapshot;
 
-
     if (environment["APP_OFFLINE"]) {
       return this.findOneBy("id", id);
     }
@@ -74,7 +73,7 @@ export abstract class FirestoreService<
       this.loggerService.error(new DatabaseError(
         this.collectionName,
         (error as Error).message,
-        {id}
+        { id }
       ));
     }
 
@@ -103,7 +102,7 @@ export abstract class FirestoreService<
       this.loggerService.error(new DatabaseError(
         this.collectionName,
         (error as Error).message,
-        {[property]: value}
+        { [property]: value }
       ));
     }
 
@@ -120,12 +119,19 @@ export abstract class FirestoreService<
   public async addOne(document: M): Promise<HasIdWithInterface<I>> {
     const id = generatePushID();
 
+    if (environment["APP_OFFLINE"]) {
+      return Promise.resolve({
+        id,
+        ...document.toFirestore()
+      } as HasIdWithInterface<I>);
+    }
+
     try {
       const ref = doc(this.ref, id).withConverter(this.converter);
       await setDoc(ref, document.toFirestore());
       this.messageService.add({
         severity: "success",
-        detail: `${this.collectionNameTranslated} ${$localize`added`}`
+        detail: `${ this.collectionNameTranslated } ${ $localize`added` }`
       });
     } catch (error) {
       this.loggerService.error(new DatabaseError(
@@ -142,12 +148,19 @@ export abstract class FirestoreService<
       throw new EmptyDocumentIdError(this.collectionName, document);
     }
 
+    if (environment["APP_OFFLINE"]) {
+      return Promise.resolve({
+        id: document.id,
+        ...document.toFirestore()
+      } as HasIdWithInterface<I>);
+    }
+
     try {
       const ref = doc(this.ref, document.id).withConverter(this.converter);
       await setDoc(ref, document.toFirestore());
       this.messageService.add({
         severity: "success",
-        detail: `${this.collectionNameTranslated} ${$localize`updated`}`,
+        detail: `${ this.collectionNameTranslated } ${ $localize`updated` }`,
       });
     } catch (error) {
       this.loggerService.error(new DatabaseError(
@@ -169,7 +182,7 @@ export abstract class FirestoreService<
       await deleteDoc(ref);
       this.messageService.add({
         severity: "success",
-        detail: `${this.collectionNameTranslated} ${$localize`deleted`}`
+        detail: `${ this.collectionNameTranslated } ${ $localize`deleted` }`
       });
     } catch (error) {
       this.loggerService.error(new DatabaseError(

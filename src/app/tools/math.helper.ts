@@ -13,6 +13,10 @@ export class MathHelper {
     return Math.floor(value * Math.pow(10, decimal)) / Math.pow(10, decimal);
   }
 
+  static sum(numbers: number[]) {
+    return numbers.reduce((s, c) => s + c, 0)
+  }
+
   static orientationConverterPointToMap(
     position: CoordinateInterface,
     mapSize: SizeInterface,

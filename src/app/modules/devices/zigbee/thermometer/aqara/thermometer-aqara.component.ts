@@ -36,10 +36,7 @@ export class DeviceThermometerAqaraComponent extends DeviceThermometerComponent<
   override updateInfoCommandValues(values: Record<ThermometerAqaraGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
 
-    this.infoCommandValues.set({
-      ...this.infoCommandValues(),
-      pression: MathHelper.round(values.pression as number, 0),
-    })
+    this.updateInfoCommandValue('pression', MathHelper.round(values['pression'] as number, 0))
 
     // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues());
   }

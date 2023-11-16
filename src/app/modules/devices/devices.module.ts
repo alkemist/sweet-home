@@ -8,7 +8,7 @@ import {
   DeviceThermostatAqaraComponent,
   DeviceThermostatMoesComponent
 } from './zigbee';
-import { SharingModule } from '../sharing.module';
+import { SharingModule } from '../shared/sharing.module';
 import { DeviceChromecastComponent, DeviceSonosComponent } from './wifi';
 import { DeviceTestComponent } from './test.component';
 import { DeviceLightEgloComponent } from './zigbee/light/eglo/light-eglo.component';

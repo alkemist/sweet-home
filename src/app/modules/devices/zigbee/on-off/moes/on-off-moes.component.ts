@@ -15,10 +15,7 @@ import { DeviceOnOffComponent } from "../on-off.component";
 export class DeviceOnOffMoesComponent extends DeviceOnOffComponent {
   override execToggle() {
     this.execUpdateValue(this.infoCommandValues().state ? "off" : "on").then(_ => {
-      this.infoCommandValues.set({
-        ...this.infoCommandValues(),
-        state: !this.infoCommandValues().state,
-      })
+      this.updateInfoCommandValue('state', !this.infoCommandValues().state);
     });
   }
 }

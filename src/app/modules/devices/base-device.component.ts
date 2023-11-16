@@ -139,15 +139,6 @@ export default abstract class BaseDeviceComponent<
     this.updateInfoCommandValues(infoCommandValues as IV);
   }
 
-  patchInfoCommandValues(values: Partial<IV>) {
-    this.infoCommandValues.set(
-      {
-        ...this.infoCommandSignalValues,
-        ...values
-      }
-    )
-  }
-
   abstract updateInfoCommandValues(values: IV): void
 
   protected execUpdateSlider(commandAction: A, commandValue: number) {
@@ -183,7 +174,23 @@ export default abstract class BaseDeviceComponent<
     });
   }
 
-  protected async execHistory(commandInfo: I, dateStart: string = '', dateEnd: string = '') {
+  protected updateInfoCommandValue(key: I, value: any) {
+    this.infoCommandValues.set({
+      ...this.infoCommandValues(),
+      [key]: value,
+    })
+  }
+
+  protected patchInfoCommandValues(values: Partial<IV>) {
+    this.infoCommandValues.set(
+      {
+        ...this.infoCommandSignalValues,
+        ...values
+      }
+    )
+  }
+
+  protected async execHistory(commandInfo: I, dateStart: string, dateEnd: string) {
     return this.deviceService.execHistory(this.actionInfoIds.get(commandInfo), commandInfo, dateStart, dateEnd);
   }
 }

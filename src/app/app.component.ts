@@ -22,26 +22,28 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.translateService.setDefaultLang('fr');
-    this.translateService.use('fr');
-    const calendar_fr = {
-      closeText: "Fermer",
-      prevText: "Précédent",
-      nextText: "Suivant",
-      currentText: "Aujourd'hui",
-      monthNames: [ "janvier", "février", "mars", "avril", "mai", "juin",
-        "juillet", "août", "septembre", "octobre", "novembre", "décembre" ],
-      monthNamesShort: [ "janv.", "févr.", "mars", "avr.", "mai", "juin",
-        "juil.", "août", "sept.", "oct.", "nov.", "déc." ],
-      dayNames: [ "dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi" ],
-      dayNamesShort: [ "dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam." ],
-      dayNamesMin: [ "D", "L", "M", "M", "J", "V", "S" ],
-      weekHeader: "Sem.",
-      dateFormat: "dd/mm/yy",
-      firstDay: 1,
-      isRTL: false,
-      showMonthAfterYear: false,
-      yearSuffix: ""
-    }
+    this.translateService.setTranslation('fr', {
+      primeng: {
+        closeText: "Fermer",
+        prevText: "Précédent",
+        nextText: "Suivant",
+        today: "Aujourd'hui",
+        clear: "Effacer",
+        monthNames: [ "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+          "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre" ],
+        monthNamesShort: [ "janv.", "févr.", "mars", "avr.", "mai", "juin",
+          "juil.", "août", "sept.", "oct.", "nov.", "déc." ],
+        dayNames: [ "dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi" ],
+        dayNamesShort: [ "dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam." ],
+        dayNamesMin: [ "D", "L", "M", "M", "J", "V", "S" ],
+        weekHeader: "Sem.",
+        dateFormat: "dd/mm/yy",
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ""
+      }
+    })
+    this.translateService.get('primeng').subscribe(res => this.config.setTranslation(res));
 
     if (this.swUpdate.isEnabled) {
       /*this.swUpdate.versionUpdates.subscribe(() => {

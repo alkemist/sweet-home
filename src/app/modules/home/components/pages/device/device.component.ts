@@ -23,7 +23,6 @@ import { ComponentClassByType, deviceConfigurations } from "@devices";
 import { ConsoleHelper } from '@alkemist/smart-tools';
 
 @Component({
-  selector: "app-device",
   templateUrl: "./device.component.html",
   styleUrls: [ "./device.component.scss" ],
   host: {

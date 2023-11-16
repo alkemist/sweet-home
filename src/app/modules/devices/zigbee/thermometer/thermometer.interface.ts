@@ -1,4 +1,4 @@
-import { ZigbeeBatteryCommandValues } from '../zigbee-battery-component.directive';
+import { ZigbeeBatteryCommandValues } from '../zigbee.interface';
 
 export interface ThermometerCommandValues extends ZigbeeBatteryCommandValues {
   temperature: number,

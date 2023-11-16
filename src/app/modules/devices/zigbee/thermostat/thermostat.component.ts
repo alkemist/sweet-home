@@ -1,18 +1,25 @@
 import { Directive, signal, WritableSignal } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ThermostatCommandAction, ThermostatExtendCommandInfo, ThermostatGlobalCommandInfo } from '@devices';
-import { ZigbeeBatteryCommandValues, ZigbeeBatteryComponent } from '../zigbee-battery-component.directive';
+import {
+  ThermostatCommandAction,
+  ThermostatCommandInfo,
+  ThermostatExtendCommandInfo,
+  ThermostatGlobalCommandInfo
+} from '@devices';
+import { ZigbeeBatteryComponent } from '../zigbee-battery-component.directive';
 import { MathHelper } from '@tools';
 import { debounceTime } from 'rxjs';
+import { ThermostatCommandValues } from './thermostat.interface';
 
-interface ThermostatCommandValues extends ZigbeeBatteryCommandValues {
-  thermostat: number,
-  room: number,
-}
 
 @Directive()
 export abstract class DeviceThermostatComponent
-  extends ZigbeeBatteryComponent<ThermostatExtendCommandInfo, ThermostatCommandAction, ThermostatCommandValues> {
+  extends ZigbeeBatteryComponent<
+    ThermostatExtendCommandInfo,
+    ThermostatCommandAction,
+    ThermostatCommandValues,
+    ThermostatCommandInfo
+  > {
   size = {
     w: 90,
     h: 54
@@ -62,18 +69,14 @@ export abstract class DeviceThermostatComponent
   setThermostat(value: number) {
     // console.log(`-- [${this.name}] Set thermostat`, value);
     this.execUpdateSlider('thermostat', value).then(_ => {
-      this.infoCommandValues.set({
-        ...this.infoCommandValues(),
-        thermostat: value,
-      })
+      this.updateInfoCommandValue('thermostat', value)
     })
   }
 
   override updateInfoCommandValues(values: Record<ThermostatGlobalCommandInfo, string | number | boolean | null>) {
     super.updateInfoCommandValues(values);
 
-    this.infoCommandValues.set({
-      ...this.infoCommandValues(),
+    this.patchInfoCommandValues({
       thermostat: MathHelper.round(values.thermostat as number, 2),
       room: MathHelper.round(values.room as number, 2),
     })

@@ -10,6 +10,10 @@ export abstract class ArrayHelper {
     });
   }
 
+  static unique<T>(array: T[]) {
+    return array.filter((value, index, array) => array.indexOf(value) === index)
+  }
+
   static recordToList<T extends string, U>(record: Record<T, U>): KeyValue<string, U>[] {
     return Object.entries<U>(record).map(([ t, u ]: [ string, U ]) => ({
       key: t,
