@@ -49,7 +49,7 @@
           [header]="name" [modal]="true" [resizable]="false"
           appendTo="body" position="bottom"
           styleClass="device-modal">
-  <div class="flex flex-column">
+  <div class="flex flex-column gap-2">
     <p-inputNumber [formControl]="thermostatControl" [max]="30" [min]="10" [showButtons]="true"
                    [step]="thermostatStep"
                    buttonLayout="horizontal"
@@ -58,5 +58,6 @@
                    incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus"
                    inputId="horizontal" suffix="°">
     </p-inputNumber>
+    <app-history *ngIf="modalOpened" [deviceCommands]="deviceCommands"></app-history>
   </div>
 </p-dialog>

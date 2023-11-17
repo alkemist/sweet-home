@@ -14,7 +14,7 @@ import { FormControl } from '@angular/forms';
 import dateFormat from 'dateformat';
 import { ChartData, ChartDataset, ChartOptions } from 'chart.js';
 import { CHART_COLORS, DateFormats, DeviceCommandHistory } from '@models';
-import { ArrayHelper, DateHelper, MathHelper, SmartMap } from '@alkemist/smart-tools';
+import { DateHelper, MathHelper, SmartMap } from '@alkemist/smart-tools';
 
 @Component({
   selector: "app-history",
@@ -149,40 +149,45 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.loadHistories();
+    if (this.loaded()) {
+      this.loadHistories();
+    }
   }
 
   private loadChart() {
-    let labels: string[] = [];
     const dataSets: ChartDataset[] = [];
     const valuesByDateAndDevice: SmartMap<number[]>[] = [];
+    const labelsMap = new SmartMap<string>([]);
     const isSameDay = this.isSameDay();
 
     this.deviceCommands.forEach((deviceCommand) => {
       const valuesByDate = new SmartMap<number[]>();
-      const values: number[] = [];
 
       deviceCommand.history.forEach((history) => {
         const value = parseFloat(history.value);
 
         const date = dateFormat(history.datetime, isSameDay ? DateFormats.hour : DateFormats.day);
-        const currentValues = valuesByDate.get(date) ?? [];
+        const dateKey = dateFormat(history.datetime, isSameDay ? DateFormats.hour : DateFormats.dayKey);
+
+        const currentValues = valuesByDate.get(dateKey) ?? [];
         currentValues.push(value);
 
-        valuesByDate.set(date, currentValues);
-        labels.push(date);
+        valuesByDate.set(dateKey, currentValues);
+        labelsMap.set(dateKey, date);
       });
 
       valuesByDateAndDevice.push(valuesByDate);
     });
 
-    labels = ArrayHelper.unique(labels).sort();
+    const labels = labelsMap.toKeyValues()
+      .sort((kv1, kv2) => kv1.key.localeCompare(kv2.key));
 
     this.deviceCommands.forEach((device, index) => {
       let commandName = this.deviceCommands.length > 1 ?
         `${ device.deviceName } - ${ device.commandName }`
         : `${ device.commandName } `;
-      const deviceAllValues: (number[] | undefined)[] = labels.map(date => valuesByDateAndDevice[index].get(date));
+
+      const deviceAllValues: (number[] | undefined)[] = labels.map(date => valuesByDateAndDevice[index].get(date.key));
 
       dataSets.push({
         label: `${ commandName }`,
@@ -229,7 +234,7 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
     console.groupEnd()*/
 
     this.chartData.set({
-      labels: labels,
+      labels: labels.map(label => label.value),
       datasets: dataSets
     });
   }

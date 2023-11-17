@@ -58,6 +58,6 @@
           appendTo="body" position="bottom"
           styleClass="device-modal max-width">
   <div class="flex flex-column">
-    <app-history [deviceCommands]="deviceCommands"></app-history>
+    <app-history *ngIf="modalOpened" [deviceCommands]="deviceCommands"></app-history>
   </div>
 </p-dialog>

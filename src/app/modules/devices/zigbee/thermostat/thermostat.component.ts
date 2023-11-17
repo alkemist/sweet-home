@@ -55,6 +55,8 @@ export abstract class DeviceThermostatComponent
   override ngOnInit() {
     super.ngOnInit();
 
+    this.addDeviceCommandHistory('room');
+
     this.sub = this.thermostatControl.valueChanges
       .pipe(
         debounceTime(2000),
