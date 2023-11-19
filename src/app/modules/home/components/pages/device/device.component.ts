@@ -67,6 +67,10 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     private filterService: FilterService
   ) {
     super();
+
+    console.log('enum', DeviceConnectivityEnum);
+    console.log('array', ArrayHelper.enumToArray(DeviceConnectivityEnum));
+
     this.sub = this.category.valueChanges.subscribe((category) => {
       if (category !== null && ComponentClassByType[category]) {
         this.currentDeviceTypes = Object.keys(ComponentClassByType[category]).map((key) =>

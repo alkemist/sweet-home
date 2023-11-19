@@ -56,10 +56,10 @@
   dependencies:
     "@angular/core" "^16.2.7"
 
-"@alkemist/smart-tools@^1.1.9":
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/@alkemist/smart-tools/-/smart-tools-1.1.9.tgz#fba6d730514febcad51be08f7390ab8862bfc323"
-  integrity sha512-GrRzOduv8106SJAOWC00inqLogCOSOzrGrGcCHwZt6lge0jHpI+JINzpFawhT9HV3KdCNFmnOIEzKVpLQfb9Rg==
+"@alkemist/smart-tools@^1.1.10":
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@alkemist/smart-tools/-/smart-tools-1.1.10.tgz#2091298e04c8b2fb3050b84555c82a64db9f9c50"
+  integrity sha512-EudU4B5PbcXOCCNiDdPU3rvsLWOxgy6AE/frB3IdkyLAVxFHjUlkAF+2vHIjS8E5MTqcGTqM8Y2SmTlj4Dt83w==
   dependencies:
     "@angular/core" "^16.2.7"
 

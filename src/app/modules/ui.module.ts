@@ -28,6 +28,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { ChipsModule } from 'primeng/chips';
 import { SidebarModule } from 'primeng/sidebar';
 import { PanelMenuModule } from 'primeng/panelmenu';
+import { ColorPickerModule } from 'primeng/colorpicker';
 
 const modules = [
   ToolbarModule,
@@ -56,6 +57,7 @@ const modules = [
   ChipsModule,
   SidebarModule,
   PanelMenuModule,
+  ColorPickerModule,
 
   ValdemortModule,
 ];
