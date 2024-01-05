@@ -3,12 +3,13 @@
     <div class="flex flex-row align-items-center gap-2">
       <p-button (click)="sidebarVisible = true" icon="pi pi-plus"></p-button>
       <div *ngIf="(selectedCommands.value ?? []).length === 0" i18n>Add a command</div>
-      <p-chips *ngIf="(selectedCommands.value ?? []).length > 0" [disabled]="true" [formControl]="selectedCommands"
-               class="flex-1">
+      <p-chips (onRemove)="removeDeviceCommand($event)" [disabled]="true"
+               [formControl]="selectedCommands" class="flex-1">
         <ng-template let-item pTemplate="item"> {{ item.deviceName }} - {{ item.commandName }}</ng-template>
       </p-chips>
     </div>
-    <app-history *ngIf="(selectedCommands.value ?? []).length > 0" [deviceCommands]="selectedCommands.value ?? []"
+    <app-history (datesChange)="datesChange($event)" *ngIf="(selectedCommands.value ?? []).length > 0" [dates]="dates"
+                 [deviceCommands]="selectedCommands.value ?? []"
                  class="flex-1"></app-history>
   </div>
 </div>

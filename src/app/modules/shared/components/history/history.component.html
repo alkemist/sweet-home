@@ -7,6 +7,7 @@
                 selectionMode="range"></p-calendar>
     <p-button (click)="addDate(1)" [disabled]="isLastDay()" [rounded]="true" [text]="true"
               icon="pi pi-chevron-right"></p-button>
+    <p-button (click)="loadHistories()" icon="pi pi-refresh"></p-button>
   </div>
   <p-chart *ngIf="dateControl.value" [data]="chartData()" [options]="chartOptions" class="flex-1" type="line"></p-chart>
 </div>

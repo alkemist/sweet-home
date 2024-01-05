@@ -1,10 +1,12 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
+  Output,
   signal,
   SimpleChanges
 } from '@angular/core';
@@ -23,7 +25,9 @@ import { DateHelper, MathHelper, SmartMap } from '@alkemist/smart-tools';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy, OnChanges {
+  @Input() dates: string[] = [];
   @Input() deviceCommands: DeviceCommandHistory[] = [];
+  @Output() datesChange = new EventEmitter<Date[]>()
 
   now = new Date();
   dateControl: FormControl<[ Date ] | [ Date, Date ] | null>;
@@ -73,18 +77,29 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
       }
     }
 
-    this.dateControl = new FormControl<[ Date ] | [ Date, Date ] | null>([ this.now, this.now ]);
+    this.dateControl = new FormControl<[ Date ] | [ Date, Date ] | null>(null);
 
     this.sub = this.dateControl.valueChanges.subscribe((dates) => {
       if (dates && dates.length === 2 && dates[0] && dates[1]) {
         this.loadHistories();
+        this.datesChange.emit(dates);
       }
     })
 
   }
 
   ngOnInit() {
-    this.loadHistories();
+    if (this.dates.length > 0) {
+      const dateBegin = new Date();
+      dateBegin.setTime(parseInt(this.dates[0]));
+
+      const dateEnd = new Date();
+      dateEnd.setTime(parseInt(this.dates[1]));
+
+      this.dateControl.setValue([ dateBegin, dateEnd ]);
+    } else {
+      this.dateControl.setValue([ this.now, this.now ]);
+    }
   }
 
   loadHistories() {

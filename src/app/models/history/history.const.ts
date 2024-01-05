@@ -11,5 +11,5 @@ export const CHART_COLORS = {
 export const DateFormats = {
   hour: 'HH:MM',
   day: 'dd/mm',
-  dayKey: 'mm-dd'
+  dayKey: 'yy-mm-dd'
 }
