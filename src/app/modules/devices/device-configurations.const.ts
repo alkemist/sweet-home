@@ -21,12 +21,14 @@ import {
   DeviceOnOffMoesComponent,
   DeviceOnOffNousComponent,
   DeviceOnOffSchneiderComponent,
+  DevicePresenceSonoffComponent,
   DeviceThermometerAqaraComponent,
   DeviceThermostatAqaraComponent,
   DeviceThermostatMoesComponent,
   OnOffParams,
   zigbeeLinkerOnOffInfoCommandFilters,
   zigbeeLinkerOnOffMoesActionCommandFilters,
+  zigbeeLinkerPresenceInfoCommandFilters,
   zigbeeLinkerThermometerInfoCommandFilters,
   zigbeeLinkerThermostatActionCommandFilters,
   zigbeeLinkerThermostatInfoCommandFilters,
@@ -102,6 +104,9 @@ export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinition
       [DeviceCategoryEnum.Light]: {
         infoCommandFilters: zigbeeLinkerLightInfoCommandFilters,
         actionCommandFilters: zigbeeLinkerLightActionCommandFilters,
+      },
+      [DeviceCategoryEnum.Presence]: {
+        infoCommandFilters: zigbeeLinkerPresenceInfoCommandFilters,
       },
     }
   };
@@ -209,6 +214,9 @@ export const deviceDefinitionsByConnectivityCategoryType:
       },
       [DeviceTypeEnum.Philips]: {},
     },
+    [DeviceCategoryEnum.Presence]: {
+      [DeviceTypeEnum.Sonoff]: {},
+    },
     [DeviceCategoryEnum.Test]: {
       [DeviceTypeEnum.Test]: {}
     }
@@ -237,6 +245,9 @@ export const ComponentClassByType: Record<DeviceCategoryEnum, Partial<Record<Dev
   [DeviceCategoryEnum.Multimedia]: {
     [DeviceTypeEnum.Chromecast]: DeviceChromecastComponent,
     [DeviceTypeEnum.Sonos]: DeviceSonosComponent,
+  },
+  [DeviceCategoryEnum.Presence]: {
+    [DeviceTypeEnum.Sonoff]: DevicePresenceSonoffComponent,
   },
   [DeviceCategoryEnum.Test]: {
     [DeviceTypeEnum.Test]: DeviceTestComponent,

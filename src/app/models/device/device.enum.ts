@@ -11,6 +11,7 @@ export enum DeviceCategoryEnum {
   OnOff = 'on-off',
   Light = 'light',
   Multimedia = 'multimedia',
+  Presence = 'presence',
   Test = 'test',
 }
 

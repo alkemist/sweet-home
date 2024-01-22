@@ -4,6 +4,7 @@ import {
   DeviceOnOffMoesComponent,
   DeviceOnOffNousComponent,
   DeviceOnOffSchneiderComponent,
+  DevicePresenceSonoffComponent,
   DeviceThermometerAqaraComponent,
   DeviceThermostatAqaraComponent,
   DeviceThermostatMoesComponent
@@ -26,6 +27,7 @@ import { DeviceLightPhilipsComponent } from './zigbee/light/philips/light-philip
     DeviceOnOffMoesComponent,
     DeviceOnOffNousComponent,
     DeviceOnOffSchneiderComponent,
+    DevicePresenceSonoffComponent,
     DeviceLightEgloComponent,
     DeviceLightPhilipsComponent,
     DeviceChromecastComponent,
