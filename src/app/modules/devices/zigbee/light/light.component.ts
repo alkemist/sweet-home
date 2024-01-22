@@ -43,6 +43,8 @@ export abstract class DeviceLightComponent<
     h: 50
   }
 
+  showTemperature = true;
+
   lightControl = new FormControl<boolean>(false);
   brightnessControl = new FormControl<number>(0);
   temperatureControl = new FormControl<number>(0);

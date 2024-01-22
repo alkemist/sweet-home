@@ -2,6 +2,7 @@ export enum DeviceConnectivityEnum {
   Wifi = 'wifi',
   ZigbeeOfficial = 'zigbee-official',
   ZigbeeLinker = 'zigbee-linker',
+  PhillipsHue = 'phillips-hue',
 }
 
 export enum DeviceCategoryEnum {

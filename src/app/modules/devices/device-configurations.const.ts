@@ -45,7 +45,12 @@ import {
 import { Type } from '@angular/core';
 import BaseDeviceComponent from '@base-device-component';
 import { DeviceTestComponent } from './test.component';
-import { zigbeeLinkerLightActionCommandFilters, zigbeeLinkerLightInfoCommandFilters } from './zigbee/light';
+import {
+  phillipsHueLightActionCommandFilters,
+  phillipsHueLightInfoCommandFilters,
+  zigbeeLinkerLightActionCommandFilters,
+  zigbeeLinkerLightInfoCommandFilters
+} from './zigbee/light';
 import { DeviceLightEgloComponent } from './zigbee/light/eglo/light-eglo.component';
 import {
   ThermometerAqaraParams,
@@ -61,6 +66,12 @@ export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinition
     [DeviceConnectivityEnum.Wifi]: {
       [DeviceCategoryEnum.Multimedia]: {
         customParams: MultimediaParams,
+      },
+    },
+    [DeviceConnectivityEnum.PhillipsHue]: {
+      [DeviceCategoryEnum.Light]: {
+        infoCommandFilters: phillipsHueLightInfoCommandFilters,
+        actionCommandFilters: phillipsHueLightActionCommandFilters,
       },
     },
     [DeviceConnectivityEnum.ZigbeeOfficial]: {
@@ -117,6 +128,15 @@ export const deviceDefinitionsByConnectivityCategoryType:
         configurationFilters: {}
       }
     }
+  },
+  [DeviceConnectivityEnum.PhillipsHue]: {
+    [DeviceCategoryEnum.Light]: {
+      [DeviceTypeEnum.Philips]: {
+        infoCommandFilters: {},
+        actionCommandFilters: {},
+        configurationFilters: {}
+      }
+    },
   },
   [DeviceConnectivityEnum.ZigbeeOfficial]: {
     [DeviceCategoryEnum.Thermostat]: {

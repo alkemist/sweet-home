@@ -22,8 +22,9 @@
   "private": true,
   "dependencies": {
     "@alkemist/ng-form-supervisor": "^1.1.15",
-    "@alkemist/ng-state-manager": "^1.0.7",
-    "@alkemist/smart-tools": "^1.1.10",
+    "@alkemist/ngx-state-manager": "^1.0.9",
+    "@alkemist/smart-loader": "^1.0.5",
+    "@alkemist/smart-tools": "^1.1.14",
     "@angular/animations": "^16.2.0",
     "@angular/common": "^16.2.0",
     "@angular/compiler": "^16.2.0",

@@ -13,4 +13,5 @@ import { DeviceLightComponent } from '../light.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeviceLightPhilipsComponent extends DeviceLightComponent {
+  override showTemperature = false;
 }

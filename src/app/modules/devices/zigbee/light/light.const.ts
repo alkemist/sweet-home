@@ -8,6 +8,12 @@ export const zigbeeLinkerLightInfoCommandFilters: DeviceCommands<LightCommandInf
   color: { generic_type: 'LIGHT_COLOR' },
 }
 
+export const phillipsHueLightInfoCommandFilters: DeviceCommands<LightCommandInfo> = {
+  ...zigbeeLinkerLightInfoCommandFilters,
+  state: { logicalId: 'state' },
+  brightness: { generic_type: 'LIGHT_STATE' },
+}
+
 export const zigbeeLinkerLightActionCommandFilters: DeviceCommands<LightCommandAction> = {
   on: { generic_type: 'LIGHT_ON' },
   off: { generic_type: 'LIGHT_OFF' },
@@ -15,4 +21,8 @@ export const zigbeeLinkerLightActionCommandFilters: DeviceCommands<LightCommandA
   brightness: { generic_type: 'LIGHT_SLIDER' },
   temperature: { generic_type: 'LIGHT_SET_COLOR_TEMP' },
   color: { generic_type: 'LIGHT_SET_COLOR' },
+}
+
+export const phillipsHueLightActionCommandFilters: DeviceCommands<LightCommandAction> = {
+  ...zigbeeLinkerLightActionCommandFilters
 }

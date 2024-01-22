@@ -29,7 +29,7 @@
       <p-slider [formControl]="brightnessControl" [max]="254" [min]="0"
                 class="flex-1"></p-slider>
     </div>
-    <div class="flex flex-row align-items-center gap-3">
+    <div *ngIf="showTemperature" class="flex flex-row align-items-center gap-3">
       <i [ngClass]="[stateClass]" class="fa fa-fire"></i>
       <p-slider [formControl]="temperatureControl" [max]="370" [min]="153"
                 class="flex-1"></p-slider>

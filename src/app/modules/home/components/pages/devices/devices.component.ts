@@ -15,9 +15,9 @@ import { SmartMap } from '@alkemist/smart-tools';
 })
 export class DevicesComponent extends BaseComponent implements OnInit, OnDestroy {
   devices: DeviceModel[] = [];
-  deviceConnectivities = SmartMap.fromEnum(DeviceConnectivityEnum);
-  deviceCategories = SmartMap.fromEnum(DeviceCategoryEnum);
-  deviceTypes = SmartMap.fromEnum(DeviceTypeEnum);
+  deviceConnectivities = SmartMap.fromEnum(DeviceConnectivityEnum, true);
+  deviceCategories = SmartMap.fromEnum(DeviceCategoryEnum, true);
+  deviceTypes = SmartMap.fromEnum(DeviceTypeEnum, true);
   loading = true;
 
   constructor(

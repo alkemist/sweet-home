@@ -30,9 +30,9 @@ import { ArrayHelper, ConsoleHelper, ObjectHelper, SmartMap, StringHelper } from
 })
 export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy {
   device: DeviceModel | null = null;
-  deviceConnectivities = ArrayHelper.enumToArray(DeviceConnectivityEnum);
-  deviceCategories = ArrayHelper.enumToArray(DeviceCategoryEnum);
-  deviceTypes = ArrayHelper.enumToArray(DeviceTypeEnum);
+  deviceConnectivities = ArrayHelper.enumToArray(DeviceConnectivityEnum, true);
+  deviceCategories = ArrayHelper.enumToArray(DeviceCategoryEnum, true);
+  deviceTypes = ArrayHelper.enumToArray(DeviceTypeEnum, true);
   currentDeviceTypes: KeyValue<string, string>[] = [];
 
   form: FormGroup<DeviceFormInterface> = new FormGroup<DeviceFormInterface>({
@@ -68,14 +68,14 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
   ) {
     super();
 
-    console.log('enum', DeviceConnectivityEnum);
-    console.log('array', ArrayHelper.enumToArray(DeviceConnectivityEnum));
-
     this.sub = this.category.valueChanges.subscribe((category) => {
-      if (category !== null && ComponentClassByType[category]) {
-        this.currentDeviceTypes = Object.keys(ComponentClassByType[category]).map((key) =>
-          this.deviceTypes.find((kv => kv.key === key)
-          ) as KeyValue<string, string>);
+
+      if (category !== null) {
+        if (ComponentClassByType[category as DeviceCategoryEnum]) {
+          this.currentDeviceTypes = Object.keys(ComponentClassByType[category as DeviceCategoryEnum]).map((key) =>
+            this.deviceTypes.find((kv => kv.key === key)
+            ) as KeyValue<string, string>);
+        }
       }
     });
 
