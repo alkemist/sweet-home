@@ -3,14 +3,10 @@ import BaseComponent from "@base-component";
 import { DeviceService } from '@services';
 import { FormControl } from '@angular/forms';
 import { DeviceCommandHistory, DeviceModel } from '@models';
-import { FilterService, MenuItem } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 import { KeyValue, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChipsRemoveEvent } from 'primeng/chips';
-
-interface HistoriesParams extends Record<string, string> {
-  commandIds: string
-}
 
 @Component({
   templateUrl: "./histories.component.html",
@@ -33,7 +29,6 @@ export class HistoriesComponent extends BaseComponent implements OnInit, OnDestr
     private router: Router,
     private location: Location,
     private deviceService: DeviceService,
-    private filterService: FilterService
   ) {
     super();
   }
@@ -63,7 +58,7 @@ export class HistoriesComponent extends BaseComponent implements OnInit, OnDestr
                   });
                 }
               })
-            })
+            });
 
             if (commands.length > 0) {
               this.selectedCommands.setValue(commands);
@@ -95,9 +90,9 @@ export class HistoriesComponent extends BaseComponent implements OnInit, OnDestr
           command: () => {
             this.addDeviceCommand(device, command);
           }
-        }))
+        })).sort((i1, i2) => i1.label.localeCompare(i2.label))
       })
-    );
+    ).sort((i1, i2) => i1.label.localeCompare(i2.label));
   }
 
   removeDeviceCommand($event: ChipsRemoveEvent) {
