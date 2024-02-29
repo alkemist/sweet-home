@@ -204,6 +204,10 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
 
       const deviceAllValues: (number[] | undefined)[] = labels.map(date => valuesByDateAndDevice[index].get(date.key));
 
+      const baseSerie = {
+        smooth: true,
+      }
+
       dataSets.push({
         label: `${ commandName }`,
         data: deviceAllValues.map(
@@ -215,6 +219,7 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
           borderColor: CHART_COLORS.yellow,
         } : {},
         spanGaps: true,
+        ...baseSerie
       });
 
       if (this.deviceCommands.length === 1 && !isSameDay) {
@@ -226,6 +231,7 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
           borderColor: CHART_COLORS.red,
           fill: false,
           borderDash: [ 5, 5 ],
+          ...baseSerie
         });
 
         dataSets.push({
@@ -236,6 +242,7 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
           borderColor: CHART_COLORS.blue,
           fill: false,
           borderDash: [ 5, 5 ],
+          ...baseSerie
         });
       }
     })
