@@ -1,42 +1,43 @@
-import {DeviceStoredInterface, HasIdInterface} from '@models';
-import {AddDocument, FillDocuments, InvalideDocuments, RemoveDocument, UpdateDocument} from './document.action';
+import { DeviceInterface } from '@models';
 
-export class AddDevice extends AddDocument<DeviceStoredInterface> {
-  static override readonly type: string = '[Device] Added';
+export class DeviceFillAction {
+  static readonly log = "Fill Devices";
 
-  constructor(payload: DeviceStoredInterface) {
-    super(payload);
+  constructor(public payload: DeviceInterface[]) {
   }
 }
 
-export class UpdateDevice extends UpdateDocument<DeviceStoredInterface> {
-  static override readonly type: string = '[Device] Updated';
+export class DeviceFilterAction {
+  static readonly log = "Filter Devices";
 
-  constructor(payload: DeviceStoredInterface) {
-    super(payload);
+  constructor(public payload: DeviceInterface[]) {
   }
 }
 
-export class RemoveDevice extends RemoveDocument<HasIdInterface> {
-  static override readonly type: string = '[Device] Removed';
+export class DeviceGetAction {
+  static readonly log = "Get Device";
 
-  constructor(payload: HasIdInterface) {
-    super(payload);
+  constructor(public payload: DeviceInterface) {
   }
 }
 
-export class FillDevices extends FillDocuments<DeviceStoredInterface> {
-  static override readonly type: string = '[Device] Filled';
+export class DeviceAddAction {
+  static readonly log = "Add Device";
 
-  constructor(payload: DeviceStoredInterface[]) {
-    super(payload);
+  constructor(public payload: DeviceInterface) {
   }
 }
 
-export class InvalideDevices extends InvalideDocuments<DeviceStoredInterface> {
-  static override readonly type: string = '[Device] Invalided';
+export class DeviceUpdateAction {
+  static readonly log = "Update Device";
 
-  constructor() {
-    super();
+  constructor(public payload: DeviceInterface) {
+  }
+}
+
+export class DeviceDeleteAction {
+  static readonly log = "Delete Device";
+
+  constructor(public payload: DeviceInterface) {
   }
 }

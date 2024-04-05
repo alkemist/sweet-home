@@ -35,7 +35,7 @@ export class SonosService extends OauthApiService {
   }
 
   async test1() {
-    const households = await this.buildGetQuery("households");
+    /*const households = await this.buildGetQuery("households");
     console.log("-- [sonos] households", households);
     const householdId = "Sonos_5ngsjv5sG9tMJjlrqqLvdfnpA2.1SuK5if1VAH9eUO4l16S";
 

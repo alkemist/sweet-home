@@ -1,8 +1,8 @@
-import { deviceResolver } from "@services";
 import { DeviceComponent, DevicesComponent, MapComponent } from "./components";
 import { RouterModule, Routes } from "@angular/router";
 import { NgModule } from "@angular/core";
 import { HistoriesComponent } from './components/pages/histories/histories.component';
+import { deviceResolver } from '@services';
 
 
 const routes: Routes = [

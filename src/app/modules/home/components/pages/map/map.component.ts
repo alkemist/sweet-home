@@ -99,7 +99,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     this.sub = this.mapBuilder.deviceMoveFinished$.subscribe((device) => {
       //console.log('-- Device moved', device);
       const loader = this.mapBuilder.addLoader();
-      this.deviceService.update(device).then(() => {
+      this.deviceService.update(device.id, device.toStore()).then(() => {
         loader.finish();
       });
     });
@@ -167,7 +167,8 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
   }
 
   loadDevices() {
-    this.deviceService.getListOrRefresh().then(devices => {
+    this.deviceService.selectItems().then(response => {
+      const devices = response.items.map(device => DeviceModel.importFormDataStore(device));
       this.devices = devices;
       this.mapBuilder.build(devices);
       this.changeDetectorRef.detectChanges();

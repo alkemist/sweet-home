@@ -7,7 +7,7 @@
              icon="pi pi-angle-left" pButton
              pRipple
              type="button"></a>
-          <h5 *ngIf="this.device" class="text-center flex-grow-1">{{this.device.name}}</h5>
+          <h5 *ngIf="this.device" class="text-center flex-grow-1">{{ this.device.name }}</h5>
           <h5 *ngIf="!this.device" class="text-center flex-grow-1" i18n>New device</h5>
           <button class="p-button-rounded p-button-text"
                   icon="" pButton
@@ -130,18 +130,18 @@
         </div>
 
         <h5 i18n>Position</h5>
-        <div [formGroup]="position" class="field-row flex flex-row gap-2">
+        <div class="field-row flex flex-row gap-2">
           <div class="flex-column col-6">
             <div class="flex flex-column">
               <label class="inline-label" for="name" i18n>Position x</label>
               <p-inputNumber [min]="0" [showButtons]="true" [step]="1" buttonLayout="horizontal"
                              class="flex-1" decrementButtonClass="p-button-danger"
-                             decrementButtonIcon="pi pi-minus" formControlName="x"
+                             decrementButtonIcon="pi pi-minus" formControlName="positionX"
                              incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus"
                              inputId="horizontal" suffix="px">
               </p-inputNumber>
             </div>
-            <val-errors class="p-error" controlName="x">
+            <val-errors class="p-error" controlName="positionX">
               <ng-template valError="required">
                 <ng-container i18n>X position is required.</ng-container>
               </ng-template>
@@ -152,12 +152,12 @@
               <label class="inline-label" for="name" i18n>Position y</label>
               <p-inputNumber [min]="0" [showButtons]="true" [step]="1" buttonLayout="horizontal"
                              class="flex-1" decrementButtonClass="p-button-danger"
-                             decrementButtonIcon="pi pi-minus" formControlName="y"
+                             decrementButtonIcon="pi pi-minus" formControlName="positionY"
                              incrementButtonClass="p-button-success" incrementButtonIcon="pi pi-plus"
                              inputId="horizontal" suffix="px">
               </p-inputNumber>
             </div>
-            <val-errors class="p-error" controlName="y">
+            <val-errors class="p-error" controlName="positionY">
               <ng-template valError="required">
                 <ng-container i18n>Y position is required.</ng-container>
               </ng-template>

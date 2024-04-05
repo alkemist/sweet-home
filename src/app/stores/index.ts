@@ -1,3 +1,2 @@
-export * from './device.state'
-export * from './device.action'
-export * from './device.store'
+export * from './device.state';
+export * from './device.action';

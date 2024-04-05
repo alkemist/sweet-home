@@ -1,6 +1,6 @@
 import { DocumentModel, HasIdInterface } from '../document';
 import { CoordinateInterface } from '../coordinate';
-import { DeviceBackInterface, DeviceFrontInterface, DeviceStoredInterface } from './device.interface';
+import { DeviceBackInterface, DeviceFrontInterface, DeviceInterface, DeviceStoredInterface } from './device.interface';
 import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum } from './device.enum';
 import { SmartMap, StringHelper } from '@alkemist/smart-tools';
 
@@ -15,7 +15,9 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
     this._actionCommandIds = SmartMap.fromRecord(device.actionCommandIds ?? {});
     this._configurationValues = SmartMap.fromRecord(device.configurationValues ?? {});
     this._parameterValues = SmartMap.fromRecord(device.parameterValues ?? {});
-    this._position = device.position ?? { x: 0, y: 0 };
+    this._positionX = device.positionX ?? 0;
+    this._positionY = device.positionY ?? 0;
+    this._position = device.position ?? { x: this._positionX, y: this._positionY };
   }
 
   protected _position: CoordinateInterface;
@@ -26,6 +28,26 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
 
   set position(position: CoordinateInterface) {
     this._position = position;
+  }
+
+  protected _positionX: number;
+
+  get positionX() {
+    return this._positionX;
+  }
+
+  set positionX(positionX: number) {
+    this._positionX = positionX;
+  }
+
+  protected _positionY: number;
+
+  get positionY() {
+    return this._positionY;
+  }
+
+  set positionY(positionY: number) {
+    this._positionY = positionY;
   }
 
   protected _jeedomId: number | null;
@@ -132,10 +154,33 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
       type: formData.type,
       jeedomId: formData.jeedomId,
       position: formData.position,
+      positionX: formData.positionX,
+      positionY: formData.positionY,
       infoCommandIds: SmartMap.fromKeyValues(formData.infoCommandIds).toRecord(),
       actionCommandIds: SmartMap.fromKeyValues(formData.actionCommandIds).toRecord(),
       configurationValues: SmartMap.fromKeyValues(formData.configurationValues).toRecord(),
       parameterValues: SmartMap.fromKeyValues(formData.parameterValues).toRecord(),
+    }
+
+    return new DeviceModel(deviceData)
+  }
+
+  static importFormDataStore(formData: DeviceInterface) {
+    const deviceData: DeviceStoredInterface = {
+      id: formData.id,
+      name: formData.name,
+      slug: StringHelper.slugify(formData.name),
+      connectivity: formData.connectivity,
+      category: formData.category,
+      type: formData.type,
+      jeedomId: formData.jeedomId,
+      position: formData.position,
+      positionX: formData.positionX,
+      positionY: formData.positionY,
+      infoCommandIds: formData.infoCommandIds,
+      actionCommandIds: formData.actionCommandIds,
+      configurationValues: formData.configurationValues,
+      parameterValues: formData.parameterValues,
     }
 
     return new DeviceModel(deviceData)
@@ -163,11 +208,31 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
       category: this._category,
       type: this._type,
       jeedomId: this._jeedomId,
-      position: this._position,
+      positionX: this._positionX,
+      positionY: this._positionY,
       infoCommandIds: this._infoCommandIds.toKeyValues(),
       actionCommandIds: this._actionCommandIds.toKeyValues(),
       configurationValues: this._configurationValues.toKeyValues(),
       parameterValues: this._parameterValues.toKeyValues(),
+    };
+  }
+
+  toStore(): DeviceInterface {
+    return {
+      id: this._id,
+      name: this._name,
+      slug: this._slug,
+      connectivity: this._connectivity!,
+      category: this._category!,
+      type: this._type!,
+      jeedomId: this._jeedomId,
+      position: this._position,
+      positionX: this._positionX,
+      positionY: this._positionY,
+      infoCommandIds: this._infoCommandIds.toRecord(),
+      actionCommandIds: this._actionCommandIds.toRecord(),
+      configurationValues: this._configurationValues.toRecord(),
+      parameterValues: this._parameterValues.toRecord(),
     };
   }
 }

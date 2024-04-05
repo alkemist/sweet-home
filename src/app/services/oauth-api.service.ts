@@ -1,10 +1,9 @@
-import {AppKey, UserService} from './user.service';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {LoggerService} from './logger.service';
-import {MessageService} from 'primeng/api';
-import {ApiAccessToken, OauthTokenModel} from '@models';
-import {catchError, first, throwError} from 'rxjs';
-import {ApiError} from '@errors';
+import { AppKey, UserService } from './user.service';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { LoggerService } from './logger.service';
+import { MessageService } from 'primeng/api';
+import { throwError } from 'rxjs';
+import { ApiError } from '@errors';
 
 export abstract class OauthApiService {
   protected abstract authorizeUrl: string;
@@ -34,19 +33,19 @@ export abstract class OauthApiService {
       detail: $localize`Redirect for authorization request`
     });
 
-    const redirectUri = `${this.document.location.origin}/authorize/${this.appKey}`
+    const redirectUri = `${ this.document.location.origin }/authorize/${ this.appKey }`
 
     setTimeout(() => {
-      this.document.location.href = `${this.authorizeUrl}?`
-        + `client_id=${this.clientId}`
+      this.document.location.href = `${ this.authorizeUrl }?`
+        + `client_id=${ this.clientId }`
         + `&response_type=code`
-        + `&scope=${this.scope}`
-        + `&redirect_uri=${redirectUri}`
-        + `&state=${new Date().getTime()}`;
+        + `&scope=${ this.scope }`
+        + `&redirect_uri=${ redirectUri }`
+        + `&state=${ new Date().getTime() }`;
     }, 1000)
   }
 
-  async buildGetQuery(url: string) {
+  /*async buildGetQuery(url: string) {
     const accessToken = await this.getAccessToken();
 
     if (accessToken) {
@@ -62,9 +61,9 @@ export abstract class OauthApiService {
       });
     }
     return Promise.resolve();
-  }
+  }*/
 
-  async buildPostQuery(url: string, params?: any) {
+  /*async buildPostQuery(url: string, params?: any) {
     const accessToken = await this.getAccessToken();
 
     if (accessToken) {
@@ -80,9 +79,9 @@ export abstract class OauthApiService {
       });
     }
     return Promise.resolve();
-  }
+  }*/
 
-  async buildPutQuery(url: string, params?: any) {
+  /*async buildPutQuery(url: string, params?: any) {
     const accessToken = await this.getAccessToken();
 
     if (accessToken) {
@@ -98,9 +97,9 @@ export abstract class OauthApiService {
       });
     }
     return Promise.resolve();
-  }
+  }*/
 
-  async getAccessToken(): Promise<OauthTokenModel | null> {
+  /*async getAccessToken(): Promise<OauthTokenModel | null> {
     const accessToken = this.userService.getToken(this.appKey).getAccessToken();
     const refreshToken = this.userService.getToken(this.appKey).getRefreshToken();
 
@@ -115,13 +114,13 @@ export abstract class OauthApiService {
     }
 
     return Promise.resolve(accessToken);
-  }
+  }*/
 
-  updateRefreshToken(authorizationCode: string): Promise<OauthTokenModel> {
+  /*updateRefreshToken(authorizationCode: string): Promise<OauthTokenModel> {
     return this.requestToken('authorization_code', authorizationCode);
-  }
+  }*/
 
-  protected requestToken(tokenType: 'authorization_code' | 'refresh_token', authorizationCode?: string) {
+  /*protected requestToken(tokenType: 'authorization_code' | 'refresh_token', authorizationCode?: string) {
     return new Promise<OauthTokenModel>((resolve) => {
 
       //console.log(`-- [${ this.appKey }] request token "${ tokenType }"`);
@@ -171,7 +170,7 @@ export abstract class OauthApiService {
           resolve(accessToken);
         })
     })
-  }
+  }*/
 
   private handleError(httpError: HttpErrorResponse) {
     if (httpError.error && httpError.error.error === 'invalid_grant') {
@@ -182,5 +181,9 @@ export abstract class OauthApiService {
     const error = new ApiError(this.appKey, httpError);
     this.loggerService.error(error)
     return throwError(() => error);
+  }
+
+  private async getAccessToken() {
+
   }
 }

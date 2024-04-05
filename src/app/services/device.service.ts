@@ -1,49 +1,58 @@
-import {
-  DeviceModel,
-  DeviceStoredInterface,
-  JeedomCommandResultInterface,
-  JeedomDeviceModel,
-  JeedomRoomModel
-} from '@models';
-import { inject, Injectable } from '@angular/core';
-import { AddDevice, DeviceState, FillDevices, InvalideDevices, RemoveDevice, UpdateDevice } from '@stores';
-import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
-import { Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { inject, Injectable, WritableSignal } from '@angular/core';
+import { Observe } from '@alkemist/ngx-state-manager';
+import { DeviceInterface, JeedomCommandResultInterface, JeedomDeviceModel, JeedomRoomModel } from '@models';
+import { DataStoreStateService } from '@alkemist/ngx-data-store';
 import { JeedomService } from './jeedom.service';
-import { LoggerService } from './logger.service';
-import { DatastoreService } from './datastore.service';
-import { MessageService } from 'primeng/api';
-import { UnknownCommandIdError } from '@errors';
-import { JsonService } from './json.service';
-import BaseDeviceComponent from "@base-device-component";
-import { JeedomHistoryInterface } from '../models/jeedom/jeedom-history.interface';
+import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
+import BaseDeviceComponent from '@base-device-component';
 import { environment } from '../../environments/environment';
-
+import { UnknownCommandIdError } from '@errors';
+import { JeedomHistoryInterface } from '../models/jeedom/jeedom-history.interface';
+import { MessageService } from 'primeng/api';
+import { LoggerService } from './logger.service';
+import {
+  DeviceAddAction,
+  DeviceDeleteAction,
+  DeviceFillAction,
+  DeviceGetAction,
+  DeviceState,
+  DeviceUpdateAction
+} from '@stores';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DeviceService extends DatastoreService<DeviceStoredInterface, DeviceModel> {
-  @Select(DeviceState.lastUpdated) override lastUpdated$?: Observable<Date>;
-  //@Observe(Device.StateModel, Device.StateModel.lastUpdated)
-  //override signalLastUpdated = signal<Date | null>(null);
-  // Données du store
-  @Select(DeviceState.all) protected override all$?: Observable<DeviceStoredInterface[]>;
-  //@Observe(Device.StateModel, Device.StateModel.all)
-  //protected override signallAll = signal<DeviceStoredInterface[]>([]);
+export class DeviceService extends DataStoreStateService<DeviceInterface> {
+  @Observe(DeviceState, DeviceState.items)
+  protected _items!: WritableSignal<DeviceInterface[]>;
 
-  constructor(messageService: MessageService,
-              protected override loggerService: LoggerService,
-              jsonService: JsonService,
-              store: Store,
-              //stateManager: StateManager,
-              protected jeedomService: JeedomService) {
-    super(messageService, loggerService, jsonService, 'device', $localize`device`, DeviceModel, store,
-      //stateManager,
-      AddDevice, UpdateDevice, RemoveDevice, FillDevices, InvalideDevices,
-      //Device.Add, Device.Update, Device.Remove, Device.Fill, Device.Invalide
+  @Observe(DeviceState, DeviceState.item)
+  protected _item!: WritableSignal<DeviceInterface | null>;
+
+  @Observe(DeviceState, DeviceState.lastUpdated)
+  protected _lastUpdated!: WritableSignal<Date | null>;
+
+  constructor(
+    private jeedomService: JeedomService,
+    private messageService: MessageService,
+    private loggerService: LoggerService,
+  ) {
+    super(
+      'device',
+      DeviceFillAction,
+      DeviceFillAction,
+      DeviceGetAction,
+      DeviceAddAction,
+      DeviceUpdateAction,
+      DeviceDeleteAction
     );
+  }
+
+  override storeIsOutdated(): boolean {
+    if (environment["APP_OFFLINE"]) {
+      return false;
+    }
+    return super.storeIsOutdated();
   }
 
   availableDevices(): Promise<JeedomRoomModel[]> {
@@ -77,6 +86,11 @@ export class DeviceService extends DatastoreService<DeviceStoredInterface, Devic
         }
       });
     });
+  }
+
+  async getBySlug(slug: string) {
+    const response = await this.searchItem({ slug });
+    return response.item;
   }
 
   updateComponents(components: BaseDeviceComponent[]): Promise<boolean> {
@@ -137,7 +151,7 @@ export class DeviceService extends DatastoreService<DeviceStoredInterface, Devic
   }
 }
 
-export const deviceResolver: ResolveFn<DeviceModel | undefined> =
+export const deviceResolver: ResolveFn<DeviceInterface | null> =
   (route: ActivatedRouteSnapshot) => {
     return inject(DeviceService).getBySlug(route.paramMap.get('slug')!);
   };

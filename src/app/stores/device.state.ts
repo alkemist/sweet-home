@@ -1,83 +1,67 @@
-import {Injectable} from "@angular/core";
-import {DeviceStoredInterface} from "@models";
-import {Action, Selector, State, StateContext} from "@ngxs/store";
-import {append, patch, removeItem, updateItem} from "@ngxs/store/operators";
-import {AddDevice, FillDevices, InvalideDevices, RemoveDevice, UpdateDevice} from "./device.action";
-import {environment} from "../../environments/environment";
+import { Action, Select, State, StateContext } from '@alkemist/ngx-state-manager';
+import {
+  DeviceAddAction,
+  DeviceDeleteAction,
+  DeviceFillAction,
+  DeviceGetAction,
+  DeviceUpdateAction
+} from './device.action';
+import { DocumentInterface, DocumentState, DocumentStateInterface } from '@alkemist/ngx-data-store';
+import { DeviceInterface } from '@models';
 
-export interface DeviceStateInterface {
-  all: DeviceStoredInterface[];
-  lastUpdated: Date | null;
+interface DeviceStateInterface extends DocumentStateInterface<DeviceInterface> {
 }
 
-@Injectable()
-@State<DeviceStateInterface>({
-  name: "devices",
-  defaults: {
-    all: [],
+@State({
+  name: 'Device',
+  class: DeviceState,
+  defaults: <DeviceStateInterface>{
     lastUpdated: null,
-  }
+    items: [] as DeviceInterface[],
+    item: null,
+  },
+  showLog: true,
+  enableLocalStorage: true,
+  determineArrayIndexFn: () => 'id',
 })
-export class DeviceState {
-  @Selector()
-  static lastUpdated(state: DeviceStateInterface): Date | null {
-    return state.lastUpdated;
+export class DeviceState extends DocumentState<DeviceInterface> {
+  @Select('lastUpdated')
+  static override lastUpdated<T extends DocumentInterface>(state: DocumentStateInterface<T>) {
+    return DocumentState.lastUpdated<T>(state);
   }
 
-  @Selector()
-  static all(state: DeviceStateInterface): DeviceStoredInterface[] {
-    return state.all;
+  @Select('items')
+  static override items<T extends DocumentInterface>(state: DocumentStateInterface<T>): T[] {
+    return DocumentState.items(state);
   }
 
-  @Action(FillDevices)
-  fill({
-         getState,
-         patchState
-       }: StateContext<DeviceStateInterface>, {payload}: FillDevices) {
-    patchState({
-      all: payload,
-      lastUpdated: environment["APP_OFFLINE"] ? null : new Date()
-    });
+  @Select('item')
+  static override item<T extends DocumentInterface>(state: DocumentStateInterface<T>): T | null {
+    return DocumentState.item(state);
   }
 
-  @Action(InvalideDevices)
-  invalidate({
-               patchState
-             }: StateContext<DeviceStateInterface>, {}: FillDevices) {
-    patchState({
-      all: [],
-      lastUpdated: null
-    });
+  @Action(DeviceFillAction)
+  override fill(context: StateContext<DeviceStateInterface>, payload: DeviceInterface[]) {
+    super.fill(context, payload);
   }
 
-  @Action(AddDevice)
-  add({setState}: StateContext<DeviceStateInterface>, {payload}: AddDevice) {
-    setState(
-      patch({
-        all: append([payload])
-      })
-    );
+  @Action(DeviceGetAction)
+  override get(context: StateContext<DeviceStateInterface>, payload: DeviceInterface) {
+    super.get(context, payload);
   }
 
-  @Action(RemoveDevice)
-  remove({setState}: StateContext<DeviceStateInterface>, {payload}: RemoveDevice) {
-    setState(
-      patch({
-        all: removeItem<DeviceStoredInterface>((item?: DeviceStoredInterface) => item?.id === payload.id)
-      })
-    );
+  @Action(DeviceAddAction)
+  override add(context: StateContext<DeviceStateInterface>, payload: DeviceInterface) {
+    super.add(context, payload);
   }
 
-  @Action(UpdateDevice)
-  update({
-           getState,
-           patchState,
-           setState
-         }: StateContext<DeviceStateInterface>, {payload}: UpdateDevice) {
-    setState(
-      patch({
-        all: updateItem<DeviceStoredInterface>((item?: DeviceStoredInterface) => item?.id === payload.id, payload)
-      })
-    );
+  @Action(DeviceUpdateAction)
+  override update(context: StateContext<DeviceStateInterface>, payload: DeviceInterface) {
+    super.update(context, payload);
+  }
+
+  @Action(DeviceDeleteAction)
+  override remove(context: StateContext<DeviceStateInterface>, payload: DeviceInterface) {
+    super.remove(context, payload);
   }
 }

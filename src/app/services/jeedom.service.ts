@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { JSONRPCClient } from "json-rpc-2.0";
-import { UserService } from "./user.service";
 import { JeedomCommandResultInterface } from "@models";
 import { JeedomRoomInterface } from "../models/jeedom/jeedom-room.interface";
 import { LoggerService } from "./logger.service";
@@ -8,6 +7,7 @@ import { JeedomApiError, JeedomRequestError, UnknownJeedomError, UserHasNotToken
 import { environment } from "../../environments/environment";
 import { JeedomStatisticInterface } from '../models/jeedom/jeedom-statistic.interface';
 import { JeedomHistoryInterface } from '../models/jeedom/jeedom-history.interface';
+import { DataStoreUserService } from '@alkemist/ngx-data-store';
 
 @Injectable({
   providedIn: "root"
@@ -16,7 +16,7 @@ export class JeedomService {
   private api: JSONRPCClient;
 
   constructor(
-    private userService: UserService,
+    private userService: DataStoreUserService,
     private loggerService: LoggerService
   ) {
     const jeedomApiUrl = `${ environment["JEEDOM_HOST"] }/core/api/jeeApi.php`;
@@ -81,7 +81,7 @@ export class JeedomService {
   }
 
   private request(method: string, params: Record<string, any> = {}): PromiseLike<any> {
-    const apikey = this.userService.getJeedomApiKey()
+    const apikey = this.userService.getLoggedUser()!.data['jeedom'];
 
     if (environment["APP_OFFLINE"]) {
       return Promise.resolve({});

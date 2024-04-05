@@ -1,15 +1,16 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AppKey, LoggerService, SonosService, SpotifyService, UserService} from "@services";
-import {combineLatest} from "rxjs";
-import {MessageService} from "primeng/api";
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { AppKey, LoggerService, SonosService, SpotifyService } from "@services";
+import { combineLatest } from "rxjs";
+import { MessageService } from "primeng/api";
 import BaseComponent from "@base-component";
-import {UnknownTokenError} from "@errors";
+import { UnknownTokenError } from "@errors";
+import { DataStoreConfigurationProvider, DataStoreUserService } from '@alkemist/ngx-data-store';
 
 @Component({
   selector: "app-authorize",
   templateUrl: "./authorize.component.html",
-  styleUrls: ["./authorize.component.scss"],
+  styleUrls: [ "./authorize.component.scss" ],
   host: {
     class: "page-container"
   },
@@ -17,7 +18,8 @@ import {UnknownTokenError} from "@errors";
 })
 export class AuthorizeComponent extends BaseComponent implements OnInit, OnDestroy {
   constructor(
-    private userService: UserService,
+    private userService: DataStoreUserService,
+    private configuration: DataStoreConfigurationProvider,
     private loggerService: LoggerService,
     protected messageService: MessageService,
     protected spotifyService: SpotifyService,
@@ -34,19 +36,19 @@ export class AuthorizeComponent extends BaseComponent implements OnInit, OnDestr
       this.route.queryParams,
     ])
       .subscribe(async (mixedData) => {
-        const [{type}, {code}] = mixedData as [{ type: AppKey }, { code: string }];
-        console.log('Authorize ?')
+        const [ { type }, { code } ] = mixedData as [ { type: AppKey }, { code: string } ];
 
         if (type && code) {
           this.updateToken(type, code).then(() => {
             // console.log(`-- [${ type }] Refresh token updated`);
-            void this.router.navigate(["../../", "home"], {relativeTo: this.route});
+            void this.router.navigate([ this.configuration.front_logged_path ]);
+            //void this.router.navigate([ "../../", "home" ], { relativeTo: this.route });
           });
-        } else if (this.userService.isSignInWithEmailLink()) {
+        } /*else if (this.userService.isSignInWithEmailLink()) {
           this.userService.loginWithLink().then(_ => {
-            void this.router.navigate(["../", "home"], {relativeTo: this.route});
+            void this.router.navigate([ "../", "home" ], { relativeTo: this.route });
           });
-        } else {
+        }*/ else {
           this.messageService.add({
             severity: "error",
             detail: $localize`Unknown type or token`
@@ -58,9 +60,12 @@ export class AuthorizeComponent extends BaseComponent implements OnInit, OnDestr
 
   updateToken(type: AppKey, authorizationCode: string) {
     if (type === "spotify") {
-      return this.spotifyService.updateRefreshToken(authorizationCode);
+      //return this.spotifyService.updateRefreshToken(authorizationCode);
     } else if (type === "sonos") {
-      return this.sonosService.updateRefreshToken(authorizationCode);
+      //return this.sonosService.updateRefreshToken(authorizationCode);
+    } else if (type === "google") {
+      this.userService.setToken(authorizationCode);
+      return Promise.resolve({});
     }
 
     return Promise.reject();
