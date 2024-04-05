@@ -93,31 +93,18 @@ export class DeviceService extends DataStoreStateService<DeviceBackInterface> {
     return response.item;
   }
 
-  updateComponents(components: BaseDeviceComponent[]): Promise<boolean> {
+  updateComponents(components: BaseDeviceComponent[]) {
     const commandIds = components.reduce((result, current) => {
       return result.concat(current.actionInfoIds.getValues());
     }, [] as number[])
 
-    // console.log('-- Update commands', commandIds);
-
-    return new Promise<boolean>((resolve) => {
-      this.jeedomService.execInfoCommands(commandIds).then((values) => {
-        //console.log("-- Commands results", values);
-
-        if (values) {
-          components.forEach((component) => {
-            component.updateGlobalInfoCommandValues(values);
-          })
-          resolve(true);
-        } else {
-          console.info('NO VALUES');
-          resolve(false);
-        }
-      })
-        .catch(_ => {
-          return resolve(false);
+    return this.jeedomService.execInfoCommands(commandIds).then((values) => {
+      if (values) {
+        components.forEach((component) => {
+          component.updateGlobalInfoCommandValues(values);
         })
-    });
+      }
+    })
   }
 
   execCommand(commandId: number, commandName: string, commandValue?: unknown): Promise<JeedomCommandResultInterface | null> {

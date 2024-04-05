@@ -14,6 +14,7 @@ import { DataStoreUserService } from '@alkemist/ngx-data-store';
 })
 export class JeedomService {
   private api: JSONRPCClient;
+  private autoincrementId = 0;
 
   constructor(
     private userService: DataStoreUserService,
@@ -26,20 +27,25 @@ export class JeedomService {
           method: "POST",
           body: JSON.stringify(jsonRPCRequest),
         }).then(async (response) => {
-          if (response.status === 200) {
-            return response
-              .json()
-              .then((jsonRPCResponse) => {
-                if (jsonRPCResponse.id === 99999) {
-                  this.loggerService.error(new JeedomApiError(jsonRPCResponse.error));
-                }
-
+          return response
+            .json()
+            .then((jsonRPCResponse) => {
+              if (response.status !== 200) {
+                this.loggerService.error(new JeedomRequestError(response));
+              } else if (jsonRPCResponse.id === 99999) {
+                this.loggerService.error(new JeedomApiError(jsonRPCResponse.error));
+              } else {
+                this.autoincrementId = jsonRPCResponse.id;
                 return this.api.receive(jsonRPCResponse);
-              });
-          }
+              }
 
-          this.loggerService.error(new JeedomRequestError(response));
-          return Promise.resolve();
+              this.autoincrementId++;
+              return this.api.receive({
+                jsonrpc: jsonRPCResponse.jsonrpc,
+                id: this.autoincrementId,
+                result: {}
+              });
+            });
         }).catch((e) => {
           this.loggerService.error(new UnknownJeedomError(e));
         });
