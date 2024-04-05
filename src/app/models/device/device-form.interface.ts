@@ -8,7 +8,6 @@ export interface DeviceFormInterface extends DocumentFormInterface {
   category: FormControl<DeviceCategoryEnum | null>
   type: FormControl<DeviceTypeEnum | null>
   jeedomId?: FormControl<number | null>
-  //position: FormGroup<CoordinateFormInterface>
   positionX?: FormControl<number | null>
   positionY?: FormControl<number | null>
   infoCommandIds: FormArray<FormGroup<KeyValueFormInterface<number>>>

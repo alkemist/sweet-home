@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from "@angular/core";
-import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceInterface, DeviceTypeEnum } from "@models";
+import { DeviceBackInterface, DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum } from "@models";
 import BaseComponent from "@base-component";
 import { SmartMap } from '@alkemist/smart-tools';
 import { DeviceService } from '@services';
@@ -14,7 +14,7 @@ import { DeviceService } from '@services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DevicesComponent extends BaseComponent implements OnInit, OnDestroy {
-  devices: DeviceInterface[] = [];
+  devices: DeviceBackInterface[] = [];
   deviceConnectivities = SmartMap.fromEnum(DeviceConnectivityEnum, true);
   deviceCategories = SmartMap.fromEnum(DeviceCategoryEnum, true);
   deviceTypes = SmartMap.fromEnum(DeviceTypeEnum, true);

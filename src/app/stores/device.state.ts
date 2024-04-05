@@ -7,9 +7,9 @@ import {
   DeviceUpdateAction
 } from './device.action';
 import { DocumentInterface, DocumentState, DocumentStateInterface } from '@alkemist/ngx-data-store';
-import { DeviceInterface } from '@models';
+import { DeviceBackInterface } from '@models';
 
-interface DeviceStateInterface extends DocumentStateInterface<DeviceInterface> {
+interface DeviceStateInterface extends DocumentStateInterface<DeviceBackInterface> {
 }
 
 @State({
@@ -17,14 +17,14 @@ interface DeviceStateInterface extends DocumentStateInterface<DeviceInterface> {
   class: DeviceState,
   defaults: <DeviceStateInterface>{
     lastUpdated: null,
-    items: [] as DeviceInterface[],
+    items: [] as DeviceBackInterface[],
     item: null,
   },
   showLog: true,
   enableLocalStorage: true,
   determineArrayIndexFn: () => 'id',
 })
-export class DeviceState extends DocumentState<DeviceInterface> {
+export class DeviceState extends DocumentState<DeviceBackInterface> {
   @Select('lastUpdated')
   static override lastUpdated<T extends DocumentInterface>(state: DocumentStateInterface<T>) {
     return DocumentState.lastUpdated<T>(state);
@@ -41,27 +41,27 @@ export class DeviceState extends DocumentState<DeviceInterface> {
   }
 
   @Action(DeviceFillAction)
-  override fill(context: StateContext<DeviceStateInterface>, payload: DeviceInterface[]) {
+  override fill(context: StateContext<DeviceStateInterface>, payload: DeviceBackInterface[]) {
     super.fill(context, payload);
   }
 
   @Action(DeviceGetAction)
-  override get(context: StateContext<DeviceStateInterface>, payload: DeviceInterface) {
+  override get(context: StateContext<DeviceStateInterface>, payload: DeviceBackInterface) {
     super.get(context, payload);
   }
 
   @Action(DeviceAddAction)
-  override add(context: StateContext<DeviceStateInterface>, payload: DeviceInterface) {
+  override add(context: StateContext<DeviceStateInterface>, payload: DeviceBackInterface) {
     super.add(context, payload);
   }
 
   @Action(DeviceUpdateAction)
-  override update(context: StateContext<DeviceStateInterface>, payload: DeviceInterface) {
+  override update(context: StateContext<DeviceStateInterface>, payload: DeviceBackInterface) {
     super.update(context, payload);
   }
 
   @Action(DeviceDeleteAction)
-  override remove(context: StateContext<DeviceStateInterface>, payload: DeviceInterface) {
+  override remove(context: StateContext<DeviceStateInterface>, payload: DeviceBackInterface) {
     super.remove(context, payload);
   }
 }

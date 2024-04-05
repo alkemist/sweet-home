@@ -192,7 +192,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     this.sub = this.activatedRoute.data.subscribe(
       ((data) => {
         if (data && data["device"]) {
-          this.device = DeviceModel.importFormDataStore(data["device"]);
+          this.device = new DeviceModel(data["device"]);
           this.appService.setSubTitle(this.device.name);
 
           this.device.infoCommandIds.forEach(() => this.addInfoCommand());

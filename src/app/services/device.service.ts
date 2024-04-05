@@ -1,6 +1,6 @@
 import { inject, Injectable, WritableSignal } from '@angular/core';
 import { Observe } from '@alkemist/ngx-state-manager';
-import { DeviceInterface, JeedomCommandResultInterface, JeedomDeviceModel, JeedomRoomModel } from '@models';
+import { DeviceBackInterface, JeedomCommandResultInterface, JeedomDeviceModel, JeedomRoomModel } from '@models';
 import { DataStoreStateService } from '@alkemist/ngx-data-store';
 import { JeedomService } from './jeedom.service';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
@@ -22,12 +22,12 @@ import {
 @Injectable({
   providedIn: 'root'
 })
-export class DeviceService extends DataStoreStateService<DeviceInterface> {
+export class DeviceService extends DataStoreStateService<DeviceBackInterface> {
   @Observe(DeviceState, DeviceState.items)
-  protected _items!: WritableSignal<DeviceInterface[]>;
+  protected _items!: WritableSignal<DeviceBackInterface[]>;
 
   @Observe(DeviceState, DeviceState.item)
-  protected _item!: WritableSignal<DeviceInterface | null>;
+  protected _item!: WritableSignal<DeviceBackInterface | null>;
 
   @Observe(DeviceState, DeviceState.lastUpdated)
   protected _lastUpdated!: WritableSignal<Date | null>;
@@ -151,7 +151,7 @@ export class DeviceService extends DataStoreStateService<DeviceInterface> {
   }
 }
 
-export const deviceResolver: ResolveFn<DeviceInterface | null> =
+export const deviceResolver: ResolveFn<DeviceBackInterface | null> =
   (route: ActivatedRouteSnapshot) => {
     return inject(DeviceService).getBySlug(route.paramMap.get('slug')!);
   };

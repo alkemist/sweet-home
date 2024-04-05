@@ -40,7 +40,7 @@ export class HistoriesComponent extends BaseComponent implements OnInit, OnDestr
         this.dates = queryParams['dates'] ?? [];
 
         this.deviceService.selectItems().then(response => {
-          const devices = response.items.map(device => DeviceModel.importFormDataStore(device));
+          const devices = response.items.map(device => new DeviceModel(device));
 
           this.devices = devices;
 
