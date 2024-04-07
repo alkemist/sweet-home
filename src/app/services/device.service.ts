@@ -33,19 +33,6 @@ export class DeviceService extends DataStoreStateService<DeviceBackInterface> {
   @Observe(DeviceState, DeviceState.lastUpdated)
   protected _lastUpdated!: WritableSignal<Date | null>;
 
-  /*@Observe(DeviceState, DeviceState.items)
-  protected _items!: WritableSignal<DeviceBackInterface[]>;
-
-
-  @Observe(DeviceState, DeviceState.filteredItems)
-  protected _filteredItems!: WritableSignal<DeviceBackInterface[]>;
-
-  @Observe(DeviceState, DeviceState.lastFiltered)
-  protected _lastFiltered!: WritableSignal<Date | null>;
-
-  @Observe(DeviceState, DeviceState.item)
-  protected _item!: WritableSignal<DeviceBackInterface | null>;*/
-
   constructor(
     private jeedomService: JeedomService,
     private messageService: MessageService,
@@ -159,14 +146,38 @@ export class DeviceService extends DataStoreStateService<DeviceBackInterface> {
 
     return this.jeedomService.execHistoryCommand(commandId, dateStart, dateEnd)
   }
+
+  async update(id: string, device: DeviceModel) {
+    await super.dispatchUpdate(id, device.toStore());
+    this.messageService.add({
+      severity: "success",
+      detail: $localize`Device updated`
+    });
+  }
+
+  async add(device: DeviceModel) {
+    await super.dispatchAdd(device.toStore());
+    this.messageService.add({
+      severity: "success",
+      detail: $localize`Device added`,
+    });
+  }
+
+  async delete(device: DeviceModel) {
+    await super.dispatchDelete(device.id);
+    this.messageService.add({
+      severity: "success",
+      detail: $localize`Device deleted`
+    });
+  }
 }
 
 export const deviceGetResolver: ResolveFn<void | null> =
   async (route: ActivatedRouteSnapshot) => {
-    return inject(DeviceService).get(route.paramMap.get('slug')!);
+    return inject(DeviceService).dispatchGet(route.paramMap.get('slug')!);
   };
 
 export const deviceAddResolver: ResolveFn<void | null> =
   async (route: ActivatedRouteSnapshot) => {
-    return inject(DeviceService).reset();
+    return inject(DeviceService).dispatchReset();
   };

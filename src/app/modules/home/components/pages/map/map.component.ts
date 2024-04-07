@@ -100,7 +100,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     this.sub = this.mapBuilder.deviceMoveFinished$.subscribe((device) => {
       //console.log('-- Device moved', device);
       const loader = this.mapBuilder.addLoader();
-      this.deviceService.update(device.id, device.toStore()).then(() => {
+      this.deviceService.update(device.id, device).then(() => {
         loader.finish();
       });
     });

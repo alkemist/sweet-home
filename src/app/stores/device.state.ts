@@ -17,8 +17,10 @@ interface DeviceStateInterface extends DocumentStateInterface<DeviceBackInterfac
   name: 'Device',
   class: DeviceState,
   defaults: <DeviceStateInterface>{
-    lastUpdated: null,
     items: [] as DeviceBackInterface[],
+    lastUpdated: null,
+    filteredItems: [] as DeviceBackInterface[],
+    lastFiltered: null,
     item: null,
   },
   showLog: true,

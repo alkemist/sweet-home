@@ -42,7 +42,7 @@ import { environment } from '../environments/environment';
       local_storage_auth_key: 'token',
       store_default_max_hour_outdated: 1,
       offline_mode: environment['APP_OFFLINE']
-    }))
+    })),
   ],
   bootstrap: [ AppComponent ]
 })

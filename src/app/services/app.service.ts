@@ -2,6 +2,7 @@ import { Title } from "@angular/platform-browser";
 import { Injectable } from "@angular/core";
 import { environment } from "../../environments/environment";
 import "../global"
+import { MessageService } from 'primeng/api';
 
 @Injectable({
   providedIn: "root"
@@ -9,7 +10,10 @@ import "../global"
 export class AppService {
   private pageTitle: string | undefined = undefined;
 
-  constructor(private readonly titleService: Title) {
+  constructor(
+    private messageService: MessageService,
+    private readonly titleService: Title
+  ) {
   }
 
   setTitle(title: string | undefined) {
@@ -30,5 +34,12 @@ export class AppService {
     } else {
       this.titleService.setTitle(`${ this.pageTitle }`);
     }
+  }
+
+  showToast(severity: "success" | "warn" | "error", message: string) {
+    this.messageService.add({
+      severity: severity,
+      detail: message
+    });
   }
 }

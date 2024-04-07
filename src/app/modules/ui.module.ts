@@ -29,6 +29,7 @@ import { ChipsModule } from 'primeng/chips';
 import { SidebarModule } from 'primeng/sidebar';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { ColorPickerModule } from 'primeng/colorpicker';
+import { MessageModule } from 'primeng/message';
 
 const modules = [
   ToolbarModule,
@@ -37,6 +38,7 @@ const modules = [
   InputTextModule,
   ButtonModule,
   ToastModule,
+  MessageModule,
   RippleModule,
   TieredMenuModule,
   TableModule,

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal, WritableSignal } from "@angular/core";
 import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ConfirmationService, FilterService, MessageService } from "primeng/api";
+import { ConfirmationService, FilterService } from "primeng/api";
 import { AppService, DeviceService } from "@services";
 import { KeyValue } from "@angular/common";
 import {
@@ -70,7 +70,6 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     private deviceService: DeviceService,
     private routerService: Router,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService,
     private appService: AppService,
     private filterService: FilterService
   ) {
@@ -263,12 +262,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
       )
 
       if (exist) {
-        this.messageService.add({
-          severity: "error",
-          detail: $localize`Device already exist.`
-        });
-        this.name.setErrors({ "exist": true });
-        this.form.updateValueAndValidity();
+        this.appService.showToast("error", $localize`Device already exist.`)
       } else {
         void this.submit(device);
       }
@@ -279,25 +273,13 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     this.loading = true;
 
     if (this.device()) {
-      this.deviceService.update(device.id, device.toStore()).then(_ => {
-        this._item.set(device.toStore());
-
+      this.deviceService.update(device.id, device).then(_ => {
         this.loading = false;
-        this.messageService.add({
-          severity: "success",
-          detail: $localize`Device updated`
-        });
         void this.routerService.navigate([ "../" ], { relativeTo: this.activatedRoute });
       })
     } else {
-      this.deviceService.add(device.toStore()).then(_ => {
-        this._item.set(device.toStore());
-
+      this.deviceService.add(device).then(_ => {
         this.loading = false;
-        this.messageService.add({
-          severity: "success",
-          detail: $localize`Device added`,
-        });
         void this.routerService.navigate([ "../" ], { relativeTo: this.activatedRoute });
       })
     }
@@ -309,12 +291,8 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
       message: $localize`Are you sure you want to delete it ?`,
       accept: () => {
         this.loading = true;
-        this.deviceService.delete(this.device()!.id).then(async () => {
+        this.deviceService.delete(this.device()!).then(async () => {
           this.loading = false;
-          this.messageService.add({
-            severity: "success",
-            detail: $localize`Device deleted`
-          });
           await this.routerService.navigate([ "../" ], { relativeTo: this.activatedRoute });
         });
       }
