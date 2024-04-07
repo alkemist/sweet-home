@@ -62,6 +62,7 @@ import {
 import { DeviceThermometerSonoffComponent } from './zigbee/thermometer/sonoff/thermometer-sonoff.component';
 import { DeviceLightPhilipsComponent } from './zigbee/light/philips/light-philips.component';
 import { LightEgloParams } from './zigbee/light/eglo/light-eglo.const';
+import { zigbeeLinkerOnOffSchneiderActionCommandFilters } from './zigbee/on-off/schneider/on-off-schneider.const';
 
 export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinitions<DeviceConnectivityEnum, DeviceCategoryEnum> =
   {
@@ -202,7 +203,9 @@ export const deviceDefinitionsByConnectivityCategoryType:
       [DeviceTypeEnum.Moes]: {
         actionCommandFilters: zigbeeLinkerOnOffMoesActionCommandFilters
       },
-      [DeviceTypeEnum.Schneider]: {},
+      [DeviceTypeEnum.Schneider]: {
+        actionCommandFilters: zigbeeLinkerOnOffSchneiderActionCommandFilters
+      },
       [DeviceTypeEnum.Nous]: {
         infoCommandFilters: zigbeeLinkerOnOffNousInfoCommandFilters,
         actionCommandFilters: zigbeeLinkerOnOffNousActionCommandFilters

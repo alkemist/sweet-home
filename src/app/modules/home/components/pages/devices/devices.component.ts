@@ -20,6 +20,7 @@ export class DevicesComponent extends BaseComponent implements OnInit, OnDestroy
   deviceCategories = SmartMap.fromEnum(DeviceCategoryEnum, true);
   deviceTypes = SmartMap.fromEnum(DeviceTypeEnum, true);
   loading = true;
+  maxRows = 100;
 
   @Observe(DeviceState, DeviceState.items)
   protected _items!: WritableSignal<DeviceBackInterface[]>;
