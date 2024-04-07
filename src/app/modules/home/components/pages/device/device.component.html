@@ -7,8 +7,8 @@
              icon="pi pi-angle-left" pButton
              pRipple
              type="button"></a>
-          <h5 *ngIf="this.device" class="text-center flex-grow-1">{{ this.device.name }}</h5>
-          <h5 *ngIf="!this.device" class="text-center flex-grow-1" i18n>New device</h5>
+          <h5 *ngIf="this.device()" class="text-center flex-grow-1">{{ this.device()!.name }}</h5>
+          <h5 *ngIf="!this.device()" class="text-center flex-grow-1" i18n>New device</h5>
           <button class="p-button-rounded p-button-text"
                   icon="" pButton
                   pRipple
@@ -290,16 +290,16 @@
 
       <ng-template pTemplate="footer">
         <div class="flex flex-row">
-          <button (click)="remove()" *ngIf="device" [disabled]="loading" class="p-button-danger hide-label-mobile"
+          <button (click)="remove()" *ngIf="device()" [disabled]="loading" class="p-button-danger hide-label-mobile"
                   i18n-label
                   icon="pi pi-trash"
                   label="Delete" pButton pRipple
                   type="button"></button>
           <div class="flex-grow-1"></div>
           <div class="flex flex-row gap-3">
-            <button *ngIf="device" i18n-label icon="pi pi-check" label="Update" pButton pRipple
+            <button *ngIf="device()" i18n-label icon="pi pi-check" label="Update" pButton pRipple
                     type="submit"></button>
-            <button *ngIf="!device" i18n-label icon="pi pi-check" label="Add" pButton pRipple
+            <button *ngIf="!device()" i18n-label icon="pi pi-check" label="Add" pButton pRipple
                     type="submit"></button>
           </div>
         </div>

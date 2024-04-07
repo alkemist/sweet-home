@@ -4,6 +4,7 @@ import {
   DeviceDeleteAction,
   DeviceFillAction,
   DeviceGetAction,
+  DeviceResetAction,
   DeviceUpdateAction
 } from './device.action';
 import { DocumentInterface, DocumentState, DocumentStateInterface } from '@alkemist/ngx-data-store';
@@ -35,6 +36,16 @@ export class DeviceState extends DocumentState<DeviceBackInterface> {
     return DocumentState.items(state);
   }
 
+  @Select('lastFiltered')
+  static override lastFiltered<T extends DocumentInterface>(state: DocumentStateInterface<T>) {
+    return DocumentState.lastFiltered<T>(state);
+  }
+
+  @Select('filteredItems')
+  static override filteredItems<T extends DocumentInterface>(state: DocumentStateInterface<T>): T[] {
+    return DocumentState.filteredItems(state);
+  }
+
   @Select('item')
   static override item<T extends DocumentInterface>(state: DocumentStateInterface<T>): T | null {
     return DocumentState.item(state);
@@ -63,5 +74,10 @@ export class DeviceState extends DocumentState<DeviceBackInterface> {
   @Action(DeviceDeleteAction)
   override remove(context: StateContext<DeviceStateInterface>, payload: DeviceBackInterface) {
     super.remove(context, payload);
+  }
+
+  @Action(DeviceResetAction)
+  override reset(context: StateContext<DeviceStateInterface>, payload: void) {
+    super.reset(context, payload);
   }
 }

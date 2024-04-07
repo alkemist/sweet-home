@@ -19,7 +19,6 @@ export interface DeviceFrontInterface extends DocumentFrontInterface {
 }
 
 export interface DeviceBackInterface extends DocumentInterface {
-  slug: string,
   name: string,
   connectivity: DeviceConnectivityEnum,
   connectivityLabel?: string,

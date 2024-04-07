@@ -1,6 +1,6 @@
 <div class="page-container__content h-full">
   <p-table #dt [loading]="loading" [pageLinks]="2" [paginator]="true" [rows]="10"
-           [value]="devices" breakpoint="400px" dataKey="id"
+           [value]="devices()" breakpoint="400px" dataKey="id"
            responsiveLayout="scroll" scrollHeight="flex"
            styleClass="p-datatable-m">
     <ng-template pTemplate="header">

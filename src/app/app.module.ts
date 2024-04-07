@@ -10,6 +10,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { LoginComponent } from './components/pages/login/login.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { DataStoreModule } from '@alkemist/ngx-data-store';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { DataStoreModule } from '@alkemist/ngx-data-store';
       front_login_path: '/',
       local_storage_auth_key: 'token',
       store_default_max_hour_outdated: 1,
+      offline_mode: environment['APP_OFFLINE']
     }))
   ],
   bootstrap: [ AppComponent ]

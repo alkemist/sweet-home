@@ -48,6 +48,12 @@ export class JeedomService {
             });
         }).catch((e) => {
           this.loggerService.error(new UnknownJeedomError(e));
+        }).finally(() => {
+          return this.api.receive({
+            jsonrpc: '2.0',
+            id: this.autoincrementId,
+            result: {}
+          });
         });
       }
     );

@@ -171,8 +171,8 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
   toStore(): DeviceBackInterface {
     return {
       id: this._id,
-      name: this._name,
       slug: this._slug,
+      name: this._name,
       connectivity: this._connectivity!,
       category: this._category!,
       type: this._type!,
@@ -184,5 +184,12 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
       configurationValues: this._configurationValues.toRecord(),
       parameterValues: this._parameterValues.toRecord(),
     };
+  }
+
+  toUniqueFields(): Partial<DeviceBackInterface> {
+    return {
+      slug: this._slug,
+      jeedomId: this._jeedomId
+    }
   }
 }

@@ -41,3 +41,10 @@ export class DeviceDeleteAction {
   constructor(public payload: DeviceBackInterface) {
   }
 }
+
+export class DeviceResetAction {
+  static readonly log = "Reset";
+
+  constructor(public payload: void) {
+  }
+}

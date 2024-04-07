@@ -1,6 +1,11 @@
 import { inject, Injectable, WritableSignal } from '@angular/core';
-import { Observe } from '@alkemist/ngx-state-manager';
-import { DeviceBackInterface, JeedomCommandResultInterface, JeedomDeviceModel, JeedomRoomModel } from '@models';
+import {
+  DeviceBackInterface,
+  DeviceModel,
+  JeedomCommandResultInterface,
+  JeedomDeviceModel,
+  JeedomRoomModel
+} from '@models';
 import { DataStoreStateService } from '@alkemist/ngx-data-store';
 import { JeedomService } from './jeedom.service';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
@@ -15,22 +20,31 @@ import {
   DeviceDeleteAction,
   DeviceFillAction,
   DeviceGetAction,
+  DeviceResetAction,
   DeviceState,
   DeviceUpdateAction
 } from '@stores';
+import { Observe } from '@alkemist/ngx-state-manager';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DeviceService extends DataStoreStateService<DeviceBackInterface> {
-  @Observe(DeviceState, DeviceState.items)
-  protected _items!: WritableSignal<DeviceBackInterface[]>;
-
-  @Observe(DeviceState, DeviceState.item)
-  protected _item!: WritableSignal<DeviceBackInterface | null>;
-
   @Observe(DeviceState, DeviceState.lastUpdated)
   protected _lastUpdated!: WritableSignal<Date | null>;
+
+  /*@Observe(DeviceState, DeviceState.items)
+  protected _items!: WritableSignal<DeviceBackInterface[]>;
+
+
+  @Observe(DeviceState, DeviceState.filteredItems)
+  protected _filteredItems!: WritableSignal<DeviceBackInterface[]>;
+
+  @Observe(DeviceState, DeviceState.lastFiltered)
+  protected _lastFiltered!: WritableSignal<Date | null>;
+
+  @Observe(DeviceState, DeviceState.item)
+  protected _item!: WritableSignal<DeviceBackInterface | null>;*/
 
   constructor(
     private jeedomService: JeedomService,
@@ -44,7 +58,8 @@ export class DeviceService extends DataStoreStateService<DeviceBackInterface> {
       DeviceGetAction,
       DeviceAddAction,
       DeviceUpdateAction,
-      DeviceDeleteAction
+      DeviceDeleteAction,
+      DeviceResetAction
     );
   }
 
@@ -89,8 +104,16 @@ export class DeviceService extends DataStoreStateService<DeviceBackInterface> {
   }
 
   async getBySlug(slug: string) {
-    const response = await this.searchItem({ slug });
+    const response = await this.selectItem(slug);
     return response.item;
+  }
+
+  async exist(device: DeviceModel, id?: string) {
+    const data = id
+      ? await this.existUpdateItem(id, device.toUniqueFields())
+      : await this.existAddItem(device.toUniqueFields());
+
+    return data.response;
   }
 
   updateComponents(components: BaseDeviceComponent[]) {
@@ -138,7 +161,12 @@ export class DeviceService extends DataStoreStateService<DeviceBackInterface> {
   }
 }
 
-export const deviceResolver: ResolveFn<DeviceBackInterface | null> =
-  (route: ActivatedRouteSnapshot) => {
-    return inject(DeviceService).getBySlug(route.paramMap.get('slug')!);
+export const deviceGetResolver: ResolveFn<void | null> =
+  async (route: ActivatedRouteSnapshot) => {
+    return inject(DeviceService).get(route.paramMap.get('slug')!);
+  };
+
+export const deviceAddResolver: ResolveFn<void | null> =
+  async (route: ActivatedRouteSnapshot) => {
+    return inject(DeviceService).reset();
   };
