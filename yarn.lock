@@ -9,10 +9,10 @@
   dependencies:
     "@alkemist/smart-tools" "^1.1.12"
 
-"@alkemist/ngx-data-store@^1.0.16":
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/@alkemist/ngx-data-store/-/ngx-data-store-1.0.16.tgz#9721c4a4b463ef2a2182223ecaa98424d6389a87"
-  integrity sha512-Z3ErM1rO9ZMZsi3iwBjttRsFc0dY9irJDiYggmuJlGOsSYuF0KY3SKRyn8431X7l6tLpVSqdpDRaDxTC/z2peg==
+"@alkemist/ngx-data-store@^1.0.17":
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/@alkemist/ngx-data-store/-/ngx-data-store-1.0.17.tgz#7b5d1728097c536428547de82b0dd855ad4f04b2"
+  integrity sha512-DuAgKt794d9UlO4CZc8+XG6lW23RchbBn8UarILfys0VD2fte7MsfoDfeOEVGDvYiL4vUS/WpEXaZmvHEXGd8Q==
   dependencies:
     tslib "^2.3.0"
 
@@ -23,10 +23,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@alkemist/ngx-state-manager@^1.2.20":
-  version "1.2.20"
-  resolved "https://registry.yarnpkg.com/@alkemist/ngx-state-manager/-/ngx-state-manager-1.2.20.tgz#346f6ab887443ee37c845cdaa0e8db16121d81d4"
-  integrity sha512-aZe6512px5+hfClH3IPbxmI1N9eUwUKz77ISSjRiJ6TQT7bcsia3isvWKBVNzqf3QKQ94OCbs2xPAFr4S43H4Q==
+"@alkemist/ngx-state-manager@^1.2.22":
+  version "1.2.22"
+  resolved "https://registry.yarnpkg.com/@alkemist/ngx-state-manager/-/ngx-state-manager-1.2.22.tgz#41464476cafa03d5ba0707dabf9814c3a2a5717c"
+  integrity sha512-J6Q7XM2cZY7c79aUvGSFbCxnQH5qN7gnQuXtuYbrDi6znZddQtAstM2+1XHuUtP3SmO9GSHE6IKSfSvamGow8A==
   dependencies:
     tslib "^2.3.0"
 
