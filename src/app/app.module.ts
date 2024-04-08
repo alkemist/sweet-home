@@ -34,7 +34,7 @@ import { environment } from '../environments/environment';
   ],
   providers: [
     importProvidersFrom(DataStoreModule.forRoot({
-      api_datastore_base_url: 'https://localhost:8000/',
+      api_datastore_base_url: environment['DATASTORE_BASE_URL'],
       api_project_key: 'sweet-home',
       front_callback_path: 'authorize/google',
       front_logged_path: '/home',
