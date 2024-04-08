@@ -39,7 +39,9 @@ export class HistoriesComponent extends BaseComponent implements OnInit, OnDestr
         this.commandIds = queryParams['commandIds'] ?? [];
         this.dates = queryParams['dates'] ?? [];
 
-        this.deviceService.getListOrRefresh().then((devices) => {
+        this.deviceService.selectItems().then(response => {
+          const devices = response.items.map(device => new DeviceModel(device));
+
           this.devices = devices;
 
           this.updateMenu();

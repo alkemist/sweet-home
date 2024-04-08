@@ -66,7 +66,10 @@ export class DeviceSupervisor {
     this._mapSize = _mapSize;
 
     this._devicePosition = MapHelper.orientationConverterPointToMap(
-      TypeHelper.deepClone(this._device.position),
+      TypeHelper.deepClone({
+        x: this._device.positionX,
+        y: this._device.positionY
+      }),
       this._mapSize,
       this._deviceSize,
       this._isLandscape,
@@ -111,12 +114,14 @@ export class DeviceSupervisor {
       if (event.isFinal) {
         this._isDragging = false;
         this._devicePosition = position;
-        this._device.position = MapHelper.orientationConverterMapToPoint(
+        const devicePosition = MapHelper.orientationConverterMapToPoint(
           position,
           this._mapSize,
           this._componentRef.instance.size,
           this._isLandscape,
         );
+        this.device.positionX = devicePosition.x;
+        this.device.positionY = devicePosition.y;
         /*console.log(`-- [${ this._device.name }] Original : `, position);
         console.log(`-- [${ this._device.name }] Update position`, this._device.position);*/
         this._moveFinished$.next();

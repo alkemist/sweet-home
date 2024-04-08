@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { JSONRPCClient } from "json-rpc-2.0";
-import { UserService } from "./user.service";
 import { JeedomCommandResultInterface } from "@models";
 import { JeedomRoomInterface } from "../models/jeedom/jeedom-room.interface";
 import { LoggerService } from "./logger.service";
@@ -8,15 +7,17 @@ import { JeedomApiError, JeedomRequestError, UnknownJeedomError, UserHasNotToken
 import { environment } from "../../environments/environment";
 import { JeedomStatisticInterface } from '../models/jeedom/jeedom-statistic.interface';
 import { JeedomHistoryInterface } from '../models/jeedom/jeedom-history.interface';
+import { DataStoreUserService } from '@alkemist/ngx-data-store';
 
 @Injectable({
   providedIn: "root"
 })
 export class JeedomService {
   private api: JSONRPCClient;
+  private autoincrementId = 0;
 
   constructor(
-    private userService: UserService,
+    private userService: DataStoreUserService,
     private loggerService: LoggerService
   ) {
     const jeedomApiUrl = `${ environment["JEEDOM_HOST"] }/core/api/jeeApi.php`;
@@ -26,22 +27,33 @@ export class JeedomService {
           method: "POST",
           body: JSON.stringify(jsonRPCRequest),
         }).then(async (response) => {
-          if (response.status === 200) {
-            return response
-              .json()
-              .then((jsonRPCResponse) => {
-                if (jsonRPCResponse.id === 99999) {
-                  this.loggerService.error(new JeedomApiError(jsonRPCResponse.error));
-                }
-
+          return response
+            .json()
+            .then((jsonRPCResponse) => {
+              if (response.status !== 200) {
+                this.loggerService.error(new JeedomRequestError(response));
+              } else if (jsonRPCResponse.id === 99999) {
+                this.loggerService.error(new JeedomApiError(jsonRPCResponse.error));
+              } else {
+                this.autoincrementId = jsonRPCResponse.id;
                 return this.api.receive(jsonRPCResponse);
-              });
-          }
+              }
 
-          this.loggerService.error(new JeedomRequestError(response));
-          return Promise.resolve();
+              this.autoincrementId++;
+              return this.api.receive({
+                jsonrpc: jsonRPCResponse.jsonrpc,
+                id: this.autoincrementId,
+                result: {}
+              });
+            });
         }).catch((e) => {
           this.loggerService.error(new UnknownJeedomError(e));
+        }).finally(() => {
+          return this.api.receive({
+            jsonrpc: '2.0',
+            id: this.autoincrementId,
+            result: {}
+          });
         });
       }
     );
@@ -81,7 +93,7 @@ export class JeedomService {
   }
 
   private request(method: string, params: Record<string, any> = {}): PromiseLike<any> {
-    const apikey = this.userService.getJeedomApiKey()
+    const apikey = this.userService.getLoggedUser()!.data['jeedom'];
 
     if (environment["APP_OFFLINE"]) {
       return Promise.resolve({});

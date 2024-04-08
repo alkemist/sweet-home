@@ -1,6 +1,6 @@
 <div class="page-container__content h-full">
-  <p-table #dt [loading]="loading" [pageLinks]="2" [paginator]="true" [rows]="10"
-           [value]="devices" breakpoint="400px" dataKey="id"
+  <p-table #dt [loading]="loading" [pageLinks]="2" [paginator]="devices().length > maxRows" [rows]="maxRows"
+           [value]="devices()" breakpoint="400px" dataKey="id"
            responsiveLayout="scroll" scrollHeight="flex"
            styleClass="p-datatable-m">
     <ng-template pTemplate="header">
@@ -79,19 +79,19 @@
     <ng-template let-device pTemplate="body">
       <tr>
         <td>
-          {{device.name}}
+          {{ device.name }}
         </td>
         <td class="tablet-hidden">
-          {{device.connectivityLabel}}
+          {{ device.connectivityLabel }}
         </td>
         <td class="mobile-hidden">
-          {{device.categoryLabel}}
+          {{ device.categoryLabel }}
         </td>
         <td class="mobile-hidden">
-          {{device.typeLabel}}
+          {{ device.typeLabel }}
         </td>
         <td>
-          {{device.jeedomId}}
+          {{ device.jeedomId }}
         </td>
         <td class="align-right">
           <a [routerLink]="[device.slug]"
@@ -104,7 +104,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="5" i18n>No devices found.</td>
+        <td colspan="6" i18n>No devices found.</td>
       </tr>
     </ng-template>
   </p-table>

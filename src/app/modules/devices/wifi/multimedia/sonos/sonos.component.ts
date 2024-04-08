@@ -104,6 +104,6 @@ export class DeviceSonosComponent
     this.shuffleControl.setValue(this.infoCommandValues().shuffle, { emitEvent: false });
     this.repeatControl.setValue(this.infoCommandValues().repeat, { emitEvent: false });
 
-    //console.log(`-- [${this.name}] Updated info command values`, this.infoCommandValues());
+    //console.log(`-- [${this.name}] Updated info command values`, this.infoCommandValues()());
   }
 }

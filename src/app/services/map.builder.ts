@@ -189,7 +189,10 @@ export class MapBuilder {
       const componentInstance = componentRef.instance;
 
       componentInstance.setPosition(MapHelper.orientationConverterPointToMap(
-        device.position,
+        {
+          x: device.positionX,
+          y: device.positionY,
+        },
         this._mapSize,
         componentInstance.size,
         this.isLandscape,

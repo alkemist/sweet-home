@@ -6,11 +6,15 @@ import {
 } from "./device-configurations.type";
 import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum, PartialRecord } from "@models";
 import {
+  AndroidParams,
   ChromecastParams,
+  DeviceAndroidComponent,
   DeviceChromecastComponent,
   DeviceSonosComponent,
+  MultimediaAndroidInfoCommandFilters,
   MultimediaChromecastInfoCommandFilters,
   MultimediaParams,
+  wifiMultimediaAndroidActionCommandFilters,
   wifiMultimediaChromecastActionCommandFilters,
   wifiMultimediaSonosActionCommandFilters,
   wifiMultimediaSonosConfigurationFilters,
@@ -62,6 +66,7 @@ import {
 import { DeviceThermometerSonoffComponent } from './zigbee/thermometer/sonoff/thermometer-sonoff.component';
 import { DeviceLightPhilipsComponent } from './zigbee/light/philips/light-philips.component';
 import { LightEgloParams } from './zigbee/light/eglo/light-eglo.const';
+import { zigbeeLinkerOnOffSchneiderActionCommandFilters } from './zigbee/on-off/schneider/on-off-schneider.const';
 
 export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinitions<DeviceConnectivityEnum, DeviceCategoryEnum> =
   {
@@ -119,6 +124,11 @@ export const deviceDefinitionsByConnectivityCategoryType:
         infoCommandFilters: MultimediaChromecastInfoCommandFilters,
         actionCommandFilters: wifiMultimediaChromecastActionCommandFilters,
         customParams: ChromecastParams,
+      },
+      [DeviceTypeEnum.Android]: {
+        infoCommandFilters: MultimediaAndroidInfoCommandFilters,
+        actionCommandFilters: wifiMultimediaAndroidActionCommandFilters,
+        customParams: AndroidParams,
       },
       [DeviceTypeEnum.Sonos]: {
         infoCommandFilters: wifiMultimediaSonosInfoCommandFilters,
@@ -202,7 +212,9 @@ export const deviceDefinitionsByConnectivityCategoryType:
       [DeviceTypeEnum.Moes]: {
         actionCommandFilters: zigbeeLinkerOnOffMoesActionCommandFilters
       },
-      [DeviceTypeEnum.Schneider]: {},
+      [DeviceTypeEnum.Schneider]: {
+        actionCommandFilters: zigbeeLinkerOnOffSchneiderActionCommandFilters
+      },
       [DeviceTypeEnum.Nous]: {
         infoCommandFilters: zigbeeLinkerOnOffNousInfoCommandFilters,
         actionCommandFilters: zigbeeLinkerOnOffNousActionCommandFilters
@@ -244,6 +256,7 @@ export const ComponentClassByType: Record<DeviceCategoryEnum, Partial<Record<Dev
   },
   [DeviceCategoryEnum.Multimedia]: {
     [DeviceTypeEnum.Chromecast]: DeviceChromecastComponent,
+    [DeviceTypeEnum.Android]: DeviceAndroidComponent,
     [DeviceTypeEnum.Sonos]: DeviceSonosComponent,
   },
   [DeviceCategoryEnum.Presence]: {

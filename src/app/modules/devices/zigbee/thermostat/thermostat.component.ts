@@ -87,7 +87,7 @@ export abstract class DeviceThermostatComponent
       this.thermostatControl.setValue(this.infoCommandValues().thermostat, { emitEvent: false });
     }
 
-    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues());
+    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues()());
   }
 
   upVolumeButton = () => {

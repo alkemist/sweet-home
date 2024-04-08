@@ -48,6 +48,6 @@ export abstract class DevicePresenceComponent<
   updateInfoCommandValues(values: Record<PresenceGlobalCommandInfo, string | number | boolean | null>) {
     this.updateInfoCommandValue('state', values.state === 1)
 
-    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues());
+    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues()());
   }
 }

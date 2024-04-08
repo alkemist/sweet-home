@@ -1,49 +1,61 @@
+import { inject, Injectable, WritableSignal } from '@angular/core';
 import {
+  DeviceBackInterface,
   DeviceModel,
-  DeviceStoredInterface,
   JeedomCommandResultInterface,
   JeedomDeviceModel,
   JeedomRoomModel
 } from '@models';
-import { inject, Injectable } from '@angular/core';
-import { AddDevice, DeviceState, FillDevices, InvalideDevices, RemoveDevice, UpdateDevice } from '@stores';
-import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
-import { Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { DataStoreStateService } from '@alkemist/ngx-data-store';
 import { JeedomService } from './jeedom.service';
-import { LoggerService } from './logger.service';
-import { DatastoreService } from './datastore.service';
-import { MessageService } from 'primeng/api';
-import { UnknownCommandIdError } from '@errors';
-import { JsonService } from './json.service';
-import BaseDeviceComponent from "@base-device-component";
-import { JeedomHistoryInterface } from '../models/jeedom/jeedom-history.interface';
+import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
+import BaseDeviceComponent from '@base-device-component';
 import { environment } from '../../environments/environment';
-
+import { UnknownCommandIdError } from '@errors';
+import { JeedomHistoryInterface } from '../models/jeedom/jeedom-history.interface';
+import { MessageService } from 'primeng/api';
+import { LoggerService } from './logger.service';
+import {
+  DeviceAddAction,
+  DeviceDeleteAction,
+  DeviceFillAction,
+  DeviceFilterAction,
+  DeviceGetAction,
+  DeviceResetAction,
+  DeviceState,
+  DeviceUpdateAction
+} from '@stores';
+import { Observe } from '@alkemist/ngx-state-manager';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DeviceService extends DatastoreService<DeviceStoredInterface, DeviceModel> {
-  @Select(DeviceState.lastUpdated) override lastUpdated$?: Observable<Date>;
-  //@Observe(Device.StateModel, Device.StateModel.lastUpdated)
-  //override signalLastUpdated = signal<Date | null>(null);
-  // Données du store
-  @Select(DeviceState.all) protected override all$?: Observable<DeviceStoredInterface[]>;
-  //@Observe(Device.StateModel, Device.StateModel.all)
-  //protected override signallAll = signal<DeviceStoredInterface[]>([]);
+export class DeviceService extends DataStoreStateService<DeviceBackInterface> {
+  @Observe(DeviceState, DeviceState.lastUpdated)
+  protected _lastUpdated!: WritableSignal<Date | null>;
 
-  constructor(messageService: MessageService,
-              protected override loggerService: LoggerService,
-              jsonService: JsonService,
-              store: Store,
-              //stateManager: StateManager,
-              protected jeedomService: JeedomService) {
-    super(messageService, loggerService, jsonService, 'device', $localize`device`, DeviceModel, store,
-      //stateManager,
-      AddDevice, UpdateDevice, RemoveDevice, FillDevices, InvalideDevices,
-      //Device.Add, Device.Update, Device.Remove, Device.Fill, Device.Invalide
+  constructor(
+    private jeedomService: JeedomService,
+    private messageService: MessageService,
+    private loggerService: LoggerService,
+  ) {
+    super(
+      'device',
+      DeviceFillAction,
+      DeviceFilterAction,
+      DeviceGetAction,
+      DeviceAddAction,
+      DeviceUpdateAction,
+      DeviceDeleteAction,
+      DeviceResetAction
     );
+  }
+
+  override storeIsOutdated(): boolean {
+    if (environment["APP_OFFLINE"]) {
+      return false;
+    }
+    return super.storeIsOutdated();
   }
 
   availableDevices(): Promise<JeedomRoomModel[]> {
@@ -79,31 +91,31 @@ export class DeviceService extends DatastoreService<DeviceStoredInterface, Devic
     });
   }
 
-  updateComponents(components: BaseDeviceComponent[]): Promise<boolean> {
+  async getBySlug(slug: string) {
+    const response = await this.selectItem(slug);
+    return response.item;
+  }
+
+  async exist(device: DeviceModel, id?: string) {
+    const data = id
+      ? await this.existUpdateItem(id, device.toUniqueFields())
+      : await this.existAddItem(device.toUniqueFields());
+
+    return data.response;
+  }
+
+  updateComponents(components: BaseDeviceComponent[]) {
     const commandIds = components.reduce((result, current) => {
       return result.concat(current.actionInfoIds.getValues());
     }, [] as number[])
 
-    // console.log('-- Update commands', commandIds);
-
-    return new Promise<boolean>((resolve) => {
-      this.jeedomService.execInfoCommands(commandIds).then((values) => {
-        //console.log("-- Commands results", values);
-
-        if (values) {
-          components.forEach((component) => {
-            component.updateGlobalInfoCommandValues(values);
-          })
-          resolve(true);
-        } else {
-          console.info('NO VALUES');
-          resolve(false);
-        }
-      })
-        .catch(_ => {
-          return resolve(false);
+    return this.jeedomService.execInfoCommands(commandIds).then((values) => {
+      if (values) {
+        components.forEach((component) => {
+          component.updateGlobalInfoCommandValues(values);
         })
-    });
+      }
+    })
   }
 
   execCommand(commandId: number, commandName: string, commandValue?: unknown): Promise<JeedomCommandResultInterface | null> {
@@ -135,9 +147,38 @@ export class DeviceService extends DatastoreService<DeviceStoredInterface, Devic
 
     return this.jeedomService.execHistoryCommand(commandId, dateStart, dateEnd)
   }
+
+  async update(id: string, device: DeviceModel) {
+    await super.dispatchUpdate(id, device.toStore());
+    this.messageService.add({
+      severity: "success",
+      detail: $localize`Device updated`
+    });
+  }
+
+  async add(device: DeviceModel) {
+    await super.dispatchAdd(device.toStore());
+    this.messageService.add({
+      severity: "success",
+      detail: $localize`Device added`,
+    });
+  }
+
+  async delete(device: DeviceModel) {
+    await super.dispatchDelete(device.id);
+    this.messageService.add({
+      severity: "success",
+      detail: $localize`Device deleted`
+    });
+  }
 }
 
-export const deviceResolver: ResolveFn<DeviceModel | undefined> =
-  (route: ActivatedRouteSnapshot) => {
-    return inject(DeviceService).getBySlug(route.paramMap.get('slug')!);
+export const deviceGetResolver: ResolveFn<void | null> =
+  async (route: ActivatedRouteSnapshot) => {
+    return inject(DeviceService).dispatchGet(route.paramMap.get('slug')!);
+  };
+
+export const deviceAddResolver: ResolveFn<void | null> =
+  async (route: ActivatedRouteSnapshot) => {
+    return inject(DeviceService).dispatchReset();
   };

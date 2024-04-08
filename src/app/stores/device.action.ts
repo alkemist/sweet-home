@@ -1,42 +1,50 @@
-import {DeviceStoredInterface, HasIdInterface} from '@models';
-import {AddDocument, FillDocuments, InvalideDocuments, RemoveDocument, UpdateDocument} from './document.action';
+import { DeviceBackInterface } from '@models';
 
-export class AddDevice extends AddDocument<DeviceStoredInterface> {
-  static override readonly type: string = '[Device] Added';
+export class DeviceFillAction {
+  static readonly log = "Fill";
 
-  constructor(payload: DeviceStoredInterface) {
-    super(payload);
+  constructor(public payload: DeviceBackInterface[]) {
   }
 }
 
-export class UpdateDevice extends UpdateDocument<DeviceStoredInterface> {
-  static override readonly type: string = '[Device] Updated';
+export class DeviceFilterAction {
+  static readonly log = "Filter";
 
-  constructor(payload: DeviceStoredInterface) {
-    super(payload);
+  constructor(public payload: DeviceBackInterface[]) {
   }
 }
 
-export class RemoveDevice extends RemoveDocument<HasIdInterface> {
-  static override readonly type: string = '[Device] Removed';
+export class DeviceGetAction {
+  static readonly log = "Get";
 
-  constructor(payload: HasIdInterface) {
-    super(payload);
+  constructor(public payload: DeviceBackInterface) {
   }
 }
 
-export class FillDevices extends FillDocuments<DeviceStoredInterface> {
-  static override readonly type: string = '[Device] Filled';
+export class DeviceAddAction {
+  static readonly log = "Add";
 
-  constructor(payload: DeviceStoredInterface[]) {
-    super(payload);
+  constructor(public payload: DeviceBackInterface) {
   }
 }
 
-export class InvalideDevices extends InvalideDocuments<DeviceStoredInterface> {
-  static override readonly type: string = '[Device] Invalided';
+export class DeviceUpdateAction {
+  static readonly log = "Update";
 
-  constructor() {
-    super();
+  constructor(public payload: DeviceBackInterface) {
+  }
+}
+
+export class DeviceDeleteAction {
+  static readonly log = "Delete";
+
+  constructor(public payload: DeviceBackInterface) {
+  }
+}
+
+export class DeviceResetAction {
+  static readonly log = "Reset";
+
+  constructor(public payload: void) {
   }
 }

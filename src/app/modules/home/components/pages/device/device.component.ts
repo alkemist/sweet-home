@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal, WritableSignal } from "@angular/core";
 import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ConfirmationService, FilterService, MessageService } from "primeng/api";
+import { ConfirmationService, FilterService } from "primeng/api";
 import { AppService, DeviceService } from "@services";
 import { KeyValue } from "@angular/common";
 import {
-  CoordinateFormInterface,
+  DeviceBackInterface,
   DeviceCategoryEnum,
   DeviceConnectivityEnum,
   DeviceFormInterface,
@@ -18,7 +18,9 @@ import {
 } from "@models";
 import BaseComponent from "@base-component";
 import { ComponentClassByType, deviceConfigurations } from "@devices";
-import { ArrayHelper, ConsoleHelper, ObjectHelper, SmartMap, StringHelper } from '@alkemist/smart-tools';
+import { ArrayHelper, ConsoleHelper, ObjectHelper, SmartMap } from '@alkemist/smart-tools';
+import { Observe } from '@alkemist/ngx-state-manager';
+import { DeviceState } from '@stores';
 
 @Component({
   templateUrl: "./device.component.html",
@@ -29,7 +31,6 @@ import { ArrayHelper, ConsoleHelper, ObjectHelper, SmartMap, StringHelper } from
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy {
-  device: DeviceModel | null = null;
   deviceConnectivities = ArrayHelper.enumToArray(DeviceConnectivityEnum, true);
   deviceCategories = ArrayHelper.enumToArray(DeviceCategoryEnum, true);
   deviceTypes = ArrayHelper.enumToArray(DeviceTypeEnum, true);
@@ -42,10 +43,8 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     type: new FormControl<DeviceTypeEnum | null>(null, [ Validators.required ]),
     name: new FormControl<string>("", [ Validators.required ]),
     jeedomId: new FormControl<number | null>(null, [ Validators.required ]),
-    position: new FormGroup<CoordinateFormInterface>({
-      x: new FormControl<number | null>(10, [ Validators.required ]),
-      y: new FormControl<number | null>(10, [ Validators.required ]),
-    }),
+    positionX: new FormControl<number | null>(10, [ Validators.required ]),
+    positionY: new FormControl<number | null>(10, [ Validators.required ]),
     infoCommandIds: new FormArray<FormGroup<KeyValueFormInterface<number>>>([]),
     actionCommandIds: new FormArray<FormGroup<KeyValueFormInterface<number>>>([]),
     configurationValues: new FormArray<FormGroup<KeyValueFormInterface<string>>>([]),
@@ -57,12 +56,20 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
   jeedomRooms: JeedomRoomModel[] = [];
   filteredJeedomRooms = signal<JeedomRoomModel[]>([]);
 
+  @Observe(DeviceState, DeviceState.item)
+  protected _item!: WritableSignal<DeviceBackInterface | null>;
+  device = computed(
+    () =>
+      this._item() !== null
+        ? new DeviceModel(this._item()!)
+        : null
+  );
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private deviceService: DeviceService,
     private routerService: Router,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService,
     private appService: AppService,
     private filterService: FilterService
   ) {
@@ -83,10 +90,12 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
       if (jeedomDevice && jeedomDevice instanceof JeedomDeviceModel
         && this.connectivity.value && this.category.value && this.type.value) {
 
+        this.importDeviceControl.setValue("", { emitEvent: false });
+
         this.jeedomId.setValue(jeedomDevice.id);
-        if (!this.name.value) {
-          this.name.setValue(jeedomDevice.name);
-        }
+        //if (!this.name.value) {
+        this.name.setValue(jeedomDevice.name);
+        //}
 
         this.infoCommandIds.clear();
         this.actionCommandIds.clear();
@@ -137,8 +146,6 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
             jeedomDevice
           ])
         }
-
-        this.importDeviceControl.setValue("", { emitEvent: false });
       }
     });
   }
@@ -163,8 +170,12 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     return this.form.controls.jeedomId as FormControl<number>;
   }
 
-  get position() {
-    return this.form.controls.position;
+  get positionX() {
+    return this.form.controls.positionX;
+  }
+
+  get positionY() {
+    return this.form.controls.positionY;
   }
 
   get configurationValues() {
@@ -190,16 +201,15 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
   loadData() {
     this.sub = this.activatedRoute.data.subscribe(
       ((data) => {
-        if (data && data["device"]) {
-          this.device = data["device"] as DeviceModel;
-          this.appService.setSubTitle(this.device.name);
+        if (this.device()) {
+          this.appService.setSubTitle(this.device()!.name);
 
-          this.device.infoCommandIds.forEach(() => this.addInfoCommand());
-          this.device.actionCommandIds.forEach(() => this.addActionCommand());
-          this.device.configurationValues.forEach(() => this.addConfigurationValue());
-          this.device.parameterValues.forEach(() => this.addParameterValue());
+          this.device()!.infoCommandIds.forEach(() => this.addInfoCommand());
+          this.device()!.actionCommandIds.forEach(() => this.addActionCommand());
+          this.device()!.configurationValues.forEach(() => this.addConfigurationValue());
+          this.device()!.parameterValues.forEach(() => this.addParameterValue());
 
-          this.form.setValue(this.device.toForm());
+          this.form.setValue(this.device()!.toForm());
         } else {
           this.appService.setSubTitle();
         }
@@ -244,45 +254,34 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
 
     if (this.form.valid) {
       const formData = this.form.value as DeviceFrontInterface;
-      const checkExist = !this.device || StringHelper.slugify(formData.name) !== StringHelper.slugify(this.device.name);
+      const device = DeviceModel.importFormData(formData);
 
-      if (checkExist) {
-        this.deviceService.exist(formData.name).then(async exist => {
-          if (exist) {
-            return this.name.setErrors({ "exist": true });
-          }
-          await this.submit(formData);
-        });
+      const exist = await this.deviceService.exist(
+        device,
+        this.device() ? this.device()!.id : undefined
+      )
+
+      if (exist) {
+        this.appService.showToast("error", $localize`Device already exist.`)
       } else {
-        await this.submit(formData);
+        void this.submit(device);
       }
     }
   }
 
-  async submit(formData: DeviceFrontInterface): Promise<void> {
+  async submit(device: DeviceModel): Promise<void> {
     this.loading = true;
-    const device = DeviceModel.importFormData(formData);
 
-    if (this.device) {
-      this.deviceService.update(device).then(async _ => {
-        this.device = device;
+    if (this.device()) {
+      this.deviceService.update(device.id, device).then(_ => {
         this.loading = false;
-        this.messageService.add({
-          severity: "success",
-          detail: $localize`Device updated`
-        });
-        await this.routerService.navigate([ "../" ], { relativeTo: this.activatedRoute });
-      });
+        void this.routerService.navigate([ "../" ], { relativeTo: this.activatedRoute });
+      })
     } else {
-      await this.deviceService.add(device).then(async _ => {
-        this.device = device;
+      this.deviceService.add(device).then(_ => {
         this.loading = false;
-        this.messageService.add({
-          severity: "success",
-          detail: $localize`Device added`,
-        });
-        await this.routerService.navigate([ "../" ], { relativeTo: this.activatedRoute });
-      });
+        void this.routerService.navigate([ "../" ], { relativeTo: this.activatedRoute });
+      })
     }
   }
 
@@ -292,12 +291,8 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
       message: $localize`Are you sure you want to delete it ?`,
       accept: () => {
         this.loading = true;
-        this.deviceService.remove(this.device!).then(async () => {
+        this.deviceService.delete(this.device()!).then(async () => {
           this.loading = false;
-          this.messageService.add({
-            severity: "success",
-            detail: $localize`Device deleted`
-          });
           await this.routerService.navigate([ "../" ], { relativeTo: this.activatedRoute });
         });
       }

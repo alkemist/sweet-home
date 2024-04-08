@@ -25,6 +25,7 @@ export enum DeviceTypeEnum {
   Sonoff = 'sonoff',
   Schneider = 'schneider',
   Chromecast = 'chromecast',
+  Android = 'android',
   Sonos = 'sonos',
   Test = 'test',
 }

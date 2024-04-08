@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, signal, WritableSignal } from "@angular/core";
-import { DeviceMultimediaComponent } from "../multimedia.component";
+import { DeviceMultimediaComponent } from "../../multimedia.component";
 import {
   ChromecastCommandAction,
   ChromecastExtendCommandAction,
@@ -8,15 +8,15 @@ import {
   ChromecastGlobalCommandInfo
 } from './chromecast.type';
 import { ChromecastCommandValues, ChromecastParameterValues } from './chromecast.interface';
-import { MultimediaState } from '../multimedia.enum';
+import { MultimediaState } from '../../multimedia.enum';
 
 
 @Component({
   selector: "app-device-chromecast",
   templateUrl: "chromecast.component.html",
   styleUrls: [
-    "../../../base-device.component.scss",
-    "../multimedia.component.scss",
+    "../../../../base-device.component.scss",
+    "../../multimedia.component.scss",
     "chromecast.component.scss",
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -93,6 +93,6 @@ export class DeviceChromecastComponent extends DeviceMultimediaComponent<
       this.state = MultimediaState.stopped;
     }
 
-    //console.log(`-- [${this.name}] Updated info command values`, this.infoCommandValues,);
+    //console.log(`-- [${this.name}] Updated info command values`, this.infoCommandValues(),);
   }
 }

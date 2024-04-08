@@ -1,15 +1,15 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from "@angular/core";
-import {UserService} from "@services";
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from "@angular/core";
 import BaseComponent from "@base-component";
-import {ActivatedRoute, Router} from "@angular/router";
-import {FormControl, FormGroup} from "@angular/forms";
-import {UserFormInterface} from "@models";
-import {MessageService} from "primeng/api";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormControl, FormGroup } from "@angular/forms";
+import { UserFormInterface } from "@models";
+import { MessageService } from "primeng/api";
+import { DataStoreUserService } from '@alkemist/ngx-data-store';
 
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.scss"],
+  styleUrls: [ "./login.component.scss" ],
   host: {
     class: "page-container"
   },
@@ -23,8 +23,12 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
   error: string = "";
   enableForm = false;
 
-  constructor(private userService: UserService, private router: Router,
-              private route: ActivatedRoute, private messageService: MessageService) {
+  constructor(
+    private userService: DataStoreUserService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private messageService: MessageService
+  ) {
     super();
   }
 
@@ -37,25 +41,25 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.userService.checkLoginWithProvider().then(() => {
-      void this.router.navigate(["../", "home"], {relativeTo: this.route});
+    /*this.userService.checkLoginWithProvider().then(() => {
+      void this.router.navigate([ "../", "home" ], { relativeTo: this.route });
     }).catch(() => {
 
-    });
+    });*/
   }
 
   handleSubmit() {
     this.form.markAllAsTouched();
 
     if (this.enableForm) {
-      if (this.email.value && this.password.value) {
+      /*if (this.email.value && this.password.value) {
         this.userService.login(this.email.value, this.password.value)
           .then(_ => {
             this.messageService.add({
               severity: "success",
-              detail: `${$localize`Successfully logged`}`
+              detail: `${ $localize`Successfully logged` }`
             });
-            void this.router.navigate(["../home"]);
+            void this.router.navigate([ "../home" ]);
           })
           .catch((error) => {
             this.error = (error as Error).message;
@@ -64,14 +68,15 @@ export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
         this.userService.sendLoginLink(this.email.value).then(_ => {
           this.messageService.add({
             severity: "success",
-            detail: `${$localize`Login link sended`}`
+            detail: `${ $localize`Login link sended` }`
           });
         });
       } else {
         void this.userService.loginWithProvider();
-      }
+      }*/
     } else {
-      void this.userService.loginWithProvider();
+      //void this.userService.loginWithProvider();
+      this.userService.login();
     }
   }
 }

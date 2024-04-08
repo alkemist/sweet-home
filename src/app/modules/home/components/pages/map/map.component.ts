@@ -49,6 +49,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     private changeDetectorRef: ChangeDetectorRef
   ) {
     super();
+    void this.deviceService.checkStoreOutdated();
     this.mapBuilder.reset();
 
     this.sub = this.mapBuilder.ready$.pipe(filter((ready) => ready))
@@ -99,7 +100,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     this.sub = this.mapBuilder.deviceMoveFinished$.subscribe((device) => {
       //console.log('-- Device moved', device);
       const loader = this.mapBuilder.addLoader();
-      this.deviceService.update(device).then(() => {
+      this.deviceService.update(device.id, device).then(() => {
         loader.finish();
       });
     });
@@ -167,7 +168,8 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
   }
 
   loadDevices() {
-    this.deviceService.getListOrRefresh().then(devices => {
+    this.deviceService.selectItems().then(response => {
+      const devices = response.items.map(device => new DeviceModel(device));
       this.devices = devices;
       this.mapBuilder.build(devices);
       this.changeDetectorRef.detectChanges();
