@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, WritableSignal } from "@angular/core";
 import BaseComponent from "@base-component";
 import { DeviceService } from '@services';
 import { FormControl } from '@angular/forms';
-import { DeviceCommandHistory, DeviceModel } from '@models';
+import { DeviceBackInterface, DeviceCommandHistory, DeviceModel } from '@models';
 import { MenuItem } from 'primeng/api';
 import { KeyValue, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChipsRemoveEvent } from 'primeng/chips';
+import { Observe } from '@alkemist/ngx-state-manager';
+import { DeviceState } from '@stores';
 
 @Component({
   templateUrl: "./histories.component.html",
@@ -21,7 +23,11 @@ export class HistoriesComponent extends BaseComponent implements OnInit, OnDestr
   menuDevices: MenuItem[] = [];
   sidebarVisible: boolean = false;
   dates: string[] = [];
-  private devices: DeviceModel[] = [];
+  @Observe(DeviceState, DeviceState.items)
+  protected _items!: WritableSignal<DeviceBackInterface[]>;
+  protected devices = computed(
+    () => this._items().map(_item => new DeviceModel(_item))
+  )
   private commandIds: string[] = [];
 
   constructor(
@@ -39,34 +45,28 @@ export class HistoriesComponent extends BaseComponent implements OnInit, OnDestr
         this.commandIds = queryParams['commandIds'] ?? [];
         this.dates = queryParams['dates'] ?? [];
 
-        this.deviceService.selectItems().then(response => {
-          const devices = response.items.map(device => new DeviceModel(device));
+        this.updateMenu();
 
-          this.devices = devices;
+        if (this.commandIds.length > 0) {
+          const commands: DeviceCommandHistory[] = [];
 
-          this.updateMenu();
+          this.devices().forEach((device) => {
+            device.infoCommandIds.toKeyValues().forEach((command) => {
+              if (this.commandIds.includes(command.value.toString())) {
+                commands.push({
+                  deviceName: device.name,
+                  commandId: command.value,
+                  commandName: command.key,
+                  history: [],
+                });
+              }
+            })
+          });
 
-          if (this.commandIds.length > 0) {
-            const commands: DeviceCommandHistory[] = [];
-
-            devices.forEach((device) => {
-              device.infoCommandIds.toKeyValues().forEach((command) => {
-                if (this.commandIds.includes(command.value.toString())) {
-                  commands.push({
-                    deviceName: device.name,
-                    commandId: command.value,
-                    commandName: command.key,
-                    history: [],
-                  });
-                }
-              })
-            });
-
-            if (commands.length > 0) {
-              this.selectedCommands.setValue(commands);
-            }
+          if (commands.length > 0) {
+            this.selectedCommands.setValue(commands);
           }
-        });
+        }
       });
   }
 
@@ -83,7 +83,7 @@ export class HistoriesComponent extends BaseComponent implements OnInit, OnDestr
   }
 
   updateMenu() {
-    this.menuDevices = this.devices.map(device =>
+    this.menuDevices = this.devices().map(device =>
       ({
         label: device.name,
         items: device.infoCommandIds.toKeyValues().map(command => ({

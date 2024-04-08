@@ -1,6 +1,7 @@
 import { inject, Injectable, WritableSignal } from '@angular/core';
 import {
   DeviceBackInterface,
+  DeviceFrontInterface,
   DeviceModel,
   JeedomCommandResultInterface,
   JeedomDeviceModel,
@@ -19,7 +20,6 @@ import {
   DeviceAddAction,
   DeviceDeleteAction,
   DeviceFillAction,
-  DeviceFilterAction,
   DeviceGetAction,
   DeviceResetAction,
   DeviceState,
@@ -30,9 +30,10 @@ import { Observe } from '@alkemist/ngx-state-manager';
 @Injectable({
   providedIn: 'root'
 })
-export class DeviceService extends DataStoreStateService<DeviceBackInterface> {
+export class DeviceService extends DataStoreStateService<DeviceFrontInterface, DeviceBackInterface> {
   @Observe(DeviceState, DeviceState.lastUpdated)
-  protected _lastUpdated!: WritableSignal<Date | null>;
+  protected _lastUpdatedUserItems!: WritableSignal<Date | null>;
+  protected _lastUpdatedPublicItems: undefined;
 
   constructor(
     private jeedomService: JeedomService,
@@ -41,21 +42,14 @@ export class DeviceService extends DataStoreStateService<DeviceBackInterface> {
   ) {
     super(
       'device',
+      null,
       DeviceFillAction,
-      DeviceFilterAction,
       DeviceGetAction,
       DeviceAddAction,
       DeviceUpdateAction,
       DeviceDeleteAction,
       DeviceResetAction
     );
-  }
-
-  override storeIsOutdated(): boolean {
-    if (environment["APP_OFFLINE"]) {
-      return false;
-    }
-    return super.storeIsOutdated();
   }
 
   availableDevices(): Promise<JeedomRoomModel[]> {
@@ -89,11 +83,6 @@ export class DeviceService extends DataStoreStateService<DeviceBackInterface> {
         }
       });
     });
-  }
-
-  async getBySlug(slug: string) {
-    const response = await this.selectItem(slug);
-    return response.item;
   }
 
   async exist(device: DeviceModel, id?: string) {
@@ -175,7 +164,7 @@ export class DeviceService extends DataStoreStateService<DeviceBackInterface> {
 
 export const deviceGetResolver: ResolveFn<void | null> =
   async (route: ActivatedRouteSnapshot) => {
-    return inject(DeviceService).dispatchGet(route.paramMap.get('slug')!);
+    return inject(DeviceService).dispatchUserItem(route.paramMap.get('slug')!);
   };
 
 export const deviceAddResolver: ResolveFn<void | null> =

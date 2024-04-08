@@ -1,59 +1,57 @@
-import {UserInterface, UserStoredInterface} from "./user.interface";
-import {DocumentModel} from "../document";
-import {OauthTokensModel} from "../oauth";
+/*
+export class UserModel {
+  protected _email: string;
 
+  constructor(user: DataUserInterface) {
+    this._jeedom = user.jeedom ?? "";
+    this._spotify = new OauthTokensModel(user.spotify ?? {});
+    this._sonos = new OauthTokensModel(user.sonos ?? {});
+    this._google = new OauthTokensModel(user.google ?? {});
+  }
 
-export class UserModel extends DocumentModel {
-	protected _email: string;
-	protected _jeedom: string;
-	protected _sonos: OauthTokensModel;
-	protected _spotify: OauthTokensModel;
-	protected _google: OauthTokensModel;
+  protected _jeedom: string;
 
-	constructor(user: UserStoredInterface) {
-		super(user);
-		this._email = user.email ?? "";
-		this._jeedom = user.jeedom ?? "";
-		this._spotify = new OauthTokensModel(user.spotify ?? {});
-		this._sonos = new OauthTokensModel(user.sonos ?? {});
-		this._google = new OauthTokensModel(user.google ?? {});
-	}
+  get jeedom(): string {
+    return this._jeedom;
+  }
 
-	get jeedom(): string {
-		return this._jeedom;
-	}
+  protected _sonos: OauthTokensModel;
 
-	get sonos() {
-		return this._sonos;
-	}
+  get sonos() {
+    return this._sonos;
+  }
 
-	set sonos(oauthToken: OauthTokensModel) {
-		this._sonos = oauthToken;
-	}
+  set sonos(oauthToken: OauthTokensModel) {
+    this._sonos = oauthToken;
+  }
 
-	get spotify() {
-		return this._spotify;
-	}
+  protected _spotify: OauthTokensModel;
 
-	set spotify(oauthToken: OauthTokensModel) {
-		this._spotify = oauthToken;
-	}
+  get spotify() {
+    return this._spotify;
+  }
 
-	get google() {
-		return this._google;
-	}
+  set spotify(oauthToken: OauthTokensModel) {
+    this._spotify = oauthToken;
+  }
 
-	set google(oauthToken: OauthTokensModel) {
-		this._google = oauthToken;
-	}
+  protected _google: OauthTokensModel;
 
-	override toFirestore(): UserInterface {
-		return {
-			...super.toFirestore(),
-			email: this._email,
-			jeedom: this._jeedom,
-			spotify: this._spotify.toFirestore(),
-			sonos: this._sonos.toFirestore(),
-		};
-	}
-}
+  get google() {
+    return this._google;
+  }
+
+  set google(oauthToken: OauthTokensModel) {
+    this._google = oauthToken;
+  }
+
+  override toFirestore(): DataUserInterface {
+    return {
+      ...super.toFirestore(),
+      email: this._email,
+      jeedom: this._jeedom,
+      spotify: this._spotify.toFirestore(),
+      sonos: this._sonos.toFirestore(),
+    };
+  }
+}*/

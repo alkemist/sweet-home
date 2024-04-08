@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"@alkemist/compare-engine@^1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@alkemist/compare-engine/-/compare-engine-1.3.4.tgz#6fc8f350c4202e257634edfff2bd2d5cca198ffc"
-  integrity sha512-9Cph6/nyvM84Xvg1e2AYkROsesda3gyrtzZ8c1yb8gbM+w5XjR0NFNRCyss9XFchSRJtkkeYSla3R7mAcGsSpg==
+"@alkemist/compare-engine@^1.3.6":
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/@alkemist/compare-engine/-/compare-engine-1.3.6.tgz#4755a008e71546e9c911f116435b1b7ca1c4fb30"
+  integrity sha512-NkW4HuknUf6aSMBlE4PyJ6F7/90J+BZArFIDZfjNsHRHAa+KCmAC2CL8NkWIho/yZ742znDujDnaPVw4Amq6aA==
   dependencies:
     "@alkemist/smart-tools" "^1.1.12"
 
-"@alkemist/ngx-data-store@^1.0.17":
-  version "1.0.17"
-  resolved "https://registry.yarnpkg.com/@alkemist/ngx-data-store/-/ngx-data-store-1.0.17.tgz#7b5d1728097c536428547de82b0dd855ad4f04b2"
-  integrity sha512-DuAgKt794d9UlO4CZc8+XG6lW23RchbBn8UarILfys0VD2fte7MsfoDfeOEVGDvYiL4vUS/WpEXaZmvHEXGd8Q==
+"@alkemist/ngx-data-store@^1.1.10":
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/@alkemist/ngx-data-store/-/ngx-data-store-1.1.10.tgz#43821b15ff924f26802775b05b698a4d0c429968"
+  integrity sha512-SNJ0kVV8FkxO0xIDq3V0WEhmlQebN0PJK2WbpPqndOziGlvgG+Y00q3+lr+ORmf9FSpuxeP8YzQYJ9TUZTEdZw==
   dependencies:
     tslib "^2.3.0"
 
@@ -23,10 +23,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@alkemist/ngx-state-manager@^1.2.22":
-  version "1.2.22"
-  resolved "https://registry.yarnpkg.com/@alkemist/ngx-state-manager/-/ngx-state-manager-1.2.22.tgz#41464476cafa03d5ba0707dabf9814c3a2a5717c"
-  integrity sha512-J6Q7XM2cZY7c79aUvGSFbCxnQH5qN7gnQuXtuYbrDi6znZddQtAstM2+1XHuUtP3SmO9GSHE6IKSfSvamGow8A==
+"@alkemist/ngx-state-manager@^1.2.24":
+  version "1.2.24"
+  resolved "https://registry.yarnpkg.com/@alkemist/ngx-state-manager/-/ngx-state-manager-1.2.24.tgz#88157c9268fcae0bb156f8cdcedced518e057380"
+  integrity sha512-i/dxe+E4UtLkr7ZiWVGDozPjDWZh3XHoI7OkJ1f368rnuJawBdTjl6x2aOBOkjkq3YBfsPSeMlD1OCkUMjJmfg==
   dependencies:
     tslib "^2.3.0"
 

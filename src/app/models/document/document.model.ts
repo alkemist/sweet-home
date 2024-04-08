@@ -1,25 +1,24 @@
-import { DocumentBackInterface, DocumentFrontInterface, DocumentStoredInterface } from './document.interface';
-import { HasIdInterface } from './id.interface';
-import { StringHelper } from '@alkemist/smart-tools';
+import { DataStoreUserInterface, DocumentBackInterface, DocumentFormInterface } from '@alkemist/ngx-data-store';
 
 
-export class DocumentModel implements HasIdInterface {
-  constructor(document: DocumentStoredInterface) {
-    this._id = document.id;
+export class DocumentModel {
+  constructor(document: DocumentFormInterface) {
+    this._id = document.id ?? '';
     this._name = document.name;
-    this._slug = document.slug;
+    this._slug = document.slug ?? '';
+    this._user = document.user ?? null;
+  }
+
+  protected _user: DataStoreUserInterface | null;
+
+  get user() {
+    return this._user;
   }
 
   protected _id: string;
 
   get id() {
     return this._id;
-  }
-
-  protected _name: string;
-
-  get name() {
-    return this._name;
   }
 
   protected _slug: string;
@@ -32,27 +31,20 @@ export class DocumentModel implements HasIdInterface {
     this._slug = slug;
   }
 
-  nameContain(search: string): boolean {
-    const regexName = new RegExp(search, 'gi');
-    const regexSlug = new RegExp(StringHelper.slugify(search), 'gi');
-    return this.name.search(regexName) > -1 || (this.slug !== undefined && this.slug.search(regexSlug) > -1);
+  protected _name: string;
+
+  get name() {
+    return this._name;
   }
 
-  toFirestore(): DocumentBackInterface {
-    return {
-      name: this._name,
-      slug: this._slug,
-    }
+  set name(name: string) {
+    this._name = name;
   }
 
-  toForm(): DocumentFrontInterface {
+  toForm(): DocumentBackInterface {
     return {
       id: this._id,
       name: this._name,
     }
-  }
-
-  importFormData(formData: DocumentFrontInterface) {
-    this._name = formData.name;
   }
 }

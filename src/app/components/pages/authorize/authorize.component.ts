@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AppKey, LoggerService, SonosService, SpotifyService } from "@services";
+import { AppKey, LoggerService, SonosService, SpotifyService, UserService } from "@services";
 import { combineLatest } from "rxjs";
 import { MessageService } from "primeng/api";
 import BaseComponent from "@base-component";
 import { UnknownTokenError } from "@errors";
-import { DataStoreConfigurationProvider, DataStoreUserService } from '@alkemist/ngx-data-store';
+import { DataStoreConfigurationProvider } from '@alkemist/ngx-data-store';
 
 @Component({
   selector: "app-authorize",
@@ -18,7 +18,7 @@ import { DataStoreConfigurationProvider, DataStoreUserService } from '@alkemist/
 })
 export class AuthorizeComponent extends BaseComponent implements OnInit, OnDestroy {
   constructor(
-    private userService: DataStoreUserService,
+    private userService: UserService,
     private configuration: DataStoreConfigurationProvider,
     private loggerService: LoggerService,
     protected messageService: MessageService,

@@ -175,7 +175,6 @@ export class MapBuilder {
     const subscribe = new Subscription();
 
     devices.forEach((device) => {
-
       if (!device.category || !device.type) {
         throw this.loggerService.error(new UnexpectedError("Device without category or type", device))
       }

@@ -5,12 +5,12 @@ import { ConfirmationService, FilterService } from "primeng/api";
 import { AppService, DeviceService } from "@services";
 import { KeyValue } from "@angular/common";
 import {
-  DeviceBackInterface,
   DeviceCategoryEnum,
   DeviceConnectivityEnum,
   DeviceFormInterface,
   DeviceFrontInterface,
   DeviceModel,
+  DeviceModelInterface,
   DeviceTypeEnum,
   JeedomDeviceModel,
   JeedomRoomModel,
@@ -37,7 +37,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
   currentDeviceTypes: KeyValue<string, string>[] = [];
 
   form: FormGroup<DeviceFormInterface> = new FormGroup<DeviceFormInterface>({
-    id: new FormControl<string | null | undefined>(""),
+    id: new FormControl<string | null>(null, [ Validators.required ]),
     connectivity: new FormControl<DeviceConnectivityEnum | null>(null, [ Validators.required ]),
     category: new FormControl<DeviceCategoryEnum | null>(null, [ Validators.required ]),
     type: new FormControl<DeviceTypeEnum | null>(null, [ Validators.required ]),
@@ -57,7 +57,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
   filteredJeedomRooms = signal<JeedomRoomModel[]>([]);
 
   @Observe(DeviceState, DeviceState.item)
-  protected _item!: WritableSignal<DeviceBackInterface | null>;
+  protected _item!: WritableSignal<DeviceFrontInterface | null>;
   device = computed(
     () =>
       this._item() !== null
@@ -253,7 +253,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
     this.form.markAllAsTouched();
 
     if (this.form.valid) {
-      const formData = this.form.value as DeviceFrontInterface;
+      const formData = this.form.value as DeviceModelInterface;
       const device = DeviceModel.importFormData(formData);
 
       const exist = await this.deviceService.exist(

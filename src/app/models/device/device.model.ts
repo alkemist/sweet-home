@@ -1,11 +1,12 @@
-import { DocumentModel, HasIdInterface } from '../document';
-import { DeviceBackInterface, DeviceFrontInterface } from './device.interface';
+import { DeviceBackInterface, DeviceInputInterface, DeviceModelInterface } from './device.interface';
 import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum } from './device.enum';
-import { SmartMap, StringHelper } from '@alkemist/smart-tools';
+import { SmartMap } from '@alkemist/smart-tools';
+import { DocumentModel } from '../document';
 
-export class DeviceModel extends DocumentModel implements HasIdInterface {
-  constructor(device: DeviceBackInterface) {
+export class DeviceModel extends DocumentModel {
+  constructor(device: DeviceInputInterface) {
     super(device);
+    this._name = device.name ?? null;
     this._jeedomId = device.jeedomId ?? null;
     this._connectivity = device.connectivity ?? null;
     this._category = device.category ?? null;
@@ -132,11 +133,10 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
     return this._type ?? '';
   }
 
-  static importFormData(formData: DeviceFrontInterface) {
-    const deviceData: DeviceBackInterface = {
+  static importFormData(formData: DeviceModelInterface) {
+    const deviceData: DeviceInputInterface = {
       id: formData.id,
-      name: formData.name,
-      slug: StringHelper.slugify(formData.name),
+      name: formData.name!,
       connectivity: formData.connectivity!,
       category: formData.category!,
       type: formData.type!,
@@ -152,7 +152,7 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
     return new DeviceModel(deviceData)
   }
 
-  override toForm(): DeviceFrontInterface {
+  override toForm(): DeviceModelInterface {
     return {
       ...super.toForm(),
       connectivity: this._connectivity,
@@ -171,7 +171,6 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
   toStore(): DeviceBackInterface {
     return {
       id: this._id,
-      slug: this._slug,
       name: this._name,
       connectivity: this._connectivity!,
       category: this._category!,
@@ -188,7 +187,8 @@ export class DeviceModel extends DocumentModel implements HasIdInterface {
 
   toUniqueFields(): Partial<DeviceBackInterface> {
     return {
-      slug: this._slug,
+      name: this._name,
+      //slug: StringHelper.slugify(this._name),
       jeedomId: this._jeedomId
     }
   }

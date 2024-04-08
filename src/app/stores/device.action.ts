@@ -9,14 +9,6 @@ export class DeviceFillAction extends StateAction<DeviceBackInterface[]> {
   }
 }
 
-export class DeviceFilterAction extends StateAction<DeviceBackInterface[]> {
-  static override readonly key = "Filter";
-
-  constructor(public payload: DeviceBackInterface[]) {
-    super();
-  }
-}
-
 export class DeviceGetAction extends StateAction<DeviceBackInterface> {
   static override readonly key = "Get";
 

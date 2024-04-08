@@ -7,7 +7,7 @@ import { JeedomApiError, JeedomRequestError, UnknownJeedomError, UserHasNotToken
 import { environment } from "../../environments/environment";
 import { JeedomStatisticInterface } from '../models/jeedom/jeedom-statistic.interface';
 import { JeedomHistoryInterface } from '../models/jeedom/jeedom-history.interface';
-import { DataStoreUserService } from '@alkemist/ngx-data-store';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: "root"
@@ -17,7 +17,7 @@ export class JeedomService {
   private autoincrementId = 0;
 
   constructor(
-    private userService: DataStoreUserService,
+    private userService: UserService,
     private loggerService: LoggerService
   ) {
     const jeedomApiUrl = `${ environment["JEEDOM_HOST"] }/core/api/jeeApi.php`;
@@ -92,8 +92,8 @@ export class JeedomService {
       Promise<JeedomCommandResultInterface>;
   }
 
-  private request(method: string, params: Record<string, any> = {}): PromiseLike<any> {
-    const apikey = this.userService.getLoggedUser()!.data['jeedom'];
+  private async request(method: string, params: Record<string, any> = {}) {
+    const apikey = await this.userService.getJeedomApiKey();
 
     if (environment["APP_OFFLINE"]) {
       return Promise.resolve({});

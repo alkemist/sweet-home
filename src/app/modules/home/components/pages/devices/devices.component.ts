@@ -41,7 +41,7 @@ export class DevicesComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   async ngOnInit(): Promise<void> {
-    await this.deviceService.checkStoreOutdated();
+    await this.deviceService.checkUserItemsOutdated();
     this.loading = false;
   }
 }

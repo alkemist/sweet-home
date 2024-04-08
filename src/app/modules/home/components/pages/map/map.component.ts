@@ -1,21 +1,25 @@
-import { DeviceModel, SmartLoaderModel } from "@models";
+import { DeviceBackInterface, DeviceModel, SmartLoaderModel } from "@models";
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  computed,
   ElementRef,
   HostListener,
   OnDestroy,
   OnInit,
   ViewChild,
-  ViewContainerRef
+  ViewContainerRef,
+  WritableSignal
 } from "@angular/core";
 import { DeviceService, MapBuilder, SonosService, SpotifyService } from "@services";
 import { BehaviorSubject, filter } from "rxjs";
 import { FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
 import BaseComponent from "@base-component";
+import { Observe } from '@alkemist/ngx-state-manager';
+import { DeviceState } from '@stores';
 
 @Component({
   templateUrl: "./map.component.html",
@@ -30,7 +34,6 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
   @ViewChild("page") pageRef?: ElementRef;
   @ViewChild("map") mapRef?: ElementRef;
   @ViewChild("plan") planRef?: ElementRef;
-  devices: DeviceModel[] = [];
   mapLoading = true;
   planLoading = false;
   apiLoading = false;
@@ -38,6 +41,11 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
   switchEditModeFormControl = new FormControl<boolean>(false);
   pollingDelay = 5000;
   isLandscape?: boolean;
+  @Observe(DeviceState, DeviceState.items)
+  protected _items!: WritableSignal<DeviceBackInterface[]>;
+  protected devices = computed(
+    () => this._items().map(_item => new DeviceModel(_item))
+  )
   private pollingLoader = new SmartLoaderModel("polling");
 
   constructor(
@@ -49,12 +57,13 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     private changeDetectorRef: ChangeDetectorRef
   ) {
     super();
-    void this.deviceService.checkStoreOutdated();
+    void this.deviceService.checkUserItemsOutdated();
     this.mapBuilder.reset();
 
     this.sub = this.mapBuilder.ready$.pipe(filter((ready) => ready))
       .subscribe(() => {
-        this.loadDevices();
+        this.mapBuilder.build(this.devices());
+        this.changeDetectorRef.detectChanges();
       });
 
     this.sub = this.mapBuilder.loaded$.pipe(filter((loaded) => loaded)).subscribe(() => {
@@ -165,14 +174,5 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     super.ngOnDestroy();
 
     this.mapBuilder.reset();
-  }
-
-  loadDevices() {
-    this.deviceService.selectItems().then(response => {
-      const devices = response.items.map(device => new DeviceModel(device));
-      this.devices = devices;
-      this.mapBuilder.build(devices);
-      this.changeDetectorRef.detectChanges();
-    });
   }
 }

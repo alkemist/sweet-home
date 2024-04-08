@@ -7,75 +7,63 @@ import {
   DeviceResetAction,
   DeviceUpdateAction
 } from './device.action';
-import { DocumentInterface, DocumentState, DocumentStateInterface } from '@alkemist/ngx-data-store';
-import { DeviceBackInterface } from '@models';
+import { DocumentFrontInterface, DocumentState, DocumentStateInterface } from '@alkemist/ngx-data-store';
+import { DeviceFrontInterface } from '@models';
 import { environment } from '../../environments/environment';
 
-interface DeviceStateInterface extends DocumentStateInterface<DeviceBackInterface> {
+interface DeviceStateInterface extends DocumentStateInterface<DeviceFrontInterface> {
 }
 
 @State({
   name: 'Device',
   class: DeviceState,
   defaults: <DeviceStateInterface>{
-    items: [] as DeviceBackInterface[],
-    lastUpdated: null,
-    filteredItems: [] as DeviceBackInterface[],
-    lastFiltered: null,
+    userItems: [] as DeviceFrontInterface[],
+    lastUpdatedUserItems: null,
     item: null,
   },
   showLog: environment['APP_DEBUG'],
   enableLocalStorage: true,
   determineArrayIndexFn: () => 'id',
 })
-export class DeviceState extends DocumentState<DeviceBackInterface> {
-  @Select('lastUpdated')
-  static override lastUpdated<T extends DocumentInterface>(state: DocumentStateInterface<T>) {
-    return DocumentState.lastUpdated<T>(state);
+export class DeviceState extends DocumentState<DeviceFrontInterface> {
+  @Select('lastUpdatedUserItems')
+  static lastUpdated<T extends DocumentFrontInterface>(state: DocumentStateInterface<T>) {
+    return DocumentState.lastUpdatedUserItems<T>(state);
   }
 
-  @Select('items')
-  static override items<T extends DocumentInterface>(state: DocumentStateInterface<T>): T[] {
-    return DocumentState.items(state);
-  }
-
-  @Select('lastFiltered')
-  static override lastFiltered<T extends DocumentInterface>(state: DocumentStateInterface<T>) {
-    return DocumentState.lastFiltered<T>(state);
-  }
-
-  @Select('filteredItems')
-  static override filteredItems<T extends DocumentInterface>(state: DocumentStateInterface<T>): T[] {
-    return DocumentState.filteredItems(state);
+  @Select('userItems')
+  static items<T extends DocumentFrontInterface>(state: DocumentStateInterface<T>): T[] {
+    return DocumentState.userItems(state);
   }
 
   @Select('item')
-  static override item<T extends DocumentInterface>(state: DocumentStateInterface<T>): T | null {
+  static override item<T extends DocumentFrontInterface>(state: DocumentStateInterface<T>): T | null {
     return DocumentState.item(state);
   }
 
   @Action(DeviceFillAction)
-  override fill(context: StateContext<DeviceStateInterface>, payload: DeviceBackInterface[]) {
-    super.fill(context, payload);
+  fill(context: StateContext<DeviceStateInterface>, payload: DeviceFrontInterface[]) {
+    super.fillUserItems(context, payload);
   }
 
   @Action(DeviceGetAction)
-  override get(context: StateContext<DeviceStateInterface>, payload: DeviceBackInterface) {
+  override get(context: StateContext<DeviceStateInterface>, payload: DeviceFrontInterface) {
     super.get(context, payload);
   }
 
   @Action(DeviceAddAction)
-  override add(context: StateContext<DeviceStateInterface>, payload: DeviceBackInterface) {
+  override add(context: StateContext<DeviceStateInterface>, payload: DeviceFrontInterface) {
     super.add(context, payload);
   }
 
   @Action(DeviceUpdateAction)
-  override update(context: StateContext<DeviceStateInterface>, payload: DeviceBackInterface) {
+  override update(context: StateContext<DeviceStateInterface>, payload: DeviceFrontInterface) {
     super.update(context, payload);
   }
 
   @Action(DeviceDeleteAction)
-  override remove(context: StateContext<DeviceStateInterface>, payload: DeviceBackInterface) {
+  override remove(context: StateContext<DeviceStateInterface>, payload: DeviceFrontInterface) {
     super.remove(context, payload);
   }
 

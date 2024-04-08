@@ -1,9 +1,10 @@
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { KeyValueFormInterface } from '../key-value-form.interface';
 import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum } from './device.enum';
-import { DocumentFormInterface } from '../document';
 
-export interface DeviceFormInterface extends DocumentFormInterface {
+export interface DeviceFormInterface {
+  id: FormControl<string | null>
+  name: FormControl<string | null>
   connectivity: FormControl<DeviceConnectivityEnum | null>
   category: FormControl<DeviceCategoryEnum | null>
   type: FormControl<DeviceTypeEnum | null>
