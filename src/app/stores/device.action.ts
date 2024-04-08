@@ -1,49 +1,49 @@
 import { DeviceBackInterface } from '@models';
 
 export class DeviceFillAction {
-  static readonly log = "Fill";
+  static readonly key = "Fill";
 
   constructor(public payload: DeviceBackInterface[]) {
   }
 }
 
 export class DeviceFilterAction {
-  static readonly log = "Filter";
+  static readonly key = "Filter";
 
   constructor(public payload: DeviceBackInterface[]) {
   }
 }
 
 export class DeviceGetAction {
-  static readonly log = "Get";
+  static readonly key = "Get";
 
   constructor(public payload: DeviceBackInterface) {
   }
 }
 
 export class DeviceAddAction {
-  static readonly log = "Add";
+  static readonly key = "Add";
 
   constructor(public payload: DeviceBackInterface) {
   }
 }
 
 export class DeviceUpdateAction {
-  static readonly log = "Update";
+  static readonly key = "Update";
 
   constructor(public payload: DeviceBackInterface) {
   }
 }
 
 export class DeviceDeleteAction {
-  static readonly log = "Delete";
+  static readonly key = "Delete";
 
   constructor(public payload: DeviceBackInterface) {
   }
 }
 
 export class DeviceResetAction {
-  static readonly log = "Reset";
+  static readonly key = "Reset";
 
   constructor(public payload: void) {
   }

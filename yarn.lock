@@ -23,10 +23,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@alkemist/ngx-state-manager@^1.2.18":
-  version "1.2.18"
-  resolved "https://registry.yarnpkg.com/@alkemist/ngx-state-manager/-/ngx-state-manager-1.2.18.tgz#9cb930826d9d820a439a0f234cfe33cce1fe0bf7"
-  integrity sha512-l7MApIbWZxItFdagjoZeafpNbxqupLlNJLNeYQ8e/oNYhITRSBW90VZgAigruZmpxnNe6A5NX6SdY5+WjidveQ==
+"@alkemist/ngx-state-manager@^1.2.20":
+  version "1.2.20"
+  resolved "https://registry.yarnpkg.com/@alkemist/ngx-state-manager/-/ngx-state-manager-1.2.20.tgz#346f6ab887443ee37c845cdaa0e8db16121d81d4"
+  integrity sha512-aZe6512px5+hfClH3IPbxmI1N9eUwUKz77ISSjRiJ6TQT7bcsia3isvWKBVNzqf3QKQ94OCbs2xPAFr4S43H4Q==
   dependencies:
     tslib "^2.3.0"
 
