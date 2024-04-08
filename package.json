@@ -23,7 +23,7 @@
     "@alkemist/compare-engine": "^1.3.4",
     "@alkemist/ngx-data-store": "^1.0.16",
     "@alkemist/ngx-form-supervisor": "^1.1.16",
-    "@alkemist/ngx-state-manager": "^1.2.18",
+    "@alkemist/ngx-state-manager": "^1.2.20",
     "@alkemist/smart-loader": "^1.0.5",
     "@alkemist/smart-tools": "^1.1.17",
     "@angular/animations": "^16.2.0",
