@@ -19,6 +19,7 @@ import {
   DeviceAddAction,
   DeviceDeleteAction,
   DeviceFillAction,
+  DeviceFilterAction,
   DeviceGetAction,
   DeviceResetAction,
   DeviceState,
@@ -41,7 +42,7 @@ export class DeviceService extends DataStoreStateService<DeviceBackInterface> {
     super(
       'device',
       DeviceFillAction,
-      DeviceFillAction,
+      DeviceFilterAction,
       DeviceGetAction,
       DeviceAddAction,
       DeviceUpdateAction,

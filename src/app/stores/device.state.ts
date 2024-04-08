@@ -9,6 +9,7 @@ import {
 } from './device.action';
 import { DocumentInterface, DocumentState, DocumentStateInterface } from '@alkemist/ngx-data-store';
 import { DeviceBackInterface } from '@models';
+import { environment } from '../../environments/environment';
 
 interface DeviceStateInterface extends DocumentStateInterface<DeviceBackInterface> {
 }
@@ -23,7 +24,7 @@ interface DeviceStateInterface extends DocumentStateInterface<DeviceBackInterfac
     lastFiltered: null,
     item: null,
   },
-  showLog: true,
+  showLog: environment['APP_DEBUG'],
   enableLocalStorage: true,
   determineArrayIndexFn: () => 'id',
 })

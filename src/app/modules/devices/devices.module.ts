@@ -10,7 +10,7 @@ import {
   DeviceThermostatMoesComponent
 } from './zigbee';
 import { SharingModule } from '../shared/sharing.module';
-import { DeviceChromecastComponent, DeviceSonosComponent } from './wifi';
+import { DeviceAndroidComponent, DeviceChromecastComponent, DeviceSonosComponent } from './wifi';
 import { DeviceTestComponent } from './test.component';
 import { DeviceLightEgloComponent } from './zigbee/light/eglo/light-eglo.component';
 import { DeviceThermometerSonoffComponent } from './zigbee/thermometer/sonoff/thermometer-sonoff.component';
@@ -31,6 +31,7 @@ import { DeviceLightPhilipsComponent } from './zigbee/light/philips/light-philip
     DeviceLightEgloComponent,
     DeviceLightPhilipsComponent,
     DeviceChromecastComponent,
+    DeviceAndroidComponent,
     DeviceSonosComponent,
     DeviceTestComponent,
   ],

@@ -38,6 +38,6 @@ export class DeviceThermometerAqaraComponent extends DeviceThermometerComponent<
 
     this.updateInfoCommandValue('pression', MathHelper.round(values['pression'] as number, 0))
 
-    // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues());
+    // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues()());
   }
 }

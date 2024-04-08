@@ -6,11 +6,15 @@ import {
 } from "./device-configurations.type";
 import { DeviceCategoryEnum, DeviceConnectivityEnum, DeviceTypeEnum, PartialRecord } from "@models";
 import {
+  AndroidParams,
   ChromecastParams,
+  DeviceAndroidComponent,
   DeviceChromecastComponent,
   DeviceSonosComponent,
+  MultimediaAndroidInfoCommandFilters,
   MultimediaChromecastInfoCommandFilters,
   MultimediaParams,
+  wifiMultimediaAndroidActionCommandFilters,
   wifiMultimediaChromecastActionCommandFilters,
   wifiMultimediaSonosActionCommandFilters,
   wifiMultimediaSonosConfigurationFilters,
@@ -120,6 +124,11 @@ export const deviceDefinitionsByConnectivityCategoryType:
         infoCommandFilters: MultimediaChromecastInfoCommandFilters,
         actionCommandFilters: wifiMultimediaChromecastActionCommandFilters,
         customParams: ChromecastParams,
+      },
+      [DeviceTypeEnum.Android]: {
+        infoCommandFilters: MultimediaAndroidInfoCommandFilters,
+        actionCommandFilters: wifiMultimediaAndroidActionCommandFilters,
+        customParams: AndroidParams,
       },
       [DeviceTypeEnum.Sonos]: {
         infoCommandFilters: wifiMultimediaSonosInfoCommandFilters,
@@ -247,6 +256,7 @@ export const ComponentClassByType: Record<DeviceCategoryEnum, Partial<Record<Dev
   },
   [DeviceCategoryEnum.Multimedia]: {
     [DeviceTypeEnum.Chromecast]: DeviceChromecastComponent,
+    [DeviceTypeEnum.Android]: DeviceAndroidComponent,
     [DeviceTypeEnum.Sonos]: DeviceSonosComponent,
   },
   [DeviceCategoryEnum.Presence]: {

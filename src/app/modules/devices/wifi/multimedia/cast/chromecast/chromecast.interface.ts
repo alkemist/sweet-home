@@ -1,4 +1,4 @@
-import { MultimediaCommandValues, MultimediaParameterValues } from '../multimedia.interface';
+import { MultimediaCommandValues, MultimediaParameterValues } from '../../multimedia.interface';
 
 export interface ChromecastCommandValues extends MultimediaCommandValues {
   online: boolean,

@@ -48,6 +48,6 @@ export abstract class DeviceThermometerComponent<
       humidity: MathHelper.round(values.humidity as number, 0),
     } as Partial<IV>)
 
-    // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues());
+    // console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues()());
   }
 }

@@ -77,6 +77,6 @@ export abstract class DeviceOnOffComponent<
 
     this.onOffControl.setValue(this.infoCommandValues().state, { emitEvent: false });
 
-    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues());
+    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues()());
   }
 }

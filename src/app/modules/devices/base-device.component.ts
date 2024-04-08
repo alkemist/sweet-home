@@ -135,7 +135,7 @@ export default abstract class BaseDeviceComponent<
       return result;
     }, {} as Record<I, string | number | boolean | null>);
 
-    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues());
+    //console.log(`-- [${ this.name }] Updated info command values`, this.infoCommandValues()());
 
     this.infoCommandValues.set(infoCommandValues as IV);
     this.updateInfoCommandValues(infoCommandValues as IV);
