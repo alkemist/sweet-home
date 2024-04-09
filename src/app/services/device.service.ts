@@ -93,18 +93,18 @@ export class DeviceService extends DataStoreStateService<DeviceFrontInterface, D
     return data.response;
   }
 
-  updateComponents(components: BaseDeviceComponent[]) {
+  async updateComponents(components: BaseDeviceComponent[]) {
     const commandIds = components.reduce((result, current) => {
       return result.concat(current.actionInfoIds.getValues());
     }, [] as number[])
 
-    return this.jeedomService.execInfoCommands(commandIds).then((values) => {
-      if (values) {
-        components.forEach((component) => {
-          component.updateGlobalInfoCommandValues(values);
-        })
-      }
-    })
+    const values = await this.jeedomService.execPollingInfoCommands(commandIds);
+
+    if (values) {
+      components.forEach((component) => {
+        component.updateGlobalInfoCommandValues(values);
+      });
+    }
   }
 
   execCommand(commandId: number, commandName: string, commandValue?: unknown): Promise<JeedomCommandResultInterface | null> {

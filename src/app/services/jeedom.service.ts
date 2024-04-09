@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { JSONRPCClient } from "json-rpc-2.0";
-import { JeedomCommandResultInterface } from "@models";
+import { JSONRPCClient, JSONRPCResponse } from "json-rpc-2.0";
+import { JeedomCommandResultInterface, LoaderModel } from "@models";
 import { JeedomRoomInterface } from "../models/jeedom/jeedom-room.interface";
 import { LoggerService } from "./logger.service";
 import { JeedomApiError, JeedomRequestError, UnknownJeedomError, UserHasNotTokenError } from "@errors";
@@ -8,17 +8,21 @@ import { environment } from "../../environments/environment";
 import { JeedomStatisticInterface } from '../models/jeedom/jeedom-statistic.interface';
 import { JeedomHistoryInterface } from '../models/jeedom/jeedom-history.interface';
 import { UserService } from './user.service';
+import { MapBuilder } from './map.builder';
 
 @Injectable({
   providedIn: "root"
 })
 export class JeedomService {
+  pollingDelay = 5000;
   private api: JSONRPCClient;
+  private pollingApi: JSONRPCClient;
   private autoincrementId = 0;
 
   constructor(
     private userService: UserService,
-    private loggerService: LoggerService
+    private loggerService: LoggerService,
+    private mapBuilder: MapBuilder,
   ) {
     const jeedomApiUrl = `${ environment["JEEDOM_HOST"] }/core/api/jeeApi.php`;
 
@@ -30,30 +34,29 @@ export class JeedomService {
           return response
             .json()
             .then((jsonRPCResponse) => {
-              if (response.status !== 200) {
-                this.loggerService.error(new JeedomRequestError(response));
-              } else if (jsonRPCResponse.id === 99999) {
-                this.loggerService.error(new JeedomApiError(jsonRPCResponse.error));
-              } else {
-                this.autoincrementId = jsonRPCResponse.id;
-                return this.api.receive(jsonRPCResponse);
-              }
-
-              this.autoincrementId++;
-              return this.api.receive({
-                jsonrpc: jsonRPCResponse.jsonrpc,
-                id: this.autoincrementId,
-                result: {}
-              });
+              return this.checkResponse(response, jsonRPCResponse);
             });
         }).catch((e) => {
           this.loggerService.error(new UnknownJeedomError(e));
-        }).finally(() => {
-          return this.api.receive({
-            jsonrpc: '2.0',
-            id: this.autoincrementId,
-            result: {}
-          });
+        });
+      }
+    );
+
+    this.pollingApi = new JSONRPCClient(async (jsonRPCRequest) => {
+        const callLoader = this.mapBuilder.globalLoader.addLoader();
+        return fetch(jeedomApiUrl, {
+          method: "POST",
+          body: JSON.stringify(jsonRPCRequest),
+        }).then(async (response) => {
+          return response
+            .json()
+            .then((jsonRPCResponse) => {
+              this.nextPolling(callLoader);
+              return this.checkPollingResponse(response, jsonRPCResponse);
+            });
+        }).catch((e) => {
+          this.nextPolling(callLoader);
+          this.loggerService.error(new UnknownJeedomError(e));
         });
       }
     );
@@ -65,6 +68,11 @@ export class JeedomService {
 
   execInfoCommands(commandIds: number[]): Promise<Record<number, JeedomCommandResultInterface> | null> {
     return this.request("cmd::execCmd", { id: commandIds }) as
+      Promise<Record<number, JeedomCommandResultInterface>>;
+  }
+
+  execPollingInfoCommands(commandIds: number[]): Promise<Record<number, JeedomCommandResultInterface> | null> {
+    return this.pollingRequest("cmd::execCmd", { id: commandIds }) as
       Promise<Record<number, JeedomCommandResultInterface>>;
   }
 
@@ -106,5 +114,62 @@ export class JeedomService {
       ...params,
       apikey
     });
+  }
+
+  private async pollingRequest(method: string, params: Record<string, any> = {}) {
+    const apikey = await this.userService.getJeedomApiKey();
+
+    if (environment["APP_OFFLINE"]) {
+      return Promise.resolve({});
+    } else if (!apikey) {
+      this.loggerService.error(new UserHasNotTokenError());
+      throw new UserHasNotTokenError();
+    }
+
+    return this.pollingApi.request(method, {
+      ...params,
+      apikey
+    });
+  }
+
+  private checkResponse(response: Response, jsonRPCResponse: JSONRPCResponse) {
+    if (response.status !== 200) {
+      this.loggerService.error(new JeedomRequestError(response));
+    } else if (jsonRPCResponse.id === 99999) {
+      this.loggerService.error(new JeedomApiError(jsonRPCResponse.error));
+    } else {
+      this.autoincrementId = jsonRPCResponse.id as number;
+      return this.api.receive(jsonRPCResponse);
+    }
+
+    this.autoincrementId++;
+    return this.api.receive({
+      jsonrpc: jsonRPCResponse.jsonrpc,
+      id: this.autoincrementId,
+      result: {}
+    });
+  }
+
+  private checkPollingResponse(response: Response, jsonRPCResponse: JSONRPCResponse) {
+    if (response.status !== 200) {
+      this.loggerService.error(new JeedomRequestError(response));
+    } else if (jsonRPCResponse.id === 99999) {
+      this.loggerService.error(new JeedomApiError(jsonRPCResponse.error));
+    } else {
+      this.autoincrementId = jsonRPCResponse.id as number;
+      return this.pollingApi.receive(jsonRPCResponse);
+    }
+
+    this.autoincrementId++;
+    return this.pollingApi.receive({
+      jsonrpc: jsonRPCResponse.jsonrpc,
+      id: this.autoincrementId,
+      result: {}
+    });
+  }
+
+  private nextPolling(callLoader: LoaderModel) {
+    callLoader.finish();
+    this.mapBuilder.pollingLoader.addLoader(this.pollingDelay);
   }
 }

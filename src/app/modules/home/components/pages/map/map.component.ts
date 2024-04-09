@@ -1,4 +1,4 @@
-import { DeviceBackInterface, DeviceModel, SmartLoaderModel } from "@models";
+import { DeviceBackInterface, DeviceModel } from "@models";
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -39,14 +39,12 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
   apiLoading = false;
   switchConfigModeFormControl = new FormControl<boolean>(false);
   switchEditModeFormControl = new FormControl<boolean>(false);
-  pollingDelay = 5000;
   isLandscape?: boolean;
   @Observe(DeviceState, DeviceState.items)
   protected _items!: WritableSignal<DeviceBackInterface[]>;
   protected devices = computed(
     () => this._items().map(_item => new DeviceModel(_item))
   )
-  private pollingLoader = new SmartLoaderModel("polling");
 
   constructor(
     private router: Router,
@@ -54,7 +52,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     private deviceService: DeviceService,
     private spotifyService: SpotifyService,
     private sonosService: SonosService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
     void this.deviceService.checkUserItemsOutdated();
@@ -73,32 +71,27 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
       // Polling when data is resolved
       const nextCall$ = new BehaviorSubject<boolean>(true);
 
-      this.sub = this.mapBuilder.globalLoader$.subscribe((globalLoader) => {
+      this.sub = this.mapBuilder.globalLoader.globalLoader$.subscribe((globalLoader) => {
         this.apiLoading = globalLoader;
       });
 
       // On a besoin de s'inscrire à l'évènement pour qu'il puisse fonctionner
-      this.sub = this.mapBuilder.allLoaders$.subscribe(_ => _);
+      this.sub = this.mapBuilder.globalLoader.allLoaders$.subscribe(_ => _);
 
-      this.sub = this.pollingLoader.globalLoader$
+      this.sub = this.mapBuilder.pollingLoader.globalLoader$
         .pipe(
           // On attend que tous les loaders ont terminés
           filter((next) => !next),
         )
         .subscribe(_ => {
-          //console.log('-- Ready for a new call');
           nextCall$.next(true);
         });
       // On a besoin de s'inscrire à l'évènement pour qu'il puisse fonctionner
-      this.sub = this.pollingLoader.allLoaders$.subscribe(_ => _);
+      this.sub = this.mapBuilder.pollingLoader.allLoaders$.subscribe(_ => _);
 
       this.sub = nextCall$
-        .subscribe(async () => {
-          const callLoader = this.mapBuilder.addLoader();
-          this.deviceService.updateComponents(components).then(() => {
-            callLoader.finish();
-            this.pollingLoader.addLoader(this.pollingDelay);
-          });
+        .subscribe(() => {
+          return this.deviceService.updateComponents(components)
         });
     });
 
@@ -108,7 +101,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
 
     this.sub = this.mapBuilder.deviceMoveFinished$.subscribe((device) => {
       //console.log('-- Device moved', device);
-      const loader = this.mapBuilder.addLoader();
+      const loader = this.mapBuilder.globalLoader.addLoader();
       this.deviceService.update(device.id, device).then(() => {
         loader.finish();
       });
@@ -116,12 +109,8 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
 
     this.sub = this.mapBuilder.deviceUpdated$.subscribe(_ => {
       //console.log('-- Device updated');
-      this.pollingLoader.addLoader(this.pollingDelay);
+      //this.pollingLoader.addLoader(this.pollingDelay);
     });
-
-    //void this.spotifyService.test();
-    //void this.sonosService.test1();
-    //void this.sonosService.test2();
   }
 
   @HostListener("window:resize", [ "$event" ])

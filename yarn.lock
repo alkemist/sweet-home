@@ -30,10 +30,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@alkemist/smart-loader@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@alkemist/smart-loader/-/smart-loader-1.0.5.tgz#49ca9fc52e95120ba030af0c46132fb1fbd7ba6d"
-  integrity sha512-KBIZ5aT5zoTT3FzVIhAtm7qPp3oIqBUikp8w3BV3JcTKpiuLZ+zfRE3zqvLaSxFqO5wc05WNgrbKmnVJvYg/Qg==
+"@alkemist/smart-loader@^1.0.19":
+  version "1.0.19"
+  resolved "https://registry.yarnpkg.com/@alkemist/smart-loader/-/smart-loader-1.0.19.tgz#54dad63c9abcc19085ced4a60dcb303fecceff49"
+  integrity sha512-UhtH23Pk80Iiclp4YLrcWch6TKBAjQGib0Ev6tnpTQYi1nVw82Ci1DZY4JYh6LmrBz8L1OstFJNSjAjBqHeVSw==
   dependencies:
     "@alkemist/smart-tools" "^1.1.10"
     "@angular/compiler" "^16.0.0"

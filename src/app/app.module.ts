@@ -40,7 +40,7 @@ import { environment } from '../environments/environment';
       front_logged_path: '/home',
       front_login_path: '/',
       local_storage_auth_key: 'token',
-      store_default_max_hour_outdated: 1,
+      store_default_max_hour_outdated: 24,
       offline_mode: environment['APP_OFFLINE']
     })),
   ],

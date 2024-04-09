@@ -160,13 +160,13 @@ export default abstract class BaseDeviceComponent<
 
   protected execCommand(commandId: number, commandName: string, commandValue?: unknown) {
     return new Promise<any>((resolve, reject) => {
-      const loader = this.mapBuilder.addLoader();
+      //const loader = this.mapBuilder.addLoader();
       //console.log(`-- [${this.name}][${commandName}] Exec action`, commandValue ? "with" : "", commandValue ?? "");
 
       this.deviceService.execCommand(commandId, commandName, commandValue).then((_) => {
         //console.log(`-- [${this.name}][${commandName}] Exec action result`, value);
 
-        loader.finish();
+        //loader.finish();
         this.mapBuilder.addUpdate();
         resolve(commandValue);
       }).catch((e) => {

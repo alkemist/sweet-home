@@ -13,8 +13,7 @@ import { ComponentClassByType } from '@devices';
   providedIn: 'root'
 })
 export class MapBuilder {
-  private _loaderManager = new SmartLoaderModel('queries');
-
+  private pollingDelay = 5000;
   private _viewContainerRef?: ViewContainerRef;
   private _containerSize: SizeInterface = { w: 0, h: 0 };
   private _mapSize: SizeInterface = { w: 0, h: 0 };
@@ -38,6 +37,18 @@ export class MapBuilder {
   constructor(protected loggerService: LoggerService) {
   }
 
+  private _globalLoader = new SmartLoaderModel('queries');
+
+  get globalLoader() {
+    return this._globalLoader;
+  }
+
+  private _pollingLoader = new SmartLoaderModel("polling");
+
+  get pollingLoader() {
+    return this._pollingLoader;
+  }
+
   private _isLandscape?: boolean;
 
   get isLandscape() {
@@ -48,14 +59,6 @@ export class MapBuilder {
 
   get deviceUpdated$() {
     return this._deviceUpdated$.asObservable();
-  }
-
-  get globalLoader$() {
-    return this._loaderManager.globalLoader$;
-  }
-
-  get allLoaders$() {
-    return this._loaderManager.allLoaders$;
   }
 
   private _deviceMoveFinished$ = new Subject<DeviceModel>();
@@ -109,7 +112,8 @@ export class MapBuilder {
   }
 
   reset() {
-    this._loaderManager = new SmartLoaderModel('queries');
+    this._globalLoader = new SmartLoaderModel('queries');
+    this._pollingLoader = new SmartLoaderModel("polling");
 
     this._viewContainerRef = undefined;
     this._mapElement = undefined;
@@ -165,10 +169,6 @@ export class MapBuilder {
         ));
     }
     this._isLandscape = isLandscape;
-  }
-
-  addLoader() {
-    return this._loaderManager.addLoader();
   }
 
   build(devices: DeviceModel[]) {
