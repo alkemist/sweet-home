@@ -42,6 +42,9 @@ export class DeviceService extends DataStoreStateService<DeviceFrontInterface, D
   ) {
     super(
       'device',
+      DeviceState,
+      null,
+      DeviceState.items,
       null,
       DeviceFillAction,
       DeviceGetAction,
@@ -169,7 +172,7 @@ export class DeviceService extends DataStoreStateService<DeviceFrontInterface, D
   }
 }
 
-export const deviceGetResolver: ResolveFn<void | null> =
+export const deviceGetResolver: ResolveFn<DeviceFrontInterface | null> =
   async (route: ActivatedRouteSnapshot) => {
     return inject(DeviceService).dispatchUserItem(route.paramMap.get('slug')!);
   };

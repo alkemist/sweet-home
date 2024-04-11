@@ -290,7 +290,7 @@
 
       <ng-template pTemplate="footer">
         <div class="flex flex-row">
-          <button (click)="remove()" *ngIf="device()" [disabled]="loading" class="p-button-danger hide-label-mobile"
+          <button (click)="remove()" *ngIf="device()" [disabled]="loading()" class="p-button-danger hide-label-mobile"
                   i18n-label
                   icon="pi pi-trash"
                   label="Delete" pButton pRipple
@@ -316,7 +316,7 @@
               type="button"></button>
     </p-footer>
   </p-confirmDialog>
-  <p-blockUI [blocked]="loading" [target]="pnl">
+  <p-blockUI [blocked]="loading()" [target]="pnl">
     <p-progressSpinner></p-progressSpinner>
   </p-blockUI>
 </div>

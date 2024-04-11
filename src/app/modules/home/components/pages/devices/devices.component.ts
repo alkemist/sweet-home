@@ -19,7 +19,6 @@ export class DevicesComponent extends BaseComponent implements OnDestroy {
   deviceConnectivities = SmartMap.fromEnum(DeviceConnectivityEnum, true);
   deviceCategories = SmartMap.fromEnum(DeviceCategoryEnum, true);
   deviceTypes = SmartMap.fromEnum(DeviceTypeEnum, true);
-  loading = true;
   maxRows = 100;
 
   @Observe(DeviceState, DeviceState.items)
@@ -41,6 +40,6 @@ export class DevicesComponent extends BaseComponent implements OnDestroy {
   }
 
   get loaded() {
-    return this.deviceService.publicItemsLoaded;
+    return this.deviceService.userItemsLoaded;
   }
 }

@@ -1,1 +1,1 @@
-export type JeedomScenarioState = 'run' | 'stop' | 'enable' | 'disable';
+export type JeedomScenarioState = 'run' | 'starting' | 'stop' | 'enable' | 'disable';

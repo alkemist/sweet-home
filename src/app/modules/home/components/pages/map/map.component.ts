@@ -1,25 +1,21 @@
-import { DeviceBackInterface, DeviceModel } from "@models";
+import { DeviceModel } from "@models";
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  computed,
   ElementRef,
   HostListener,
   OnDestroy,
   OnInit,
   ViewChild,
-  ViewContainerRef,
-  WritableSignal
+  ViewContainerRef
 } from "@angular/core";
 import { DeviceService, MapBuilder, SonosService, SpotifyService } from "@services";
 import { BehaviorSubject, filter } from "rxjs";
 import { FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
 import BaseComponent from "@base-component";
-import { Observe } from '@alkemist/ngx-state-manager';
-import { DeviceState } from '@stores';
 
 @Component({
   templateUrl: "./map.component.html",
@@ -40,11 +36,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
   switchConfigModeFormControl = new FormControl<boolean>(false);
   switchEditModeFormControl = new FormControl<boolean>(false);
   isLandscape?: boolean;
-  @Observe(DeviceState, DeviceState.items)
-  protected _items!: WritableSignal<DeviceBackInterface[]>;
-  protected devices = computed(
-    () => this._items().map(_item => new DeviceModel(_item))
-  )
+  protected devices: DeviceModel[] = [];
 
   constructor(
     private router: Router,
@@ -58,8 +50,9 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     this.mapBuilder.reset();
 
     this.sub = this.mapBuilder.ready$.pipe(filter((ready) => ready))
-      .subscribe(() => {
-        this.mapBuilder.build(this.devices());
+      .subscribe(async () => {
+        this.devices = (await this.deviceService.selectUserItems()).map(device => new DeviceModel(device));
+        this.mapBuilder.build(this.devices);
         this.changeDetectorRef.detectChanges();
       });
 

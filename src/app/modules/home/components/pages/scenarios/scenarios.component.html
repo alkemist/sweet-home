@@ -22,12 +22,13 @@
         <td class="actions align-right">
           <p-button (onClick)="changeState(scenario, 'run')" *ngIf="scenario.state === 'stop'"
                     icon="pi pi-play"></p-button>
-          <p-button (onClick)="changeState(scenario, 'stop')" *ngIf="scenario.state === 'run'"
-                    icon="pi pi-stop"></p-button>
+          <p-button (onClick)="changeState(scenario, 'stop')"
+                    *ngIf="scenario.state === 'starting' || scenario.state === 'run'"
+                    icon="pi pi-stop" severity="warning"></p-button>
           <p-button (onClick)="changeState(scenario, 'enable')" *ngIf="!scenario.isActive"
                     icon="pi pi-check"></p-button>
           <p-button (onClick)="changeState(scenario, 'disable')" *ngIf="scenario.isActive"
-                    icon="pi pi-times"></p-button>
+                    icon="pi pi-times" severity="warning"></p-button>
         </td>
       </tr>
     </ng-template>

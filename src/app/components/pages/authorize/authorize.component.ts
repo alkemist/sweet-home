@@ -40,15 +40,9 @@ export class AuthorizeComponent extends BaseComponent implements OnInit, OnDestr
 
         if (type && code) {
           this.updateToken(type, code).then(() => {
-            // console.log(`-- [${ type }] Refresh token updated`);
             void this.router.navigate([ this.configuration.front_logged_path ]);
-            //void this.router.navigate([ "../../", "home" ], { relativeTo: this.route });
           });
-        } /*else if (this.userService.isSignInWithEmailLink()) {
-          this.userService.loginWithLink().then(_ => {
-            void this.router.navigate([ "../", "home" ], { relativeTo: this.route });
-          });
-        }*/ else {
+        } else {
           this.messageService.add({
             severity: "error",
             detail: $localize`Unknown type or token`

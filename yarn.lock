@@ -9,10 +9,10 @@
   dependencies:
     "@alkemist/smart-tools" "^1.1.12"
 
-"@alkemist/ngx-data-store@^1.1.15":
-  version "1.1.15"
-  resolved "https://registry.yarnpkg.com/@alkemist/ngx-data-store/-/ngx-data-store-1.1.15.tgz#3f21391978085e1561b4cea84dd7d06f1920b276"
-  integrity sha512-b0t/Lx3GPk3DYIeRPC/1pqOtVXSN1Q1WAjXogynuP/cCTRMQHF/s46ShLiBtT2GQz5dX/J9GYJK0gE8jh+V/vQ==
+"@alkemist/ngx-data-store@^1.1.19":
+  version "1.1.19"
+  resolved "https://registry.yarnpkg.com/@alkemist/ngx-data-store/-/ngx-data-store-1.1.19.tgz#e8d6668e9de5fabccdb74fe3f69cd3e053c58444"
+  integrity sha512-m8WJ8Ayf3LCu1hGs+8LuhLOb7Pl6K9CHOa1o7KInjbOzOHtdJ0ABghqQQm1eu7dYt2ztTVXtAqDN0mWxOY1tQg==
   dependencies:
     tslib "^2.3.0"
 

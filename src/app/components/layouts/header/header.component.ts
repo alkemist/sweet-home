@@ -42,7 +42,7 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
 
     this.title = toSignal(router.events.pipe(
       //filter(event => event instanceof NavigationEnd)
-      map(_ => titleService.getTitle().replaceAll("-", "/"))
+      map(_ => appService.getTitle().replaceAll("-", "/"))
     ));
 
     const enableNoSleep = () => {
