@@ -1,0 +1,40 @@
+<div class="page-container__content h-full">
+  <p-table #dt [loading]="!loaded()" [pageLinks]="2" [paginator]="scenarios().length > maxRows" [rows]="maxRows"
+           [value]="scenarios()" breakpoint="400px" dataKey="id"
+           responsiveLayout="scroll" scrollHeight="flex"
+           styleClass="p-datatable-m">
+    <ng-template pTemplate="header">
+      <tr>
+        <th i18n>Name</th>
+        <th i18n>Mode</th>
+        <th i18n>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template let-scenario pTemplate="body">
+      <tr>
+        <td>
+          {{ scenario.name }}
+        </td>
+        <td class="align-center">
+          <i *ngIf="scenario.mode === 'schedule'" class="pi pi-clock"></i>
+          <i *ngIf="scenario.mode === 'provoke'" class="pi pi-user"></i>
+        </td>
+        <td class="actions align-right">
+          <p-button (onClick)="changeState(scenario, 'run')" *ngIf="scenario.state === 'stop'"
+                    icon="pi pi-play"></p-button>
+          <p-button (onClick)="changeState(scenario, 'stop')" *ngIf="scenario.state === 'run'"
+                    icon="pi pi-stop"></p-button>
+          <p-button (onClick)="changeState(scenario, 'enable')" *ngIf="!scenario.isActive"
+                    icon="pi pi-check"></p-button>
+          <p-button (onClick)="changeState(scenario, 'disable')" *ngIf="scenario.isActive"
+                    icon="pi pi-times"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6" i18n>No scenario found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

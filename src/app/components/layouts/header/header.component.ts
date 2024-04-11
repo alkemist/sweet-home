@@ -106,6 +106,12 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
     });
 
     this.menuItems.push({
+      label: $localize`Scenarios`,
+      icon: "pi pi-ticket",
+      routerLink: '/home/scenarios',
+    },);
+
+    this.menuItems.push({
       separator: true
     });
 

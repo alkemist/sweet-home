@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { JSONRPCClient, JSONRPCResponse } from "json-rpc-2.0";
-import { JeedomCommandResultInterface, LoaderModel } from "@models";
+import { JeedomCommandResultInterface, JeedomScenarioInterface, JeedomScenarioState, LoaderModel } from "@models";
 import { JeedomRoomInterface } from "../models/jeedom/jeedom-room.interface";
 import { LoggerService } from "./logger.service";
 import { JeedomApiError, JeedomRequestError, UnknownJeedomError, UserHasNotTokenError } from "@errors";
@@ -9,12 +9,14 @@ import { JeedomStatisticInterface } from '../models/jeedom/jeedom-statistic.inte
 import { JeedomHistoryInterface } from '../models/jeedom/jeedom-history.interface';
 import { UserService } from './user.service';
 import { MapBuilder } from './map.builder';
+import { JeedomScenarioModel } from '../models/jeedom/jeedom-scenario.model';
 
 @Injectable({
   providedIn: "root"
 })
 export class JeedomService {
   pollingDelay = 5000;
+  private jeedomApiUrl = `${ environment["JEEDOM_HOST"] }/core/api/jeeApi.php`;
   private api: JSONRPCClient;
   private pollingApi: JSONRPCClient;
   private autoincrementId = 0;
@@ -24,27 +26,12 @@ export class JeedomService {
     private loggerService: LoggerService,
     private mapBuilder: MapBuilder,
   ) {
-    const jeedomApiUrl = `${ environment["JEEDOM_HOST"] }/core/api/jeeApi.php`;
 
-    this.api = new JSONRPCClient(async (jsonRPCRequest) => {
-        return fetch(jeedomApiUrl, {
-          method: "POST",
-          body: JSON.stringify(jsonRPCRequest),
-        }).then(async (response) => {
-          return response
-            .json()
-            .then((jsonRPCResponse) => {
-              return this.checkResponse(response, jsonRPCResponse);
-            });
-        }).catch((e) => {
-          this.loggerService.error(new UnknownJeedomError(e));
-        });
-      }
-    );
+    this.api = new JSONRPCClient(async (jsonRPCRequest) => this.runQuery(jsonRPCRequest));
 
     this.pollingApi = new JSONRPCClient(async (jsonRPCRequest) => {
         const callLoader = this.mapBuilder.globalLoader.addLoader();
-        return fetch(jeedomApiUrl, {
+        return fetch(this.jeedomApiUrl, {
           method: "POST",
           body: JSON.stringify(jsonRPCRequest),
         }).then(async (response) => {
@@ -62,13 +49,24 @@ export class JeedomService {
     );
   }
 
-  getFullObjects(): Promise<JeedomRoomInterface[] | null> {
-    return this.request("jeeObject::full") as Promise<JeedomRoomInterface[]>;
+  runQuery(jsonRPCRequest: any): any {
+    return fetch(this.jeedomApiUrl, {
+      method: "POST",
+      body: JSON.stringify(jsonRPCRequest),
+    }).then(async (response) => {
+      return response
+        .json()
+        .then((jsonRPCResponse) => {
+          return this.checkResponse(response, jsonRPCResponse);
+        });
+    }).catch((e) => {
+      this.loggerService.error(new UnknownJeedomError(e));
+      return this.runQuery(jsonRPCRequest);
+    });
   }
 
-  execInfoCommands(commandIds: number[]): Promise<Record<number, JeedomCommandResultInterface> | null> {
-    return this.request("cmd::execCmd", { id: commandIds }) as
-      Promise<Record<number, JeedomCommandResultInterface>>;
+  getFullObjects(): Promise<JeedomRoomInterface[] | null> {
+    return this.request("jeeObject::full") as Promise<JeedomRoomInterface[]>;
   }
 
   execPollingInfoCommands(commandIds: number[]): Promise<Record<number, JeedomCommandResultInterface> | null> {
@@ -97,6 +95,18 @@ export class JeedomService {
 
   execActionCommand(commandId: number, options?: unknown): Promise<JeedomCommandResultInterface | null> {
     return this.request("cmd::execCmd", { id: commandId, options }) as
+      Promise<JeedomCommandResultInterface>;
+  }
+
+  async listScenarios(): Promise<JeedomScenarioModel[]> {
+    const scenarios: JeedomScenarioInterface[] = await this.request("scenario::all", {});
+    return scenarios
+      .map((scenario) => new JeedomScenarioModel(scenario))
+      .filter(scenario => scenario.isVisible);
+  }
+
+  setScenarioState(id: string, state: JeedomScenarioState): Promise<JeedomCommandResultInterface | null> {
+    return this.request("scenario::changeState", { id, state }) as
       Promise<JeedomCommandResultInterface>;
   }
 
