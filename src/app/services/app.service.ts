@@ -35,11 +35,4 @@ export class AppService {
       this.titleService.setTitle(`${ this.pageTitle }`);
     }
   }
-
-  showToast(severity: "success" | "warn" | "error", message: string) {
-    this.messageService.add({
-      severity: severity,
-      detail: message
-    });
-  }
 }

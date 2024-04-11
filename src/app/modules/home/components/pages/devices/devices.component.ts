@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, WritableSignal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, OnDestroy, WritableSignal } from "@angular/core";
 import { DeviceBackInterface, DeviceCategoryEnum, DeviceConnectivityEnum, DeviceModel, DeviceTypeEnum } from "@models";
 import BaseComponent from "@base-component";
 import { SmartMap } from '@alkemist/smart-tools';
@@ -15,7 +15,7 @@ import { Observe } from '@alkemist/ngx-state-manager';
   },
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DevicesComponent extends BaseComponent implements OnInit, OnDestroy {
+export class DevicesComponent extends BaseComponent implements OnDestroy {
   deviceConnectivities = SmartMap.fromEnum(DeviceConnectivityEnum, true);
   deviceCategories = SmartMap.fromEnum(DeviceCategoryEnum, true);
   deviceTypes = SmartMap.fromEnum(DeviceTypeEnum, true);
@@ -40,8 +40,7 @@ export class DevicesComponent extends BaseComponent implements OnInit, OnDestroy
     super();
   }
 
-  async ngOnInit(): Promise<void> {
-    await this.deviceService.checkUserItemsOutdated();
-    this.loading = false;
+  get loaded() {
+    return this.deviceService.publicItemsLoaded;
   }
 }

@@ -55,7 +55,6 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
-    void this.deviceService.checkUserItemsOutdated();
     this.mapBuilder.reset();
 
     this.sub = this.mapBuilder.ready$.pipe(filter((ready) => ready))

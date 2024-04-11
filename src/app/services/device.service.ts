@@ -90,6 +90,13 @@ export class DeviceService extends DataStoreStateService<DeviceFrontInterface, D
       ? await this.existUpdateItem(id, device.toUniqueFields())
       : await this.existAddItem(device.toUniqueFields());
 
+    if (data.response) {
+      this.messageService.add({
+        severity: "error",
+        detail: $localize`Device already exist.`
+      });
+    }
+
     return data.response;
   }
 
@@ -165,9 +172,4 @@ export class DeviceService extends DataStoreStateService<DeviceFrontInterface, D
 export const deviceGetResolver: ResolveFn<void | null> =
   async (route: ActivatedRouteSnapshot) => {
     return inject(DeviceService).dispatchUserItem(route.paramMap.get('slug')!);
-  };
-
-export const deviceAddResolver: ResolveFn<void | null> =
-  async (route: ActivatedRouteSnapshot) => {
-    return inject(DeviceService).dispatchReset();
   };

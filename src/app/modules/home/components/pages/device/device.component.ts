@@ -93,9 +93,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
         this.importDeviceControl.setValue("", { emitEvent: false });
 
         this.jeedomId.setValue(jeedomDevice.id);
-        //if (!this.name.value) {
         this.name.setValue(jeedomDevice.name);
-        //}
 
         this.infoCommandIds.clear();
         this.actionCommandIds.clear();
@@ -200,7 +198,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
 
   loadData() {
     this.sub = this.activatedRoute.data.subscribe(
-      ((data) => {
+      (async (data) => {
         if (this.device()) {
           this.appService.setSubTitle(this.device()!.name);
 
@@ -211,6 +209,7 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
 
           this.form.setValue(this.device()!.toForm());
         } else {
+          await this.deviceService.dispatchReset();
           this.appService.setSubTitle();
         }
 
@@ -256,14 +255,10 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
       const formData = this.form.value as DeviceModelInterface;
       const device = DeviceModel.importFormData(formData);
 
-      const exist = await this.deviceService.exist(
+      if (!await this.deviceService.exist(
         device,
         this.device() ? this.device()!.id : undefined
-      )
-
-      if (exist) {
-        this.appService.showToast("error", $localize`Device already exist.`)
-      } else {
+      )) {
         void this.submit(device);
       }
     }

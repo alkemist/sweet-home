@@ -1,5 +1,5 @@
 <div class="page-container__content h-full">
-  <p-table #dt [loading]="loading" [pageLinks]="2" [paginator]="devices().length > maxRows" [rows]="maxRows"
+  <p-table #dt [loading]="!loaded()" [pageLinks]="2" [paginator]="devices().length > maxRows" [rows]="maxRows"
            [value]="devices()" breakpoint="400px" dataKey="id"
            responsiveLayout="scroll" scrollHeight="flex"
            styleClass="p-datatable-m">
