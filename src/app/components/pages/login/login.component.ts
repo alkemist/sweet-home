@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from "@angular/core";
 import BaseComponent from "@base-component";
 import { UserService } from '@services';
+import packageJson from '../../../../../package.json';
 
 @Component({
   selector: "app-login",
@@ -12,6 +13,8 @@ import { UserService } from '@services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent extends BaseComponent implements OnInit, OnDestroy {
+  public version: string = packageJson.version;
+  
   constructor(
     private userService: UserService,
   ) {

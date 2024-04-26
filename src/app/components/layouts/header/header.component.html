@@ -1,6 +1,8 @@
 <p-toolbar class="header" id="topToolbar">
   <!-- Begin Toolbar Left -->
   <div class="p-toolbar-group-left gap-1">
+    <button *ngIf="!(logged())" [disabled]="true"
+            class="p-button-rounded p-button-text" icon="pi pi-user" pButton></button>
     <button (click)="menuEl.toggle($event)" *ngIf="logged()" class="p-button-rounded p-button-text"
             icon="pi pi-align-justify" pButton pRipple
             type="button"></button>

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnDestroy } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { filter, first, map, Subject } from "rxjs";
 import { Title } from "@angular/platform-browser";
@@ -9,6 +9,7 @@ import { default as NoSleep } from "nosleep.js";
 import { NoSleepError } from "@errors";
 import BaseComponent from "@base-component";
 import { toSignal } from "@angular/core/rxjs-interop";
+import { DataStoreStateService } from '@alkemist/ngx-data-store';
 
 
 @Component({
@@ -18,8 +19,7 @@ import { toSignal } from "@angular/core/rxjs-interop";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent extends BaseComponent implements OnDestroy {
-  loading = signal(false);
-  logged = signal(false);
+  logged = this.userService.loggedUser;
   title;
   menuItems: MenuItem[] = [ ...MenuItems ];
   services: Record<string, any> = {};
@@ -98,7 +98,7 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
             label: $localize`Invalid store`,
             icon: "pi pi-refresh",
             command: () => {
-              void this.services[menuItem.service].fill();
+              void (this.services[menuItem.service] as DataStoreStateService<any>).dispatchUserItemsFill();
             }
           }
         ],

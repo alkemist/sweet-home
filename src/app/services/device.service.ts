@@ -26,6 +26,7 @@ import {
   DeviceUpdateAction
 } from '@stores';
 import { Observe } from '@alkemist/ngx-state-manager';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -39,8 +40,10 @@ export class DeviceService extends DataStoreStateService<DeviceFrontInterface, D
     private jeedomService: JeedomService,
     private messageService: MessageService,
     private loggerService: LoggerService,
+    userService: UserService,
   ) {
     super(
+      userService,
       'device',
       DeviceState,
       null,

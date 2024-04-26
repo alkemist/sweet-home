@@ -15,11 +15,14 @@ export class UserService extends DataStoreUserService<DataUserInterface> {
     super();
   }
 
-  logout() {
-    return Promise.resolve();
+  override logout() {
+    super.logout();
+    return this.router.navigate([ '/login' ])
   }
 
   async getJeedomApiKey() {
-    return (await this.getLoggedUser()).data.jeedom;
+    const loggedUser = await this.getLoggedUser();
+
+    return loggedUser ? loggedUser.data.jeedom : '';
   }
 }
