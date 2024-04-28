@@ -270,3 +270,25 @@ p-chart > div {
 .h-100 {
   height: 100%;
 }
+
+@media screen and (max-width: $mobile-breakpoint-width) {
+  .field-row.mobile-column {
+    flex-direction: column !important;
+
+    & > .flex-column {
+      width: 100%;
+
+      & > .p-float-label {
+        margin-top: 10px;
+      }
+    }
+  }
+
+  .p-datatable {
+    .p-datatable-wrapper {
+      .p-datatable-tbody > tr > td {
+        padding: 4px;
+      }
+    }
+  }
+}

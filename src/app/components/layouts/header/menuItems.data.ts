@@ -25,6 +25,7 @@ export const MenuItems: MenuItem[] = [
 export const DataModelMenuItems: DataModelMenuItem[] = [
   {
     label: $localize`Devices`,
+    icon: 'pi pi-sitemap',
     service: 'device',
     addRouterLink: [ '/home/devices/add' ],
     listRouterLink: [ '/home/devices' ],

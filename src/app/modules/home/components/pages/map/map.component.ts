@@ -11,7 +11,7 @@ import {
   ViewChild,
   ViewContainerRef
 } from "@angular/core";
-import { DeviceService, MapBuilder, SonosService, SpotifyService } from "@services";
+import { DeviceService, JeedomService, MapBuilder, SonosService, SpotifyService } from "@services";
 import { BehaviorSubject, filter } from "rxjs";
 import { FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -42,6 +42,7 @@ export class MapComponent extends BaseComponent implements OnInit, AfterViewInit
     private router: Router,
     private mapBuilder: MapBuilder,
     private deviceService: DeviceService,
+    private jeedomService: JeedomService,
     private spotifyService: SpotifyService,
     private sonosService: SonosService,
     private changeDetectorRef: ChangeDetectorRef,

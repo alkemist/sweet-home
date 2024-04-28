@@ -1,6 +1,12 @@
 import { Injectable } from "@angular/core";
 import { JSONRPCClient, JSONRPCResponse } from "json-rpc-2.0";
-import { JeedomCommandResultInterface, JeedomScenarioInterface, JeedomScenarioState, LoaderModel } from "@models";
+import {
+  JeedomCommandResultInterface,
+  JeedomScenarioInterface,
+  JeedomScenarioState,
+  JeedomVariableInterface,
+  LoaderModel
+} from "@models";
 import { JeedomRoomInterface } from "../models/jeedom/jeedom-room.interface";
 import { LoggerService } from "./logger.service";
 import { JeedomApiError, JeedomRequestError, UnknownJeedomError, UserHasNotTokenError } from "@errors";
@@ -96,6 +102,16 @@ export class JeedomService {
   execActionCommand(commandId: number, options?: unknown): Promise<JeedomCommandResultInterface | null> {
     return this.request("cmd::execCmd", { id: commandId, options }) as
       Promise<JeedomCommandResultInterface>;
+  }
+
+  getVariable(key: string = 'coucheSoleil'): Promise<JeedomVariableInterface | null> {
+    return this.request("datastore::byTypeLinkIdKey", { type: 'scenario', linkId: -1, key }) as
+      Promise<JeedomVariableInterface>;
+  }
+
+  saveVariable(key: string, value: string): Promise<"ok" | undefined[]> {
+    return this.request("datastore::save", { type: 'scenario', linkId: -1, key, value }) as
+      Promise<"ok" | undefined[]>;
   }
 
   async listScenarios(): Promise<JeedomScenarioModel[]> {

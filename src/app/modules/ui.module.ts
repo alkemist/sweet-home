@@ -30,12 +30,14 @@ import { SidebarModule } from 'primeng/sidebar';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { MessageModule } from 'primeng/message';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 const modules = [
   ToolbarModule,
 
   CardModule,
   InputTextModule,
+  InputTextareaModule,
   ButtonModule,
   ToastModule,
   MessageModule,

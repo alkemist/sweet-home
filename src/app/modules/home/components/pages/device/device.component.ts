@@ -251,8 +251,6 @@ export class DeviceComponent extends BaseComponent implements OnInit, OnDestroy 
   async handleSubmit(): Promise<void> {
     this.form.markAllAsTouched();
 
-    console.log(this.form.valid);
-    console.log(this.form.value);
     if (this.form.valid) {
       const formData = this.form.value as DeviceModelInterface;
       const device = DeviceModel.importFormData(formData);

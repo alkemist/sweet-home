@@ -39,6 +39,7 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
     super();
 
     this.services["device"] = this.deviceService;
+    void this.userService.getLoggedUser();
 
     this.title = toSignal(router.events.pipe(
       //filter(event => event instanceof NavigationEnd)
@@ -105,11 +106,18 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
       });
     });
 
-    this.menuItems.push({
-      label: $localize`Scenarios`,
-      icon: "pi pi-ticket",
-      routerLink: '/home/scenarios',
-    },);
+    this.menuItems.push(
+      {
+        label: $localize`Scenarios`,
+        icon: "pi pi-ticket",
+        routerLink: '/home/scenarios',
+      },
+      {
+        label: $localize`Variables`,
+        icon: 'pi pi-box',
+        routerLink: '/home/variables',
+      }
+    );
 
     this.menuItems.push({
       separator: true

@@ -40,6 +40,7 @@ export class DeviceState extends DocumentState<DeviceFrontInterface> {
   @Select('item')
   static override item<T extends DocumentFrontInterface>(state: DocumentStateInterface<T>): T | null {
     return DocumentState.item(state);
+    
   }
 
   @Action(DeviceFillAction)

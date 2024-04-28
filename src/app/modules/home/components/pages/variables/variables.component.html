@@ -1,0 +1,100 @@
+<div class="page-container__content h-full">
+  <p-table #dt [loading]="!loaded()" [pageLinks]="2" [paginator]="true" [rows]="maxRows"
+           [showFirstLastIcon]="false" [value]="variables()" breakpoint="400px" dataKey="id"
+           editMode="row" responsiveLayout="scroll" scrollHeight="flex"
+           styleClass="p-datatable-m">
+    <ng-template pTemplate="header">
+      <tr>
+        <th i18n style="min-width: 10%;max-width:300px;">Key</th>
+        <th i18n>Name</th>
+        <th i18n style="min-width: 5%;max-width:300px;">Value</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template let-editing="editing" let-ri="rowIndex" let-variable pTemplate="body">
+      <tr [pEditableRow]="variable">
+        <td style="min-width: 10%;max-width:300px;">
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input *ngIf="!variable.id" [(ngModel)]="variable.key" pInputText>
+              <span *ngIf="variable.id">{{ variable.key }}</span>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{ variable.key }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <textarea [(ngModel)]="variable.name" cols="8" pInputTextarea rows="5"></textarea>
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{ variable.name }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input *ngIf="variable.id" [(ngModel)]="variable.value" pInputText style="max-width: 60px;">
+            </ng-template>
+            <ng-template pTemplate="output">
+              {{ variable.value }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+        <td style="min-width: 13%;max-width:300px;">
+          <button (click)="onRowEditInit(variable)" *ngIf="!editing && editingIndex === null"
+                  class="p-button-rounded p-button-text"
+                  icon="pi pi-pencil" pButton pInitEditableRow
+                  pRipple type="button"></button>
+          <button (click)="onRowEditSave(variable)" *ngIf="editing && variable.id"
+                  class="p-button-rounded p-button-text p-button-success mr-2" icon="pi pi-check" pButton
+                  pRipple
+                  pSaveEditableRow
+                  type="button"></button>
+          <button (click)="onRowEditSave(variable)" *ngIf="editing && !variable.id"
+                  class="p-button-rounded p-button-text p-button-success mr-2" icon="pi pi-plus" pButton
+                  pRipple
+                  pSaveEditableRow
+                  type="button"></button>
+          <button (click)="onRowEditCancel(variable, ri)" *ngIf="editing"
+                  class="p-button-rounded p-button-text p-button-danger" icon="pi pi-times" pButton
+                  pCancelEditableRow
+                  pRipple
+                  type="button"></button>
+          <button (click)="remove(variable)" *ngIf="editing"
+                  class="p-button-rounded p-button-text p-button-danger" icon="pi pi-trash" pButton
+                  pRipple
+                  type="button"></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5" i18n>No variable found.</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorleft">
+      <button (click)="reload()" class="p-button-rounded p-button-success p-button-text"
+              icon="pi pi-refresh"
+              pButton></button>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      <button (click)="add()" *ngIf="editingIndex === null" class="p-button-rounded p-button-success p-button-text"
+              icon="pi pi-plus"
+              pButton></button>
+    </ng-template>
+  </p-table>
+</div>
+<p-confirmDialog #cd header="Confirmation" i18n-header icon="pi pi-exclamation-triangle" key="variable">
+  <p-footer>
+    <button (click)="cd.reject()" i18n-label icon="pi pi-times" label="No" pButton
+            pRipple
+            type="button"></button>
+    <button (click)="cd.accept()" class="p-button-danger" i18n-label icon="pi pi-check" label="Yes" pButton
+            pRipple
+            type="button"></button>
+  </p-footer>
+</p-confirmDialog>
