@@ -7,4 +7,5 @@ export interface ThermometerAqaraCommandValues extends ThermometerCommandValues 
 
 export interface ThermometerParameterValues extends Record<ThermometerAqaraParamValue | string, string | number | boolean | null> {
   pression: boolean,
+  co2: boolean,
 }

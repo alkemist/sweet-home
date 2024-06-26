@@ -18,6 +18,7 @@ export enum DeviceCategoryEnum {
 export enum DeviceTypeEnum {
   Aqara = 'aqara',
   Moes = 'moes',
+  Heiman = 'heiman',
   Lidl = 'lidle',
   Nous = 'nous',
   Eglo = 'eglo',

@@ -27,6 +27,7 @@ import {
   DeviceOnOffSchneiderComponent,
   DevicePresenceSonoffComponent,
   DeviceThermometerAqaraComponent,
+  DeviceThermometerHeimanComponent,
   DeviceThermostatAqaraComponent,
   DeviceThermostatMoesComponent,
   OnOffParams,
@@ -59,14 +60,17 @@ import {
 } from './zigbee/light';
 import { DeviceLightEgloComponent } from './zigbee/light/eglo/light-eglo.component';
 import {
-  ThermometerAqaraParams,
-  zigbeeLinkerThermometerInfoAqaraCommandFilters,
-  zigbeeOfficialThermometerAqaraInfoCommandFilters
-} from './zigbee/thermometer/aqara/thermometer.const';
+  ThermometerHeimanParams, zigbeeLinkerThermometerInfoHeimanCommandFilters,
+  zigbeeOfficialThermometerHeimanInfoCommandFilters
+} from './zigbee/thermometer/heiman/thermometer.const';
 import { DeviceThermometerSonoffComponent } from './zigbee/thermometer/sonoff/thermometer-sonoff.component';
 import { DeviceLightPhilipsComponent } from './zigbee/light/philips/light-philips.component';
 import { LightEgloParams } from './zigbee/light/eglo/light-eglo.const';
 import { zigbeeLinkerOnOffSchneiderActionCommandFilters } from './zigbee/on-off/schneider/on-off-schneider.const';
+import {
+  ThermometerAqaraParams, zigbeeLinkerThermometerInfoAqaraCommandFilters,
+  zigbeeOfficialThermometerAqaraInfoCommandFilters
+} from "./zigbee/thermometer/aqara/thermometer.const";
 
 export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinitions<DeviceConnectivityEnum, DeviceCategoryEnum> =
   {
@@ -167,6 +171,10 @@ export const deviceDefinitionsByConnectivityCategoryType:
         infoCommandFilters: zigbeeOfficialThermometerAqaraInfoCommandFilters,
         customParams: ThermometerAqaraParams,
       },
+      [DeviceTypeEnum.Heiman]: {
+        infoCommandFilters: zigbeeOfficialThermometerHeimanInfoCommandFilters,
+        customParams: ThermometerHeimanParams,
+      },
       [DeviceTypeEnum.Sonoff]: {}
     },
     [DeviceCategoryEnum.OnOff]: {
@@ -205,6 +213,10 @@ export const deviceDefinitionsByConnectivityCategoryType:
         infoCommandFilters: zigbeeLinkerThermometerInfoAqaraCommandFilters,
         customParams: ThermometerAqaraParams,
       },
+      [DeviceTypeEnum.Heiman]: {
+        infoCommandFilters: zigbeeLinkerThermometerInfoHeimanCommandFilters,
+        customParams: ThermometerHeimanParams,
+      },
       [DeviceTypeEnum.Sonoff]: {}
     },
     [DeviceCategoryEnum.OnOff]: {
@@ -242,6 +254,7 @@ export const ComponentClassByType: Record<DeviceCategoryEnum, Partial<Record<Dev
   },
   [DeviceCategoryEnum.Thermometer]: {
     [DeviceTypeEnum.Aqara]: DeviceThermometerAqaraComponent,
+    [DeviceTypeEnum.Heiman]: DeviceThermometerHeimanComponent,
     [DeviceTypeEnum.Sonoff]: DeviceThermometerSonoffComponent,
   },
   [DeviceCategoryEnum.OnOff]: {

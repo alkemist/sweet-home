@@ -32,6 +32,7 @@ export abstract class DeviceThermometerComponent<
     temperature: 0,
     humidity: 0,
     pression: 0,
+    co2: 0,
   });
 
   override ngOnInit() {

@@ -18,14 +18,22 @@
         {{ infoCommandValues().humidity }} %
       </div>
     </div>
-    <!--<div *ngIf="infoCommandValues().pression && parameterValues.pression" class="map-icon-value flex flex-row align-content-center gap-1">
+    <div *ngIf="infoCommandValues().pression && parameterValues.pression" class="map-icon-value flex flex-row align-content-center gap-1">
       <div class="icon">
         <i class="fa fa-cloud"></i>
       </div>
       <div class="value" title="hPA">
         {{ infoCommandValues().pression }}
       </div>
-    </div>-->
+    </div>
+    <div *ngIf="infoCommandValues().co2 && parameterValues.co2" class="map-icon-value flex flex-row align-content-center gap-1"  [ngClass]="{'color-warn' : infoCommandValues().co2 > 800, 'color-danger' : infoCommandValues().co2 > 1200}">
+      <div class="icon">
+        <i class="fa fa-user"></i>
+      </div>
+      <div class="value" title="CO2">
+        {{ infoCommandValues().co2 }}
+      </div>
+    </div>
     <div *ngIf="!isEditMode && hasLowBattery"
          class="flex flex-row align-content-center gap-2 color-danger icon-big">
       <i class="fa fa-exclamation-triangle"></i><i class="fa fa-battery-empty"></i>

@@ -3,7 +3,7 @@ import {DeviceThermostatComponent} from "../thermostat.component";
 
 
 @Component({
-	selector: "app-device-thermostat-aqara",
+	selector: "app-device-thermostat-heiman",
 	templateUrl: "../thermostat.component.html",
 	styleUrls: [
 		"../../../base-device.component.scss",
