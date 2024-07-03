@@ -292,3 +292,12 @@ p-chart > div {
     }
   }
 }
+
+.maximized-modal {
+  height: 100%;
+}
+.device-modal .p-dialog-content {
+  & > div, & > div > app-history {
+    height: 100%;
+  }
+}

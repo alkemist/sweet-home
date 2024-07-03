@@ -1,6 +1,6 @@
 import { ZigbeeCommandInfo } from '../zigbee-component.directive';
 
-export type PresenceCommandInfo = 'state';
+export type PresenceCommandInfo = 'state' | 'brightness';
 export type PresenceCommandAction = 'on' | 'off' | 'toggle'
 export type PresenceParamValue = 'security' | 'icon';
 

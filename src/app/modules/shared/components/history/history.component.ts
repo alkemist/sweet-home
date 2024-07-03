@@ -11,17 +11,18 @@ import {
   SimpleChanges
 } from '@angular/core';
 import BaseComponent from '@base-component';
-import { DeviceService } from '@services';
-import { FormControl } from '@angular/forms';
+import {DeviceService} from '@services';
+import {FormControl} from '@angular/forms';
 import dateFormat from 'dateformat';
-import { ChartData, ChartDataset, ChartOptions } from 'chart.js';
-import { CHART_COLORS, DateFormats, DeviceCommandHistory } from '@models';
-import { DateHelper, MathHelper, SmartMap } from '@alkemist/smart-tools';
+import {ChartData, ChartDataset, ChartOptions} from 'chart.js';
+import {CHART_COLORS, DateFormats, DeviceCommandHistory} from '@models';
+import {DateHelper, MathHelper, SmartMap, TypeHelper} from '@alkemist/smart-tools';
+import {debounceTime} from "rxjs";
 
 @Component({
   selector: "app-history",
   templateUrl: "./history.component.html",
-  styleUrls: [ "./history.component.scss" ],
+  styleUrls: ["./history.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy, OnChanges {
@@ -29,8 +30,11 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
   @Input() deviceCommands: DeviceCommandHistory[] = [];
   @Output() datesChange = new EventEmitter<Date[]>()
 
+  showCalendar = false;
   now = new Date();
-  dateControl: FormControl<[ Date ] | [ Date, Date ] | null>;
+  dateControl: FormControl<[Date] | [Date, Date] | null>;
+  minTimeControl: FormControl<Date | null>;
+  maxTimeControl: FormControl<Date | null>;
 
   loaded = signal(false);
   chartOptions: ChartOptions = {};
@@ -77,14 +81,36 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
       }
     }
 
-    this.dateControl = new FormControl<[ Date ] | [ Date, Date ] | null>(null);
+    this.dateControl = new FormControl<[Date] | [Date, Date] | null>(null);
+    this.minTimeControl = new FormControl<Date | null>(null);
+    this.maxTimeControl = new FormControl<Date | null>(null);
 
     this.sub = this.dateControl.valueChanges.subscribe((dates) => {
-      if (dates && dates.length === 2 && dates[0] && dates[1]) {
+      if (dates && dates.length === 2 && dates[0] && dates[1] && this.showCalendar) {
         this.loadHistories();
         this.datesChange.emit(dates);
       }
     })
+
+    this.sub = this.minTimeControl.valueChanges
+      .pipe(
+        debounceTime(2000),
+      ).subscribe((date: Date | null) => {
+        if (date && !this.showCalendar && this.loaded() && this.maxTimeControl.value) {
+          this.loadHistories();
+          //this.datesChange.emit(dates);
+        }
+      })
+
+    this.sub = this.maxTimeControl.valueChanges
+      .pipe(
+        debounceTime(2000),
+      ).subscribe((date: Date | null) => {
+        if (date && !this.showCalendar && this.minTimeControl.value) {
+          this.loadHistories();
+          //this.datesChange.emit(dates);
+        }
+      })
 
   }
 
@@ -96,21 +122,68 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
       const dateEnd = new Date();
       dateEnd.setTime(parseInt(this.dates[1]));
 
-      this.dateControl.setValue([ dateBegin, dateEnd ]);
+      this.dateControl.setValue([
+        DateHelper.dayStart(dateBegin),
+        DateHelper.dayEnd(dateEnd)
+      ]);
+
+      this.minTimeControl.setValue(
+        DateHelper.dayStart(
+          TypeHelper.deepClone(
+            dateBegin
+          )
+        )
+      );
+
+      this.maxTimeControl.setValue(
+        DateHelper.dayEnd(
+          TypeHelper.deepClone(
+            dateEnd
+          )
+        )
+      );
     } else {
-      this.dateControl.setValue([ this.now, this.now ]);
+      this.dateControl.setValue([
+        DateHelper.dayStart(
+          TypeHelper.deepClone(this.now
+          )
+        ),
+        DateHelper.dayEnd(
+          TypeHelper.deepClone(
+            this.now
+          )
+        )
+      ]);
+      this.minTimeControl.setValue(DateHelper.dayStart(
+        TypeHelper.deepClone(this.now
+        )));
+      this.maxTimeControl.setValue(DateHelper.dayEnd(TypeHelper.deepClone(this.now)));
     }
   }
 
   loadHistories() {
-    const dateStart = this.dateControl.value![0];
-    const dateEnd =
-      this.dateControl.value!.length > 1 && this.dateControl.value![1] ?
-        this.dateControl.value![1]
-        : dateStart;
+    let dateStart: Date | undefined;
+    let dateEnd: Date | undefined | null;
 
-    const dateStartStr = dateFormat(DateHelper.dayStart(dateStart), "yyyy-mm-dd HH:MM");
-    const dateEndStr = dateFormat(DateHelper.dayEnd(dateEnd), "yyyy-mm-dd HH:MM");
+    let dateStartStr: string = '';
+    let dateEndStr: string = '';
+
+    if (this.showCalendar) {
+      dateStart = this.dateControl.value![0];
+      dateEnd =
+        this.dateControl.value!.length > 1 && this.dateControl.value![1] ?
+          this.dateControl.value![1]
+          : dateStart;
+
+      dateStartStr = dateFormat(DateHelper.dayStart(dateStart), "yyyy-mm-dd HH:MM");
+      dateEndStr = dateFormat(DateHelper.dayEnd(dateEnd), "yyyy-mm-dd HH:MM");
+    } else {
+      dateStart = this.minTimeControl.value!;
+      dateEnd = this.maxTimeControl.value!;
+
+      dateStartStr = dateFormat(dateStart, "yyyy-mm-dd HH:MM");
+      dateEndStr = dateFormat(dateEnd, "yyyy-mm-dd HH:MM");
+    }
 
     Promise.all(
       this.deviceCommands.map(deviceCommand => this.deviceService
@@ -129,20 +202,40 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
   }
 
   addDate(inc: number) {
-    const dateStart = new Date(this.dateControl.value![0]);
-    const dateEnd =
-      new Date(this.dateControl.value!.length > 1 && this.dateControl.value![1] ?
-        DateHelper.dayEnd(this.dateControl.value![1])
-        : dateStart
-      );
+    let dateStart: Date | undefined;
+    let dateEnd: Date | undefined;
 
-    dateStart.setDate(dateStart.getDate() + inc);
-    dateEnd.setDate(dateEnd.getDate() + inc);
+    if (this.showCalendar) {
+      dateStart = new Date(this.dateControl.value![0]);
+      dateEnd =
+        new Date(this.dateControl.value!.length > 1 && this.dateControl.value![1] ?
+          DateHelper.dayEnd(this.dateControl.value![1])
+          : dateStart
+        );
 
-    this.dateControl.setValue([ dateStart, dateEnd ]);
+      dateStart.setDate(dateStart.getDate() + inc);
+      dateEnd.setDate(dateEnd.getDate() + inc);
+      this.dateControl.setValue([dateStart, dateEnd]);
+    } else {
+      dateStart = new Date(this.minTimeControl.value!);
+      dateEnd = new Date(this.maxTimeControl.value!);
+
+      dateStart.setHours(dateStart.getHours() + inc);
+      dateEnd.setHours(dateEnd.getHours() + inc);
+
+      this.minTimeControl.setValue(dateStart);
+      this.maxTimeControl.setValue(dateEnd);
+    }
   }
 
-  isLastDay() {
+  /**
+   * If is last day
+   */
+  disableNext() {
+    if (!this.showCalendar) {
+      return this.maxTimeControl.value!.getHours() === 23;
+    }
+
     if (!this.dateControl.value) {
       return false;
     }
@@ -167,6 +260,32 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
     if (this.loaded()) {
       this.loadHistories();
     }
+  }
+
+  changeMode() {
+    if (this.showCalendar) {
+      const dates = this.dateControl.value;
+      this.dateControl.setValue(dates);
+    } else {
+      this.minTimeControl.setValue(
+        DateHelper.dayStart(
+          TypeHelper.deepClone(
+            this.dateControl.value![0])
+        )
+        , {emitEvent: false}
+      );
+      this.maxTimeControl.setValue(
+        DateHelper.dayEnd(
+          TypeHelper.deepClone(
+            this.dateControl.value![0]
+          )
+        )
+      );
+    }
+  }
+
+  disablePrev() {
+    return !this.showCalendar && this.minTimeControl.value!.getHours() === 0;
   }
 
   private loadChart() {
@@ -199,8 +318,8 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
 
     this.deviceCommands.forEach((device, index) => {
       let commandName = this.deviceCommands.length > 1 ?
-        `${ device.deviceName } - ${ device.commandName }`
-        : `${ device.commandName } `;
+        `${device.deviceName} - ${device.commandName}`
+        : `${device.commandName} `;
 
       const deviceAllValues: (number[] | undefined)[] = labels.map(date => valuesByDateAndDevice[index].get(date.key));
 
@@ -209,7 +328,7 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
       }
 
       dataSets.push({
-        label: `${ commandName }`,
+        label: `${commandName}`,
         data: deviceAllValues.map(
           dateValues => dateValues ? MathHelper.round(
             MathHelper.sum(dateValues) / dateValues.length
@@ -230,7 +349,7 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
           ),
           borderColor: CHART_COLORS.red,
           fill: false,
-          borderDash: [ 5, 5 ],
+          borderDash: [5, 5],
           ...baseSerie
         });
 
@@ -241,7 +360,7 @@ export class HistoryComponent extends BaseComponent implements OnInit, OnDestroy
           ),
           borderColor: CHART_COLORS.blue,
           fill: false,
-          borderDash: [ 5, 5 ],
+          borderDash: [5, 5],
           ...baseSerie
         });
       }

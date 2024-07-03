@@ -42,7 +42,7 @@
 <p-overlayPanel #overlayPanel [appendTo]="content" [dismissable]="false">
   {{ name }}
 </p-overlayPanel>
-<p-dialog (onHide)="closeModal()" [(visible)]="modalOpened"
+<p-dialog (onHide)="closeModal()" [(visible)]="modalOpened" [maximizable]="true"
           [dismissableMask]="true" [header]="name" [modal]="true"
           [resizable]="false" appendTo="body"
           position="bottom" styleClass="device-modal">

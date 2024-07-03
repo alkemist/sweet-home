@@ -28,7 +28,7 @@
   {{ name }}
 </p-overlayPanel>
 <p-dialog (onHide)="closeModal()" [(visible)]="modalOpened" [dismissableMask]="true" [draggable]="false"
-          [header]="name" [modal]="true" [resizable]="false"
+          [header]="name" [modal]="true" [resizable]="false" [maximizable]="true"
           appendTo="body" position="bottom"
           styleClass="device-modal">
   <div class="flex flex-column gap-5">

@@ -1,12 +1,25 @@
 <div *ngIf="loaded()" class="flex flex-column gap-2 h-100">
   <div class="flex flex-row justify-content-center align-items-center">
-    <p-button (click)="addDate(-1)" [rounded]="true" [text]="true" icon="pi pi-chevron-left"></p-button>
-    <p-calendar [firstDayOfWeek]="1" [formControl]="dateControl" [maxDate]="now" [readonlyInput]="true"
+    <p-button (click)="addDate(-1)" [disabled]="disablePrev()" [rounded]="true" [text]="true"
+              icon="pi pi-chevron-left"></p-button>
+    <p-calendar *ngIf="showCalendar" [firstDayOfWeek]="1" [formControl]="dateControl" [maxDate]="now"
+                [readonlyInput]="true"
                 [showButtonBar]="true" [showClear]="false"
                 appendTo="body"
                 selectionMode="range"></p-calendar>
-    <p-button (click)="addDate(1)" [disabled]="isLastDay()" [rounded]="true" [text]="true"
+    <p-calendar *ngIf="!showCalendar" [formControl]="minTimeControl" [maxDate]="maxTimeControl.value!"
+                [readonlyInput]="true" [showButtonBar]="false" [showClear]="false" [timeOnly]="true"
+                appendTo="body"></p-calendar>
+    <p-calendar *ngIf="!showCalendar" [formControl]="maxTimeControl" [minDate]="minTimeControl.value!"
+                [readonlyInput]="true"
+                [showButtonBar]="false" [showClear]="false" [timeOnly]="true"
+                appendTo="body"></p-calendar>
+    <p-button (click)="addDate(1)" [disabled]="disableNext()" [rounded]="true" [text]="true"
               icon="pi pi-chevron-right"></p-button>
+    <p-toggleButton (onChange)="changeMode()" [(ngModel)]="showCalendar"
+                    [disabled]="!isSameDay()"
+                    offIcon="pi pi-sun"
+                    onIcon="pi pi-calendar"/>
     <p-button (click)="loadHistories()" icon="pi pi-refresh"></p-button>
   </div>
   <p-chart *ngIf="dateControl.value" [data]="chartData()" [options]="chartOptions" class="flex-1" type="line"></p-chart>
