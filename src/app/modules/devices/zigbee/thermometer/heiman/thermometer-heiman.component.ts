@@ -1,14 +1,14 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
-import { DeviceThermometerComponent } from "../thermometer.component";
-import { ThermometerParamValue } from '../../../index';
+import {ChangeDetectionStrategy, Component} from "@angular/core";
+import {DeviceThermometerComponent} from "../thermometer.component";
+import {ThermometerParamValue} from '../../../index';
 import {
   ThermometerHeimanCommandInfo,
   ThermometerHeimanExtendCommandInfo,
   ThermometerHeimanGlobalCommandInfo,
   ThermometerHeimanParamValue
 } from './thermometer.type';
-import { ThermometerHeimanCommandValues, ThermometerParameterValues } from './thermometer.interface';
-import { MathHelper } from '@alkemist/smart-tools';
+import {ThermometerHeimanCommandValues, ThermometerParameterValues} from './thermometer.interface';
+import {MathHelper} from '@alkemist/smart-tools';
 
 
 @Component({
@@ -29,7 +29,8 @@ export class DeviceThermometerHeimanComponent extends DeviceThermometerComponent
   ThermometerParameterValues
 > {
   override ngOnInit() {
-    this.addDeviceCommandHistory('co2');
+    //this.addDeviceCommandHistory('co2');
+    this.addDeviceCommandHistory('temperature');
   }
 
 
