@@ -1,27 +1,27 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { filter, first, map, Subject } from "rxjs";
-import { Title } from "@angular/platform-browser";
-import { AppService, DeviceService, LoggerService, MapBuilder, UserService } from "@services";
-import { MenuItem } from "primeng/api";
-import { DataModelMenuItems, LogoutMenuItem, MenuItems } from "./menuItems.data";
-import { default as NoSleep } from "nosleep.js";
-import { NoSleepError } from "@errors";
+import {ChangeDetectionStrategy, Component, OnDestroy} from "@angular/core";
+import {ActivatedRoute, Router} from "@angular/router";
+import {filter, first, map, Subject} from "rxjs";
+import {Title} from "@angular/platform-browser";
+import {AppService, DeviceService, LoggerService, MapBuilder, UserService} from "@services";
+import {MenuItem} from "primeng/api";
+import {DataModelMenuItems, LogoutMenuItem, MenuItems} from "./menuItems.data";
+import {default as NoSleep} from "nosleep.js";
+import {NoSleepError} from "@errors";
 import BaseComponent from "@base-component";
-import { toSignal } from "@angular/core/rxjs-interop";
-import { DataStoreStateService } from '@alkemist/ngx-data-store';
+import {toSignal} from "@angular/core/rxjs-interop";
+import {DataStoreStateService} from '@alkemist/ngx-data-store';
 
 
 @Component({
   selector: "app-header",
   templateUrl: "./header.component.html",
-  styleUrls: [ "./header.component.scss" ],
+  styleUrls: ["./header.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent extends BaseComponent implements OnDestroy {
   logged = this.userService.loggedUser;
   title;
-  menuItems: MenuItem[] = [ ...MenuItems ];
+  menuItems: MenuItem[] = [...MenuItems];
   services: Record<string, any> = {};
   noSleep = new NoSleep();
   appIsVisible$ = new Subject<boolean>();
@@ -125,10 +125,7 @@ export class HeaderComponent extends BaseComponent implements OnDestroy {
 
     this.menuItems.push({
       ...LogoutMenuItem, command: () => {
-        this.userService.logout().then(async () => {
-          await this.userService.logout();
-          void this.router.navigate([ "../login" ]);
-        });
+        void this.userService.logout();
       }
     });
   }
