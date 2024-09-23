@@ -1,8 +1,7 @@
-import { InitializationMessage, WorkerMessage } from "./worker-message.model";
-import { UnknownWorkerError } from "@errors";
-import { GeolocationWorker } from "./geolocation-worker.model";
-import { combineLatest } from "rxjs";
-import { NotificationWorker } from "./notification-worker.model";
+import {WorkerMessage} from "./worker-message.model";
+import {UnknownWorkerError} from "@errors";
+import {GeolocationWorker} from "./geolocation-worker.model";
+import {NotificationWorker} from "./notification-worker.model";
 import {environment} from "../../../environments/environment";
 import {createDistantWebWorker, createLocalWebWorker} from "./create-web-worker";
 
@@ -33,7 +32,7 @@ export class AppWorker {
     this.webWorker = webWorker;
     this.webWorker.onmessage = this.onMessage;
 
-    combineLatest([
+    /*combineLatest([
       this.geolocationWorker.ready$,
       this.notificationWorker.ready$,
     ]).subscribe(([geolocationGranted, notificationGranted]) => {
@@ -42,10 +41,10 @@ export class AppWorker {
       if (geolocationGranted && notificationGranted) {
         this.post(new InitializationMessage())
       }
-    });
+    });*/
 
-    this.geolocationWorker.checkPermission();
-    this.notificationWorker.checkPermission();
+    //this.geolocationWorker.checkPermission();
+    //this.notificationWorker.checkPermission();
   }
 
   post(message: WorkerMessage) {
