@@ -1,6 +1,6 @@
 {
   "name": "sweet-home",
-  "version": "2.1.7",
+  "version": "2.1.9",
   "scripts": {
     "ng": "ng",
     "dev": "npm run config -- --environment=dev && ng serve --port=4201",

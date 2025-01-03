@@ -21,6 +21,7 @@ import {
   wifiMultimediaSonosInfoCommandFilters
 } from "./wifi";
 import {
+  BrightnessParams, DeviceBrightnessXiaomiComponent,
   DeviceOnOffLidlComponent,
   DeviceOnOffMoesComponent,
   DeviceOnOffNousComponent,
@@ -30,13 +31,13 @@ import {
   DeviceThermometerHeimanComponent,
   DeviceThermostatAqaraComponent,
   DeviceThermostatMoesComponent,
-  OnOffParams,
+  OnOffParams, zigbeeLinkerBrightnessInfoCommandFilters,
   zigbeeLinkerOnOffInfoCommandFilters,
   zigbeeLinkerOnOffMoesActionCommandFilters,
   zigbeeLinkerPresenceInfoCommandFilters,
   zigbeeLinkerThermometerInfoCommandFilters,
   zigbeeLinkerThermostatActionCommandFilters,
-  zigbeeLinkerThermostatInfoCommandFilters,
+  zigbeeLinkerThermostatInfoCommandFilters, zigbeeOfficialBrightnessInfoCommandFilters,
   zigbeeOfficialOnOffActionCommandFilters,
   zigbeeOfficialOnOffInfoCommandFilters,
   zigbeeOfficialThermometerInfoCommandFilters,
@@ -71,6 +72,10 @@ import {
   ThermometerAqaraParams, zigbeeLinkerThermometerInfoAqaraCommandFilters,
   zigbeeOfficialThermometerAqaraInfoCommandFilters
 } from "./zigbee/thermometer/aqara/thermometer.const";
+import { DeviceThermostatTuyaComponent } from './zigbee/thermostat/tuya/thermostat-tuya.component';
+import {
+  zigbeeOfficialThermostatTuyaInfoCommandFilters
+} from './zigbee/thermostat/tuya/thermostat-tuya.const';
 
 export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinitions<DeviceConnectivityEnum, DeviceCategoryEnum> =
   {
@@ -93,6 +98,9 @@ export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinition
       [DeviceCategoryEnum.Thermometer]: {
         infoCommandFilters: zigbeeOfficialThermometerInfoCommandFilters,
       },
+      [DeviceCategoryEnum.Brightness]: {
+        infoCommandFilters: zigbeeOfficialBrightnessInfoCommandFilters,
+      },
       [DeviceCategoryEnum.OnOff]: {
         infoCommandFilters: zigbeeOfficialOnOffInfoCommandFilters,
         actionCommandFilters: zigbeeOfficialOnOffActionCommandFilters,
@@ -105,6 +113,9 @@ export const deviceConfigurationsByConnectivityCategory: GroupedDeviceDefinition
       },
       [DeviceCategoryEnum.Thermometer]: {
         infoCommandFilters: zigbeeLinkerThermometerInfoCommandFilters,
+      },
+      [DeviceCategoryEnum.Brightness]: {
+        infoCommandFilters: zigbeeLinkerBrightnessInfoCommandFilters,
       },
       [DeviceCategoryEnum.OnOff]: {
         infoCommandFilters: zigbeeLinkerOnOffInfoCommandFilters,
@@ -165,6 +176,9 @@ export const deviceDefinitionsByConnectivityCategoryType:
       [DeviceTypeEnum.Moes]: {
         infoCommandFilters: zigbeeOfficialThermostatMoesInfoCommandFilters,
       },
+      [DeviceTypeEnum.Tuya]: {
+        infoCommandFilters: zigbeeOfficialThermostatTuyaInfoCommandFilters,
+      },
     },
     [DeviceCategoryEnum.Thermometer]: {
       [DeviceTypeEnum.Aqara]: {
@@ -176,6 +190,12 @@ export const deviceDefinitionsByConnectivityCategoryType:
         customParams: ThermometerHeimanParams,
       },
       [DeviceTypeEnum.Sonoff]: {}
+    },
+    [DeviceCategoryEnum.Brightness]: {
+      [DeviceTypeEnum.Xiaomi]: {
+        infoCommandFilters: zigbeeOfficialBrightnessInfoCommandFilters,
+        customParams: BrightnessParams,
+      },
     },
     [DeviceCategoryEnum.OnOff]: {
       [DeviceTypeEnum.Lidl]: {},
@@ -207,6 +227,10 @@ export const deviceDefinitionsByConnectivityCategoryType:
         infoCommandFilters: {},
         actionCommandFilters: {},
       },
+      [DeviceTypeEnum.Tuya]: {
+        infoCommandFilters: {},
+        actionCommandFilters: {},
+      },
     },
     [DeviceCategoryEnum.Thermometer]: {
       [DeviceTypeEnum.Aqara]: {
@@ -218,6 +242,12 @@ export const deviceDefinitionsByConnectivityCategoryType:
         customParams: ThermometerHeimanParams,
       },
       [DeviceTypeEnum.Sonoff]: {}
+    },
+    [DeviceCategoryEnum.Brightness]: {
+      [DeviceTypeEnum.Xiaomi]: {
+        infoCommandFilters: zigbeeLinkerBrightnessInfoCommandFilters,
+        customParams: BrightnessParams,
+      },
     },
     [DeviceCategoryEnum.OnOff]: {
       [DeviceTypeEnum.Lidl]: {},
@@ -251,11 +281,15 @@ export const ComponentClassByType: Record<DeviceCategoryEnum, Partial<Record<Dev
   [DeviceCategoryEnum.Thermostat]: {
     [DeviceTypeEnum.Aqara]: DeviceThermostatAqaraComponent,
     [DeviceTypeEnum.Moes]: DeviceThermostatMoesComponent,
+    [DeviceTypeEnum.Tuya]: DeviceThermostatTuyaComponent,
   },
   [DeviceCategoryEnum.Thermometer]: {
     [DeviceTypeEnum.Aqara]: DeviceThermometerAqaraComponent,
     [DeviceTypeEnum.Heiman]: DeviceThermometerHeimanComponent,
     [DeviceTypeEnum.Sonoff]: DeviceThermometerSonoffComponent,
+  },
+  [DeviceCategoryEnum.Brightness]: {
+    [DeviceTypeEnum.Xiaomi]: DeviceBrightnessXiaomiComponent,
   },
   [DeviceCategoryEnum.OnOff]: {
     [DeviceTypeEnum.Lidl]: DeviceOnOffLidlComponent,

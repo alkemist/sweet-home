@@ -1,3 +1,4 @@
+export * from './brightness';
 export * from './on-off';
 export * from './presence';
 export * from './thermostat';

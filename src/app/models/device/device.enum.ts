@@ -12,13 +12,16 @@ export enum DeviceCategoryEnum {
   Light = 'light',
   Multimedia = 'multimedia',
   Presence = 'presence',
+  Brightness = 'brightness',
   Test = 'test',
 }
 
 export enum DeviceTypeEnum {
   Aqara = 'aqara',
   Moes = 'moes',
+  Tuya = 'tuya',
   Heiman = 'heiman',
+  Xiaomi = 'xiaomi',
   Lidl = 'lidle',
   Nous = 'nous',
   Eglo = 'eglo',

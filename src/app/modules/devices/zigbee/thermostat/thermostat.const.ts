@@ -12,6 +12,7 @@ export const zigbeeOfficialThermostatActionCommandFilters: Partial<DeviceCommand
 export const zigbeeLinkerThermostatInfoCommandFilters: DeviceCommands<ThermostatCommandInfo> = {
   room: { logicalId: 'local_temperature' },
   thermostat: { generic_type: 'THERMOSTAT_SETPOINT' },
+  battery_low: {logicalId: 'battery_low'},
   ...zigbeeBatteryInfoCommandFilters,
 };
 

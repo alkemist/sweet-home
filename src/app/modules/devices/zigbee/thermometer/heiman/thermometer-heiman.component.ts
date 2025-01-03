@@ -12,7 +12,7 @@ import {MathHelper} from '@alkemist/smart-tools';
 
 
 @Component({
-  selector: "app-device-thermometer-Heiman",
+  selector: "app-device-thermometer-heiman",
   templateUrl: "../thermometer.component.html",
   styleUrls: [
     "../../../base-device.component.scss",
